@@ -1,2 +1,1 @@
-# analisis-estadistico-de-lesiones-y-rendimiento-en-el-futbol
-Dashboard interactivo en Python para analizar métricas físicas, lesiones y rendimiento en el fútbol profesional (2022-2026).
+# Analisis Estadistico de Lesiones y Rendimiento Individual y Colectivo en Clubes de Futbol Profesional en las Temporadas Comprendidas Entre los Años 2022 y 2026
