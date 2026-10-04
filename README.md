@@ -1,1 +1,7 @@
 # Analisis Estadistico de Lesiones y Rendimiento Individual y Colectivo en Clubes de Futbol Profesional en las Temporadas Comprendidas Entre los Años 2022 y 2026
+
+## Planteamiento del problema
+El fútbol profesional contemporáneo es un deporte donde la exigencia es máxima, por lo que la intuición ya no puede ser la única medida para la toma de decisiones en el campo. Sin embargo, a pesar de la gran cantidad de registros sobre los partidos los directores técnicos y analistas luchan para unificar en una misma herramienta dimensiones como la salud y disponibilidad de los jugadores, la eficiencia del rendimiento individual frente a la concentración de talento en plantillas colectivas y el aporte real de cada línea posicional. No tener esta información entorpece la optimización y la rotación de plantillas, la prevención de lesiones y el rendimiento colectivo. 
+
+## Justificación
+Este dashboard estadístico interactivo busca responder la necesidad de una herramienta cuantitativa que permita el análisis diagnóstico preciso para la mejora del rendimiento colectivo y la prevención de lesiones tomando en cuenta las características antropométricas, como lo son la altura y el peso; y la edad de los jugadores. Este trabajo además, contribuye a la línea de investigación estadística aplicada al deporte de la UCV, por lo que sienta un precedente metodológico aplicable para el estudio del rendimiento en el fútbol profesional
