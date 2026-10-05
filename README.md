@@ -24,3 +24,29 @@ Para dar respuesta al objetivo general, el dashboard aborda y desglosa los sigui
 2. ¿Cómo se distribuyen y concentran los jugadores de alto rendimiento dentro de las plantillas de los clubes, y cuál ha sido su comportamiento ofensivo y consistencia competitiva a lo largo de las temporadas del ciclo 2022-2026?
 
 3. ¿Cuál es el aporte porcentual y el promedio de rendimiento de las diferentes líneas posicionales (arqueros, defensas, mediocampistas y delanteros) dentro de la estructura colectiva de los equipos durante el período 2022-2026?
+
+## Instalación y Ejecución
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/Vincent893/analisis-estadistico-de-lesiones-y-rendimiento-en-el-futbol.git
+   cd analisis-estadistico-de-lesiones-y-rendimiento-en-el-futbol
+   ```
+
+2. **Crear y activar un entorno virtual:**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # En Windows: venv\Scripts\activate
+   ```
+
+3. **Instalar las dependencias:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Ejecutar la aplicación:**
+   ```bash
+   streamlit run app.py
+   ```
+
+---
