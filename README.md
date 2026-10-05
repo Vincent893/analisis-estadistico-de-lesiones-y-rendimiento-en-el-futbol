@@ -17,3 +17,10 @@ Para dar respuesta al objetivo general, el dashboard aborda y desglosa los sigui
 2. Cuantificar la distribución y concentración de jugadores de alto rendimiento dentro de las plantillas de los clubes, evaluando su comportamiento ofensivo y consistencia competitiva a lo largo de las temporadas entre el 2022-2026.
 
 3. Examinar el aporte porcentual y el promedio de rendimiento de las diferentes líneas posicionales (arqueros, defensas, mediocampistas y delanteros) dentro de la estructura de los equipos durante el ciclo 2022-2026.
+
+## Preguntas de investigación
+1. ¿Cuál ha sido la frecuencia, duración y distribución de las lesiones en los jugadores de fútbol profesional entre las temporadas comprendidas entre los años 2022-2026, y qué relación guardan con sus características antropométricas (altura y peso) y su carga de minutos jugados?
+
+2. ¿Cómo se distribuyen y concentran los jugadores de alto rendimiento dentro de las plantillas de los clubes, y cuál ha sido su comportamiento ofensivo y consistencia competitiva a lo largo de las temporadas del ciclo 2022-2026?
+
+3. ¿Cuál es el aporte porcentual y el promedio de rendimiento de las diferentes líneas posicionales (arqueros, defensas, mediocampistas y delanteros) dentro de la estructura colectiva de los equipos durante el período 2022-2026?
