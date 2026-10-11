@@ -4,13 +4,16 @@ from models.Graphics import Graphics
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-
+from utils.estilos import cargar_estilos
+from utils.graficos import apply_theme
 
 # setup db connection
 connected = DB.connect()
 
 
 UI.setup_page()
+UI.render_sidebar()
+cargar_estilos()
 
 if connected:        
     UI.render_sidebar()
