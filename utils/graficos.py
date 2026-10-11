@@ -18,6 +18,14 @@ def apply_theme(fig, title=""):
             bordercolor="rgba(0, 229, 255, 0.2)",
             borderwidth=1
         ),
+        colorway=[
+            "#00E5FF",   
+            "#10B981",   
+            "#00A8CC",   
+            "#3B82F6",   
+            "#F59E0B",  
+            "#EC4899"   
+        ],
         xaxis=dict(
             gridcolor="rgba(0, 229, 255, 0.1)",
             linecolor="rgba(0, 229, 255, 0.3)",

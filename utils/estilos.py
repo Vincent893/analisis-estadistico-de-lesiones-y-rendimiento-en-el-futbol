@@ -22,7 +22,14 @@ def cargar_estilos():
         [data-testid="stSidebar"] * {
             color: #E2E8F0 !important;
         }
-
+        /* st.divider() */
+        hr {
+            border: none !important;
+            height: 2px !important;
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0) 0%, rgba(0, 229, 255, 0.9) 50%, rgba(0, 229, 255, 0) 100%) !important;
+            margin: 35px 0 !important;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+        }
         /* Cabecera Principal */
         .hero-header {
             background: linear-gradient(135deg, #0B132B 0%, #1C2541 60%, #00A8CC 100%);
@@ -89,7 +96,7 @@ def cargar_estilos():
         }
         .kpi-footer {
             color: #00E5FF;
-            font-size: 0.75rem;
+            font-size: 1.5rem;
             margin-top: 8px;
             font-weight: 500;
         }
