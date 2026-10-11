@@ -12,10 +12,11 @@ connected = DB.connect()
 
 
 UI.setup_page()
-UI.render_sidebar()
 cargar_estilos()
 
-if connected:        
+supabase = DB.connect_supabase
+
+if supabase:        
     UI.render_sidebar()
     
     
@@ -35,7 +36,8 @@ if connected:
         st.metric(label="Posición Destacada", value="Delantero (DC)", delta="Rol principal")
     with kpi_minutos_jugados_top:
         st.metric(label="Minutos Jugados (Top)", value="1,980 min", delta="98% disputados")
-    
+
+
     st.markdown("") 
     #==========FIN KPIs=========
 
@@ -51,6 +53,8 @@ if connected:
             "Jugadores": [45, 38, 30, 25, 18]
         })
         fig_donut = Graphics.create_talent_donut_chart(df_ligas)
+        fig_donut = apply_theme(fig_donut)
+
         st.plotly_chart(fig_donut, use_container_width=True)
 
     with columna_grafico_de_barras_rendimiento_por_posicion:
@@ -62,6 +66,7 @@ if connected:
             "Cantidad": [35, 28, 26, 40, 32, 15]
         })
         fig_bar_pos = Graphics.create_position_performance_bar_chart(df_posiciones)
+        fig_bar_pos = apply_theme(fig_bar_pos)
         st.plotly_chart(fig_bar_pos, use_container_width=True)
 
     st.divider()
@@ -75,6 +80,7 @@ if connected:
         "Total Lesiones": [320, 350, 410, 390, 440]
     })
     fig_line = Graphics.create_injury_evolution_line_chart(dataframe_lesiones)
+    fig_line = apply_theme(fig_line) 
     st.plotly_chart(fig_line, use_container_width=True)
 
     st.divider()
@@ -88,6 +94,7 @@ if connected:
         "Rating General": [91.5, 90.8, 90.2]
     })
     fig_top3 = Graphics.create_top_players_bar_chart(dataframe_top3)
+    fig_top3 = apply_theme(fig_top3)
     st.plotly_chart(fig_top3, use_container_width=True)
     
 
