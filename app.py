@@ -14,11 +14,11 @@ class Main:
         # setup db connection
         connected = DB.connect()
         
-        
+        supabase = DB.connect_supabase()
+
         UI.setup_page()
         cargar_estilos()
 
-        # Renderizado de la cabecera
         st.markdown("""
         <div class="hero-header">
             <span class="hero-badge">Temporadas 2022 - 2026</span>
@@ -27,7 +27,7 @@ class Main:
          </div>
         """, unsafe_allow_html=True)
 
-        if connected:        
+        if connected or supabase:        
             UI.render_sidebar()
             
             

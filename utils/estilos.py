@@ -89,7 +89,7 @@ def cargar_estilos():
         }
         .kpi-footer {
             color: #00E5FF;
-            font-size: 0.75rem;
+            font-size: 1.5rem;
             margin-top: 8px;
             font-weight: 500;
         }

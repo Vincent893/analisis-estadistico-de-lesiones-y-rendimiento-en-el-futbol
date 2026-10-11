@@ -14,14 +14,19 @@ connected = DB.connect()
 UI.setup_page()
 cargar_estilos()
 
-supabase = DB.connect_supabase
+supabase = DB.connect_supabase()
 
-if supabase:        
+if connected or supabase:        
     UI.render_sidebar()
     
+    st.markdown("""
+        <div class="hero-header">
+            <span class="hero-badge">Temporadas 2022 - 2026</span>
+            <div class="hero-title">Panel de Estadísticas y Rendimiento</div>
+            <p style="color: #94A3B8; margin: 0;">Resumen general y métricas clave del análisis de jugadores y lesiones.</p>
+         </div>
+        """, unsafe_allow_html=True)
     
-    st.title("Panel de Estadísticas y Rendimiento")
-    st.markdown("Resumen general y métricas clave del análisis de jugadores y lesiones.")
     st.divider()
 
     #==========INICIO KPIs=========
@@ -29,13 +34,36 @@ if supabase:
     kpi_equipo_mas_goleador, kpi_jugador_mas_goleador, kpi_posicion_destacada, kpi_minutos_jugados_top = st.columns(4)
 
     with kpi_equipo_mas_goleador:
-        st.metric(label="Equipo Más Goleador", value="Real Madrid", delta="48 Goles")
+     st.markdown("""
+          <div class="kpi-card">
+              <div class="kpi-title">Equipo Mas Goleador</div>
+              <div class="kpi-value">Real Madrid</div>
+              <div class="kpi-footer">48 goles</div>
+          </div>
+      """, unsafe_allow_html=True)
     with kpi_jugador_mas_goleador:
-        st.metric(label="Jugador Más Goleador", value="K. Mbappé", delta="22 Goles")
+     st.markdown("""
+        <div class="kpi-card">
+            <div class="kpi-title">Jugador Mas Goleador</div>
+            <div class="kpi-value">K. Mbappe</div>
+            <div class="kpi-footer">22 goles</div>
+        </div>
+    """, unsafe_allow_html=True)
     with kpi_posicion_destacada:
-        st.metric(label="Posición Destacada", value="Delantero (DC)", delta="Rol principal")
+        st.markdown("""
+        <div class="kpi-card">
+            <div class="kpi-title">Posicion Destacada</div>
+            <div class="kpi-value">Delantero (DC)</div>
+        </div>
+    """, unsafe_allow_html=True)
     with kpi_minutos_jugados_top:
-        st.metric(label="Minutos Jugados (Top)", value="1,980 min", delta="98% disputados")
+        st.markdown("""
+        <div class="kpi-card">
+            <div class="kpi-title">Minutos Jugados</div>
+            <div class="kpi-value">1,980 minutos</div>
+            <div class="kpi-footer">98% minutos disputados</div>
+        </div>
+    """, unsafe_allow_html=True)
 
 
     st.markdown("") 
