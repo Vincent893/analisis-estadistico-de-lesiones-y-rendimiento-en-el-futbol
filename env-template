@@ -1,0 +1,2 @@
+DEV_MODE=True # igualar a false  para conectar a la base de datos remota o True para conectar a la db local
+DB_CONNECTION_URL=
