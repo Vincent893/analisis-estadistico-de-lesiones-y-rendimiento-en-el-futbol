@@ -41,3 +41,39 @@ def apply_theme(fig, title=""):
         margin=dict(l=20, r=20, t=50, b=20)
     )
     return fig
+
+
+
+#Esta funcion genera un grafico para los promedios y sumatorias colectivas de la plantilla seleccionada.
+def calcular_metricas_equipo(lineup_df):
+    if lineup_df.empty:
+        return {
+            "avg_rating": 0.0,
+            "total_xg": 0.0,
+            "avg_age": 0.0,
+            "total_days_lost": 0,
+            "total_injuries": 0
+        }
+        
+    return {
+        "avg_rating": lineup_df['average_rating'].mean(),
+        "total_xg": lineup_df['xg_per_90'].sum(),
+        "avg_age": lineup_df['age'].mean(),
+        "total_days_lost": lineup_df['total_days_lost'].sum(),
+        "total_injuries": lineup_df['total_injuries'].sum()
+    }
+
+
+
+#Esta funcion crea el gráfico de barras del rating individual de los titulares.
+def generar_grafico_rating_titulares(lineup_df):
+    fig = px.bar(
+        lineup_df, 
+        x='name', 
+        y='average_rating', 
+        color='primary_category',
+        title="Calificación Individual del XI Titular",
+        labels={'name': 'Jugador', 'average_rating': 'Rating Promedio'}
+    )
+    fig.update_layout(xaxis_title="", yaxis_title="Rating")
+    return fig
