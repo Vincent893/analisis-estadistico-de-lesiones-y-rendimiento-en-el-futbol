@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 
 
@@ -45,3 +47,28 @@ class UI:
             st.page_link("pages/04_Lesiones_y_Carga_Física.py", label="Lesiones y Carga Física")
             
             st.divider()
+            
+            UI.renderizar_reproductor_musical()
+        
+    @staticmethod    
+    def renderizar_reproductor_musical():
+    
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("### 🎵 EA Trax")
+        
+        
+        carpeta_musica = "assets/music"
+        
+        if os.path.exists(carpeta_musica):
+            
+            archivos_canciones = [archivo for archivo in os.listdir(carpeta_musica) if archivo.endswith(".mp3")]
+            
+            if archivos_canciones:
+                cancion_seleccionada = st.sidebar.selectbox("Seleccionar Pista", archivos_canciones)
+                
+                ruta_archivo = os.path.join(carpeta_musica, cancion_seleccionada)
+                st.sidebar.audio(ruta_archivo, format="audio/mp3", loop=True)
+            else:
+                st.sidebar.warning("No se encontraron archivos .mp3 en la carpeta music.")
+        else:
+            st.sidebar.error("La carpeta assets/music no existe.")

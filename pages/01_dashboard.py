@@ -126,3 +126,4 @@ if connected or supabase:
     st.plotly_chart(fig_top3, use_container_width=True)
     
 
+    
