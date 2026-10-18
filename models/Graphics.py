@@ -20,7 +20,7 @@ class Graphics:
     def create_injury_evolution_line_chart(df):
         
         grafico_de_linea = px.line(df, x="Año", y="Total Lesiones", markers=True, line_shape="spline")
-        grafico_de_linea.update_traces(line_color="#FF4B4B", line_width=3)
+        grafico_de_linea.update_traces(line_width=3)
         grafico_de_linea.update_layout(margin=dict(t=10, b=10, l=10, r=10), height=320)
         return grafico_de_linea
 

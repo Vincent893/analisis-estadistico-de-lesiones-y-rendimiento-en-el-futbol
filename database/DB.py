@@ -1,9 +1,10 @@
 import os
 import duckdb
 import streamlit as st
+from supabase import create_client
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 class DB:
     connection = None
@@ -19,7 +20,8 @@ class DB:
                 conn = duckdb.connect(database='./database/database.duckdb', read_only=False)
                 print("Conexión a la base de datos local establecida.")
             else:
-                db_url = os.getenv("DB_CONNECTION_URL", "md:")
+                
+                db_url = os.getenv("DB_CONNECTION_URL")
                 conn = duckdb.connect(db_url)
                 print("Conexión a MotherDuck establecida.")
             return conn
@@ -42,3 +44,10 @@ class DB:
             DB.connect() 
         
         return DB.connection
+
+    @staticmethod
+    @st.cache_resource
+    def connect_supabase():
+        url = os.getenv("SUPABASE_URL", "")
+        key = os.getenv("SUPABASE_KEY", "")
+        return create_client(url, key)

@@ -39,8 +39,9 @@ class UI:
 
             
             st.page_link("app.py", label="Inicio")
-            st.page_link("pages/01_Lesiones_y_Carga_Física.py", label="Lesiones y Carga Física")
+            st.page_link("pages/01_dashboard.py", label="Dashboard")
             st.page_link("pages/02_Concentración_de_Talento.py", label="Concentración de Talento")
             st.page_link("pages/03_Análisis_Posicional.py", label="Análisis Posicional")
+            st.page_link("pages/04_Lesiones_y_Carga_Física.py", label="Lesiones y Carga Física")
             
             st.divider()

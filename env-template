@@ -1,2 +1,8 @@
-DEV_MODE=True
+DEV_MODE=True # igualar a false  para conectar a la base de datos remota o True para conectar a la db local
+
+# Conexion a Motherduck o .duckdb local
 DB_CONNECTION_URL=
+
+# Conexion a Supabase
+SUPABASE_URL=
+SUPABASE_KEY=
