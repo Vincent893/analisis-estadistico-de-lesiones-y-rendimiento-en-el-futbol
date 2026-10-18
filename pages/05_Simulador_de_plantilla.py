@@ -21,7 +21,7 @@ renderizar_encabezado()
 conexion_base_datos = DB.get_connection()
 
 if conexion_base_datos:
-    # Obtención de datos
+    
     datos_jugadores_temporada = get_player_season_performance(conexion_base_datos)
     lista_temporadas = datos_jugadores_temporada['season_label'].unique().tolist()
     
@@ -32,7 +32,7 @@ if conexion_base_datos:
         datos_jugadores_temporada['season_label'] == temporada_seleccionada
     ].copy()
 
-    # Preparar listas por categoría
+    # listas por categoría
     lista_arqueros = datos_temporada_actual[datos_temporada_actual['primary_category'] == 'GOALKEEPER']['name'].tolist()
     lista_defensas = datos_temporada_actual[datos_temporada_actual['primary_category'] == 'DEFENDER']['name'].tolist()
     lista_mediocampistas = datos_temporada_actual[datos_temporada_actual['primary_category'] == 'MIDFIELDER']['name'].tolist()
@@ -41,6 +41,8 @@ if conexion_base_datos:
     columna_constructora, columna_campo_tactico = st.columns([1, 2])
 
     with columna_constructora:
+        
+        
         # Selector de Jugadores
         jugadores_seleccionados = renderizar_panel_seleccion_jugadores(
             formacion_tactica, lista_arqueros, lista_defensas, lista_mediocampistas, lista_delanteros
