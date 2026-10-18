@@ -19,6 +19,8 @@ class UI:
         """,
             unsafe_allow_html=True,
         )
+        
+        st.markdown('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">', unsafe_allow_html=True)
 
     @staticmethod
     def render_sidebar():
@@ -29,6 +31,7 @@ class UI:
                     display: none;
                 }
             </style>
+            
             """,
             unsafe_allow_html=True
         )
