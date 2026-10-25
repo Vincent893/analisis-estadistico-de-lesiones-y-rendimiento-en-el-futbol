@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "analisis-estadistico-de-lesiones-power.bi"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "ea33f9dc-3c69-44a2-941e-4bc562013123"
+  }
+}
