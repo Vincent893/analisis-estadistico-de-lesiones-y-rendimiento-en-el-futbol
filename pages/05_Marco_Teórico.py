@@ -130,13 +130,11 @@ def render_marco_teorico():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Tabs de navegación por secciones
-    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_sec5, tab_refs = st.tabs([
+    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_refs = st.tabs([
         "📌 Introducción",
         "🩺 Sec 1: Lesiones y Carga",
         "🎯 Sec 2: xG y Rendimiento",
-        "🛡️ Sec 3: Valor Posicional (eLPAR)",
-        "📊 Sec 4: Visualización & Dashboard",
-        "🗄️ Sec 5: Modelo Relacional & SQL",
+        "🛡️ Sec 3: Valor Posicional y Aportes",
         "📚 Referencias Bibliográficas"
     ])
 
@@ -188,10 +186,10 @@ def render_marco_teorico():
                 <div class="concept-title">🛡️ Eje 3: Valor Posicional</div>
                 <p style="color: #94A3B8; font-size: 0.9rem;">
                     Valoración del aporte relativo por líneas posicionales (arqueros, defensas, medios, delanteros) 
-                    y concentración de talento bajo el modelo eLPAR.
+                    y dinámicas colectivas en las plantillas.
                 </p>
-                <span class="tag-pill">Modelo eLPAR</span>
-                <span class="tag-pill">Regresión Skellam</span>
+                <span class="tag-pill">Líneas Posicionales</span>
+                <span class="tag-pill">Aporte Colectivo</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -323,13 +321,13 @@ def render_marco_teorico():
         """)
 
     # ==========================================
-    # TAB SECCIÓN 3: VALOR POSICIONAL Y eLPAR
+    # TAB SECCIÓN 3: VALOR POSICIONAL Y APORTES
     # ==========================================
     with tab_sec3:
         st.markdown("""
         <div class="section-container">
             <span class="theory-badge">Sección 3</span>
-            <h2 style="color: #F8FAFC;">Valor Posicional y el Modelo eLPAR</h2>
+            <h2 style="color: #F8FAFC;">Valor Posicional y Aportes por Líneas</h2>
         </div>
         """, unsafe_allow_html=True)
 
@@ -342,144 +340,22 @@ def render_marco_teorico():
         - **Delanteros (ST/DEL)**: Generación de peligro en el tercio final y remate a portería.
         """)
 
-        st.markdown("#### 3.2 El Modelo Matemático eLPAR (Pelechrinis & Winston, 2021)")
+        st.markdown("#### 3.2 Aporte Porcentual por Línea Posicional: Operacionalización")
         st.write("""
-        Inspirado en el concepto sabermétrico de *Wins Above Replacement* (WAR), el **eLPAR** (*expected League Points Above Replacement*) 
-        determina cuántos puntos de liga esperados añade un jugador en comparación con un futbolista de nivel de reemplazo (percentil 20):
+        El aporte porcentual por línea evalúa la contribución relativa de cada demarcación al rendimiento global del colectivo, integrando métricas ofensivas, defensivas y de circulación:
+        - **Segmentación del rendimiento**: Desglose de los indicadores del equipo en arqueros, defensas, mediocampistas y delanteros.
+        - **Aportes promedio por demarcación**: Cálculo de métricas específicas (D, M, ST × L/R/C) respecto a los indicadores globales del club.
+        - **Especialización técnica**: Pappalardo et al. (2019) confirmaron que los delanteros dominan en goles y regates; los mediocampistas en volumen de pases y asistencias; y los defensas en intercepciones, despejes y bloqueos.
         """)
 
-        st.latex(r"eLPAR = 3 \cdot \delta P_w + 1 \cdot \delta P_d")
+        st.info("📌 **Integración en la Base de Datos**: Las tablas `player_stats_attacking`, `player_stats_passing`, `player_stats_defending` y `player_stats_goalkeeping` contienen métricas segregadas por dimensión. La agregación ponderada de estas tablas permite calcular con precisión el aporte relativo de cada línea.")
 
-        st.write(r"""
-        Donde:
-        - $\delta P_w$ es el incremento marginal en la **probabilidad de victoria** inducido por la calidad del jugador.
-        - $\delta P_d$ es el incremento marginal en la **probabilidad de empate**.
-        - El modelo subyacente emplea una **regresión bivariada de Skellam** sobre la diferencia de goles entre equipos.
-        """)
-
-        st.markdown("""
-        <div class="concept-card">
-            <div class="concept-title">💡 La Paradoja de Mercado: Subvaloración de los Defensas</div>
-            <p style="color: #CBD5E1; font-size: 0.95rem; margin-bottom: 0;">
-                El estudio empírico de Pelechrinis & Winston sobre ~20,000 partidos reveló que <b>los defensas centrales y laterales 
-                aportan sistemáticamente mayores valores de eLPAR</b> que los delanteros para un nivel de habilidad equivalente, 
-                debido a la estabilidad de las acciones defensivas frente a la alta volatilidad del gol. 
-                Sin embargo, el mercado de fichajes sobrepaga a los delanteros y subvalora la línea defensiva, 
-                abriendo oportunidades de arbitraje y retorno de inversión superior al construir plantillas.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # ==========================================
-    # TAB SECCIÓN 4: VISUALIZACIÓN Y ARQUITECTURA
-    # ==========================================
-    with tab_sec4:
-        st.markdown("""
-        <div class="section-container">
-            <span class="theory-badge">Sección 4</span>
-            <h2 style="color: #F8FAFC;">Visualización de Datos y Arquitectura Tecnológica</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 4.1 Principios de Diseño en Analítica Deportiva")
+        st.markdown("#### 3.3 Implicaciones para la Gestión y Profundidad de Plantilla")
         st.write("""
-        Un dashboard interactivo no es simplemente una recopilación de tablas, sino una herramienta de soporte para la toma de decisiones 
-        que debe cumplir con cuatro principios metodológicos:
-        - **Claridad**: Jerarquía visual inmediata sin requerir manuales extensos.
-        - **Precisión**: Datos no distorsionados mediante escalas proporcionales.
-        - **Relevancia**: Reducción de ruido cognitivo para el cuerpo técnico.
-        - **Interactividad**: Capacidad de filtrar por temporadas, ligas, posiciones o jugadores.
+        - **Profundidad de plantilla**: La concentración excesiva de talento en una sola línea o en pocos jugadores genera alta vulnerabilidad ante lesiones y sanciones.
+        - **Equilibrio estructural**: El rendimiento colectivo óptimo requiere complementar el talento individual con solidez y balance entre líneas.
         """)
 
-        st.markdown("#### 4.2 Taxonomía de Gráficos Implementados")
-        
-        t1, t2, t3 = st.columns(3)
-        with t1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📈 Dispersión & Distribución</div>
-                <p style="color: #94A3B8; font-size: 0.88rem;">
-                    Diagramas bivariados para contrastar antropometría (altura/peso) contra días de baja acumulados y carga de minutos.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with t2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📉 Tendencia Temporal</div>
-                <p style="color: #94A3B8; font-size: 0.88rem;">
-                    Series de tiempo spline para seguir la evolución inter-temporada (2022-2026) de lesiones, xG/90 y habilidad.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with t3:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📊 Comparación Posicional</div>
-                <p style="color: #94A3B8; font-size: 0.88rem;">
-                    Diagramas de barras agrupadas y gráficos de dona para evaluar la concentración de talento y aportes por demarcación.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("#### 4.3 Arquitectura Técnica del Stack")
-        st.markdown("""
-        ```mermaid
-        graph TD
-            A[SQL Practice DB: 17 Tablas] --> B[DuckDB / Supabase]
-            B --> C[Vistas SQL Desnormalizadas: views.sql]
-            C --> D[Motor de Procesamiento: Pandas & NumPy]
-            D --> E[Capa de Visualización: Plotly Express]
-            E --> F[Interfaz Web: Streamlit con Estilos Personalizados]
-        ```
-        """)
-
-    # ==========================================
-    # TAB SECCIÓN 5: MODELO RELACIONAL Y SQL
-    # ==========================================
-    with tab_sec5:
-        st.markdown("""
-        <div class="section-container">
-            <span class="theory-badge">Sección 5</span>
-            <h2 style="color: #F8FAFC;">Fundamentos de Bases de Datos Relacionales y SQL</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 5.1 Jerarquía Estructural del Modelo de 17 Tablas")
-        st.write("""
-        El diseño del esquema implementa la teoría relacional de E.F. Codd en **Tercera Forma Normal (3FN)**, estructurado en niveles:
-        """)
-
-        st.markdown("""
-        1. **Tablas de Dimensión**: Catálogos base con cardinalidad controlada (`nations` [174], `divisions` [299], `clubs` [2,773], `positions` [14], `seasons` [4]).
-        2. **Entidad Central (`players`)**: 27,343 futbolistas con atributos atómicos inmutables (nombre, nacionalidad, fecha de nacimiento, altura, peso, pie dominante).
-        3. **Tabla Hub Puente (`player_seasons`)**: 108,639 filas que representan la participación específica de un jugador en una temporada de un club. Actúa como eje neurálgico.
-        4. **Estadísticas Especializadas (1:1 con el Hub)**:
-           - `player_stats_general`: minutos, apariciones, distancia cubierta, calificación media.
-           - `player_stats_attacking`: goles, xG, disparos, regates, asistencias.
-           - `player_stats_passing`: pases completados, pases clave, precisión.
-           - `player_stats_defending`: tackles, intercepciones, recuperaciones.
-           - `player_stats_goalkeeping`: atajadas, clean sheets, xG prevenidos.
-        5. **Relaciones N:M y Eventos**: `player_positions` (flexibilidad posicional múltiple) e `injuries` (26,949 episodios médicos).
-        """)
-
-        st.markdown("#### 5.2 Tipos de JOIN y su Impacto Analítico")
-        st.markdown("""
-        | Tipo de JOIN | Comportamiento | Uso en el Proyecto |
-        | :--- | :--- | :--- |
-        | **`INNER JOIN`** | Solo registros con coincidencia exacta en ambas tablas | Cruzar jugadores con estadísticas ofensivas obligatorias |
-        | **`LEFT JOIN`** | Mantiene todas las filas de la tabla izquierda | **Clave epidemiológica**: conservar a los jugadores con 0 lesiones en el año |
-        | **`CROSS JOIN`** | Producto cartesiano de todas las combinaciones | Exploración teórica de combinaciones jugador × demarcaciones |
-        """)
-
-        st.markdown("#### 5.3 Optimización y Desnormalización (OLAP)")
-        st.write("""
-        Para evitar *joins* continuos de 5 a 6 tablas en cada recarga del dashboard interactivo, se crearon vistas SQL desnormalizadas 
-        (en `database/views.sql`), como `analytics_player_seasons` y `analytics_club_seasons`, permitiendo que el motor OLAP DuckDB 
-        ejecute consultas analíticas en microsegundos.
-        """)
 
     # ==========================================
     # TAB REFERENCIAS BIBLIOGRÁFICAS
