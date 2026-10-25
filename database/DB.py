@@ -50,4 +50,10 @@ class DB:
     def connect_supabase():
         url = os.getenv("SUPABASE_URL", "")
         key = os.getenv("SUPABASE_KEY", "")
-        return create_client(url, key)
+        if not url or not key:
+            return None
+        try:
+            return create_client(url, key)
+        except Exception as e:
+            print(f"Error al conectar a Supabase: {e}")
+            return None
