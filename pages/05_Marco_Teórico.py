@@ -1,6 +1,5 @@
 from models.UI import UI
 import streamlit as st
-import os
 from utils.estilos import cargar_estilos
 
 def render_marco_teorico():
@@ -138,7 +137,7 @@ def render_marco_teorico():
         "🛡️ Sec 3: Valor Posicional (eLPAR)",
         "📊 Sec 4: Visualización & Dashboard",
         "🗄️ Sec 5: Modelo Relacional & SQL",
-        "📚 Bibliografía & Archivos"
+        "📚 Referencias Bibliográficas"
     ])
 
     # ==========================================
@@ -513,36 +512,5 @@ def render_marco_teorico():
                 <b style="color: #00E5FF;">{autor}</b>. {obra}
             </div>
             """, unsafe_allow_html=True)
-
-        st.divider()
-
-        st.subheader("📥 Descarga de Documentos Originales")
-        col_d1, col_d2 = st.columns(2)
-
-        md_path = "pages/marcoteorico.md"
-        docx_path = "pages/Marco teorico TF Compu II.docx"
-
-        with col_d1:
-            if os.path.exists(md_path):
-                with open(md_path, "r", encoding="utf-8") as f:
-                    st.download_button(
-                        label="📄 Descargar Texto Completo (.md)",
-                        data=f.read(),
-                        file_name="Marco_Teorico_Futbol_2022_2026.md",
-                        mime="text/markdown",
-                        use_container_width=True
-                    )
-
-        with col_d2:
-            if os.path.exists(docx_path):
-                with open(docx_path, "rb") as f:
-                    st.download_button(
-                        label="📑 Descargar Documento Word (.docx)",
-                        data=f.read(),
-                        file_name="Marco_Teorico_TF_Compu_II.docx",
-                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                        use_container_width=True
-                    )
-
 if __name__ == "__main__":
     render_marco_teorico()
