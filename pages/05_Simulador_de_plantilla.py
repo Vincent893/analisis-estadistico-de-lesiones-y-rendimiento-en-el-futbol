@@ -18,7 +18,6 @@ UI.render_sidebar()
 
 cargar_estilos()
 
-
 renderizar_encabezado()
 
 conexion_base_datos = DB.get_connection()
@@ -45,7 +44,6 @@ if conexion_base_datos:
         columna_constructora, columna_campo_tactico = st.columns([1, 2])
 
         with columna_constructora:
-           
             jugadores_seleccionados, boton_aplicar = renderizar_panel_seleccion_jugadores(
                 formacion_tactica, 
                 lista_arqueros, 
@@ -54,14 +52,28 @@ if conexion_base_datos:
                 lista_delanteros
             )
 
-        
+        # Validación Antiduplicados y confirmación de la alineación
         if boton_aplicar:
-            st.session_state['alineacion_confirmada'] = jugadores_seleccionados
+            # Comprobar si hay elementos repetidos en los 11 elegidos
+            if len(jugadores_seleccionados) != len(set(jugadores_seleccionados)):
+                st.session_state['error_duplicados'] = True
+                st.session_state.pop('alineacion_confirmada', None)
+            else:
+                st.session_state['error_duplicados'] = False
+                st.session_state['alineacion_confirmada'] = jugadores_seleccionados
 
         with columna_campo_tactico:
             st.markdown('<h3 style="color: #f0f6fc; font-size: 20px;"><i class="fa-solid fa-chart-line" style="color: #58a6ff; margin-right: 8px;"></i>Resumen Táctico y Estadístico Colectivo</h3>', unsafe_allow_html=True)
 
-           
+            # Alerta de validación en caso de que existan duplicados
+            if st.session_state.get('error_duplicados', False):
+                st.markdown("""
+                    <div style="background-color: rgba(248, 81, 73, 0.15); border: 1px solid #f85149; border-radius: 8px; padding: 14px; color: #f85149; font-size: 14px; margin-bottom: 15px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i>
+                        <b>¡Atención!</b> Has seleccionado el mismo jugador en más de una posición. Por favor, asegúrate de que los 11 titulares sean distintos.
+                    </div>
+                """, unsafe_allow_html=True)
+
             titulares_activos = st.session_state.get('alineacion_confirmada', [])
 
             datos_alineacion_titular = datos_temporadas_actual[
@@ -75,7 +87,6 @@ if conexion_base_datos:
 
                 st.markdown("---")
 
-                
                 st.markdown('<h3 style="color: #f0f6fc; font-size: 18px;"><i class="fa-solid fa-radar" style="color: #3fb950; margin-right: 8px;"></i>Perfil Táctico y Atributos Colectivos</h3>', unsafe_allow_html=True)
 
                 col_radar, col_barras = st.columns(2)
@@ -86,16 +97,14 @@ if conexion_base_datos:
                     st.plotly_chart(figura_radar, use_container_width=True)
 
                 with col_barras:
-                    # Gráfico de barras individuales que ya tenías
+                    # Gráfico de barras individuales
                     figura_barras = generar_grafico_rating_titulares(datos_alineacion_titular)
                     st.plotly_chart(figura_barras, use_container_width=True)
 
                 renderizar_cancha_tactica(datos_alineacion_titular, formacion_tactica)
-               
-
-                
             else:
-                st.markdown("""
+                if not st.session_state.get('error_duplicados', False):
+                    st.markdown("""
                         <div style="background-color: rgba(227, 179, 65, 0.1); border: 1px solid #e3b341; border-radius: 8px; padding: 12px; color: #e3b341; font-size: 14px;">
                             <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i>
                             Configura tu plantilla en el panel izquierdo y presiona <b>"Aplicar Alineación"</b> para visualizar el rendimiento simulado.
@@ -103,15 +112,15 @@ if conexion_base_datos:
                     """, unsafe_allow_html=True)
     else:
         st.markdown("""
-                    <div style="background-color: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 12px; color: #f85149; font-size: 14px;">
-                        <i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i>
-                        No se encontraron datos en la consulta de rendimiento de jugadores.
-                    </div>
-                """, unsafe_allow_html=True)
-else:
-    st.markdown("""
             <div style="background-color: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 12px; color: #f85149; font-size: 14px;">
-                <i class="fa-solid fa-plug-circle-xmark" style="margin-right: 8px;"></i>
-                Error al intentar conectar con la base de datos.
+                <i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i>
+                No se encontraron datos en la consulta de rendimiento de jugadores.
             </div>
         """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+        <div style="background-color: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; border-radius: 8px; padding: 12px; color: #f85149; font-size: 14px;">
+            <i class="fa-solid fa-plug-circle-xmark" style="margin-right: 8px;"></i>
+            Error al intentar conectar con la base de datos.
+        </div>
+    """, unsafe_allow_html=True)
