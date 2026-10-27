@@ -1,5 +1,25 @@
 import plotly.express as px
+import streamlit as st
 
+def mostrar(fig, alto=360):
+    res = apply_theme(fig)
+    fig = res if res is not None else fig
+    fig.update_layout(height=alto, legend_title_text="")
+    st.plotly_chart(fig, config={"staticPlot": True})
+
+def barras(df, x, y, titulo, y_max=None, alto=360, fmt_txt=".1f", **kw):
+    fig = px.bar(df, x=x, y=y, title=titulo, text_auto=fmt_txt, **kw)
+    fig.update_traces(textposition="outside", cliponaxis=False)
+    fig.update_xaxes(title_text="")
+    if y_max:
+        fig.update_yaxes(range=[0, y_max])
+    mostrar(fig, alto)
+
+def calor(mat, titulo, fmt_txt=".1f", zmax=None):
+    escala = {"zmin": 0, "zmax": zmax} if zmax else {}
+    fig = px.imshow(mat, text_auto=fmt_txt, aspect="auto", title=titulo, color_continuous_scale="Blues", **escala)
+    fig.update_layout(coloraxis_showscale=False)
+    mostrar(fig, 340)
 
 
 def apply_theme(fig, title=""):
@@ -46,7 +66,6 @@ def apply_theme(fig, title=""):
 
 
 
-#Esta funcion genera un grafico para los promedios y sumatorias colectivas de la plantilla seleccionada.
 def calcular_metricas_equipo(lineup_df):
     if lineup_df.empty:
         return {
@@ -67,7 +86,6 @@ def calcular_metricas_equipo(lineup_df):
 
 
 
-#Esta funcion crea el gráfico de barras del rating individual de los titulares.
 def generar_grafico_rating_titulares(lineup_df):
     fig = px.bar(
         lineup_df, 

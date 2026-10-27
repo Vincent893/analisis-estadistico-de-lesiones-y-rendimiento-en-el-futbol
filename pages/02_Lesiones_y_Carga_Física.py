@@ -1,112 +1,99 @@
-from database.DB import DB
-from models.UI import UI
 import streamlit as st
+from models.UI import UI
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme
-import plotly.express as px
+from database.DB import DB
+from database.Query import get_injury_analysis, get_base_sql
+from utils.helper import mostrar_caja_mensaje
+from components.lesiones_ui import (
+    renderizar_seccion_panorama_general,
+    renderizar_seccion_frecuencia_lesiones,
+    renderizar_seccion_duracion_lesiones,
+    renderizar_seccion_antropometria,
+    renderizar_seccion_carga_minutos,
+    renderizar_seccion_variables_control,
+    renderizar_seccion_top_jugadores,
+    renderizar_seccion_real_vs_sintetico,
+    renderizar_seccion_conclusion
+)
 
 
-UI.setup_page()
-UI.render_sidebar()
-cargar_estilos()
+def configurar_pagina():
+    UI.setup_page()
+    UI.render_sidebar()
+    cargar_estilos()
 
 
+def obtener_conexion_y_consulta():
+    conexion_base_datos = DB.get_connection()
 
-st.title("⚽ Análisis de Lesiones y Carga Física (2022-2026)")
-st.markdown("""
-Esta sección explora la frecuencia y duración de las lesiones de los jugadores en relación con sus 
-características antropométricas (**altura y peso**) y su **carga de minutos jugados** durante el ciclo analizado.
-""")
+    @st.cache_data(show_spinner="Consultando base de datos...", ttl=3600)
+    def ejecutar_consulta(clave_consulta):
+        return get_injury_analysis(conexion_base_datos, clave_consulta)
+        
+    return ejecutar_consulta
 
-conn = DB.get_connection()
 
-if conn:
-    # Consulta optimizada utilizando nuestro esquema en estrella OLAP
-    query = """
-        SELECT 
-            p.name,
-            p.primary_category,
-            d.season_label,
-            f.age,
-            f.height_cm,
-            f.weight_kg,
-            f.mins,
-            f.starts,
-            f.total_injuries,
-            f.total_days_lost,
-            f.average_rating,
-            f.goals_per_90
-        FROM fact_player_season_performance f
-        INNER JOIN dim_player p ON f.player_id = p.player_id
-        INNER JOIN dim_season d ON f.season_id = d.season_id
-    """
-    
-    # Cargamos los datos en un DataFrame de Pandas usando la conexión de DuckDB
-    df = conn.execute(query).df()
-    
-    # --- FILTROS LATERALES EN STREAMLIT ---
-    st.sidebar.header("Filtros de Análisis")
-    
-    # Filtro por Temporada
-    seasons_list = df['season_label'].unique().tolist()
-    selected_season = st.sidebar.selectbox("Seleccionar Temporada", ["Todas"] + seasons_list)
-    
-    # Filtro por Categoría Posicional
-    categories_list = df['primary_category'].unique().tolist()
-    selected_category = st.sidebar.selectbox("Línea Posicional", ["Todas"] + categories_list)
-    
-    # Aplicar filtros al DataFrame
-    filtered_df = df.copy()
-    if selected_season != "Todas":
-        filtered_df = filtered_df[filtered_df['season_label'] == selected_season]
-    if selected_category != "Todas":
-        filtered_df = filtered_df[filtered_df['primary_category'] == selected_category]
+def renderizar_encabezado():
+    st.title("Lesiones, antropometría y carga de minutos")
+    st.caption("Temporadas 2022/23 a 2025/26 · Análisis de estadística descriptiva · Fuente: Base de datos centralizada")
 
-    # --- MÉTRICAS GENERALES (KPIs) ---
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Total Jugadores Analizados", len(filtered_df))
-    with col2:
-        st.metric("Total Lesiones Registradas", int(filtered_df['total_injuries'].sum()))
-    with col3:
-        st.metric("Días Totales de Baja", int(filtered_df['total_days_lost'].sum()))
-    with col4:
-        avg_mins = filtered_df['mins'].mean()
-        st.metric("Promedio Minutos Jugados", f"{avg_mins:.1f}" if not pd.isna(avg_mins) else "0")
+    st.markdown(
+        "**Objetivo:** describir la frecuencia, duración y distribución de las lesiones entre 2022 y 2026 "
+        "y relacionarlas con la altura, el peso y los minutos jugados."
+    )
+    mostrar_caja_mensaje(
+        "alerta", 
+        "Nota sobre los datos",
+        "Solo la temporada **2025/26 es real**. Las temporadas 2022/23, 2023/24 y 2024/25 están marcadas como "
+        "sintéticas (`is_fabricated = 1`). Se incluyen las cuatro porque el objetivo cubre 2022-2026, y en la "
+        "sección 8 se compara el patrón real contra el sintético."
+    )
 
-    st.markdown("---")
-
-    # --- VISUALIZACIONES ESTADÍSTICAS ---
-    col_chart1, col_chart2 = st.columns(2)
-
-    with col_chart1:
-        st.subheader("Relación: Minutos Jugados vs. Días de Baja por Lesión")
-        fig_scatter = px.scatter(
-            filtered_df, 
-            x="mins", 
-            y="total_days_lost", 
-            color="primary_category",
-            hover_name="name",
-            labels={"mins": "Minutos Jugados en la Temporada", "total_days_lost": "Días Perdidos por Lesión"},
-            title="Carga de Minutos vs Impacto de Lesiones"
+    with st.expander("Metodología y consulta base"):
+        st.markdown(
+            "- **Unidad de análisis:** jugador-temporada (una fila por jugador y temporada).\n"
+            "- **Duración de una lesión:** días entre la fecha de inicio y la fecha de fin.\n"
+            "- **IMC:** peso (kg) / altura (m)².\n"
+            "- **Cuartiles:** C1 agrupa los valores más bajos y C4 los más altos. Los grupos no son del mismo "
+            "tamaño porque muchos jugadores comparten la misma altura o peso.\n"
+            "- **Medidas de frecuencia:** % de jugadores lesionados y lesiones por 1.000 minutos jugados.\n"
+            "- **Medidas de duración:** media, mediana y días por lesión."
         )
-        st.plotly_chart(fig_scatter, use_container_width=True)
+        st.code(get_base_sql(), language="sql")
 
-    with col_chart2:
-        st.subheader("Distribución de Lesiones por Categoría Posicional")
-        fig_box = px.box(
-            filtered_df, 
-            x="primary_category", 
-            y="total_injuries",
-            color="primary_category",
-            labels={"primary_category": "Línea Posicional", "total_injuries": "Cantidad de Lesiones"},
-            title="Frecuencia de Lesiones según Posición"
-        )
-        st.plotly_chart(fig_box, use_container_width=True)
 
-    # --- TABLA DETALLADA ---
-    with st.expander("Ver tabla de datos detallada"):
-        st.dataframe(filtered_df)
+def main():
+    configurar_pagina()
+    ejecutar_consulta = obtener_conexion_y_consulta()
+    
+    renderizar_encabezado()
+    
+    # Secciones
+    metricas_panorama = renderizar_seccion_panorama_general(ejecutar_consulta)
+    renderizar_seccion_frecuencia_lesiones(ejecutar_consulta)
+    renderizar_seccion_duracion_lesiones(ejecutar_consulta)
+    cuartiles_altura, cuartiles_peso, cuartiles_imc = renderizar_seccion_antropometria(ejecutar_consulta)
+    datos_carga_minutos = renderizar_seccion_carga_minutos(ejecutar_consulta)
+    renderizar_seccion_variables_control(ejecutar_consulta)
+    renderizar_seccion_top_jugadores(ejecutar_consulta)
+    renderizar_seccion_real_vs_sintetico(ejecutar_consulta)
+    
+    datos_posicion_lesionados = ejecutar_consulta("q13")
+    datos_edad_lesionados = ejecutar_consulta("q14")
+    datos_tipos_lesion = ejecutar_consulta("q5")
+    datos_lesion_lca = datos_tipos_lesion.loc[datos_tipos_lesion["injury_type"] == "ACL tear"].iloc[0]
+    
+    renderizar_seccion_conclusion(
+        metricas_panorama, 
+        cuartiles_altura, 
+        cuartiles_peso, 
+        cuartiles_imc, 
+        datos_carga_minutos, 
+        datos_posicion_lesionados, 
+        datos_edad_lesionados, 
+        datos_lesion_lca
+    )
 
-else:
-    st.error("No se pudo establecer la conexión con la base de datos.")
+
+if __name__ == "__main__":
+    main()

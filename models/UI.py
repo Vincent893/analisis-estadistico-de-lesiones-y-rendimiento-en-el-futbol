@@ -47,5 +47,6 @@ class UI:
             st.page_link("pages/03_Concentración_de_Talento.py", label="Concentración de Talento")
             st.page_link("pages/04_Análisis_Posicional.py", label="Análisis Posicional")
             st.page_link("pages/05_Simulador_de_plantilla.py", label="Simulador de Plantilla")
+            st.page_link("pages/Marco_Metodologico.py", label="Marco Metodológico")
             
             st.divider()
