@@ -11,5 +11,14 @@ annotation __PBI_TimeIntelligenceEnabled = 1
 
 annotation PBI_ProTooling = ["DevMode"]
 
+annotation PBI_QueryOrder = ["main analytics_club_seasons","main analytics_club_position_seasons","main analytics_player_seasons","main dim_club","main dim_player","main dim_season"]
+
+ref table 'main analytics_club_seasons'
+ref table 'main analytics_club_position_seasons'
+ref table 'main analytics_player_seasons'
+ref table 'main dim_club'
+ref table 'main dim_player'
+ref table 'main dim_season'
+
 ref cultureInfo es-ES
 

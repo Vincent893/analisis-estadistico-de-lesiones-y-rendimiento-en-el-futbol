@@ -1,0 +1,133 @@
+table 'main analytics_club_position_seasons'
+	lineageTag: cbdbc4ee-8a1f-4aba-9e69-1d0709ae59a4
+
+	column club_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f0e94128-84b6-4a8a-89f6-61930fc52698
+		summarizeBy: none
+		sourceColumn: club_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column club_name
+		dataType: string
+		lineageTag: 5b7754ec-ac75-42d9-b8a6-2d8a052b5759
+		summarizeBy: none
+		sourceColumn: club_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column season_id
+		dataType: int64
+		formatString: 0
+		lineageTag: ed9c22e1-f7ad-47df-ad1d-0fcabcc40209
+		summarizeBy: none
+		sourceColumn: season_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column season_label
+		dataType: string
+		lineageTag: ff4c93c2-ff0b-4f1e-bac2-a454cc810fd6
+		summarizeBy: none
+		sourceColumn: season_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column primary_category
+		dataType: string
+		lineageTag: 105f20b7-0edd-4b80-8a84-1184c5e933de
+		summarizeBy: none
+		sourceColumn: primary_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column players_in_position_count
+		dataType: int64
+		formatString: 0
+		lineageTag: ef3bfe72-2f03-4566-aa13-b0a3c250c2f0
+		summarizeBy: sum
+		sourceColumn: players_in_position_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_mins_played
+		dataType: double
+		lineageTag: 8128d1a0-6949-4963-bfdc-cc27479904ac
+		summarizeBy: sum
+		sourceColumn: avg_mins_played
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column line_avg_rating
+		dataType: double
+		lineageTag: 0cf4986f-f55b-4d3f-a24f-4cfd614cdb41
+		summarizeBy: sum
+		sourceColumn: line_avg_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column line_total_goals
+		dataType: double
+		lineageTag: 4d3bd570-165d-4462-b31c-8df10ff21f8c
+		summarizeBy: sum
+		sourceColumn: line_total_goals
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column line_total_xg
+		dataType: double
+		lineageTag: 10f108e3-b573-498d-8e69-1d7a8b460fb6
+		summarizeBy: sum
+		sourceColumn: line_total_xg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column line_total_tackles
+		dataType: double
+		lineageTag: 2ae70f03-9b48-441f-a2c4-bbc606c4ea46
+		summarizeBy: sum
+		sourceColumn: line_total_tackles
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column line_total_interceptions
+		dataType: double
+		lineageTag: 05ea70a9-ffa2-481e-9948-c9ebe9e91e84
+		summarizeBy: sum
+		sourceColumn: line_total_interceptions
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column club_avg_ppg
+		dataType: double
+		lineageTag: 017a614d-dec1-4290-bc98-a8629ed22166
+		summarizeBy: sum
+		sourceColumn: club_avg_ppg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'main analytics_club_position_seasons' = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    main_analytics_club_position_seasons = Origen{[Schema="main",Item="analytics_club_position_seasons"]}[Data]
+				in
+				    main_analytics_club_position_seasons
+

@@ -1,0 +1,172 @@
+table 'main analytics_player_seasons'
+	lineageTag: bbbb4707-1329-44b1-925f-f7794c776aa8
+
+	column player_season_id
+		dataType: int64
+		formatString: 0
+		lineageTag: c3d5e78d-8c24-494d-858c-cf25c4da8192
+		summarizeBy: sum
+		sourceColumn: player_season_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column player_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7179e940-9495-4b78-aeaa-65f430e3254e
+		summarizeBy: none
+		sourceColumn: player_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column season_id
+		dataType: int64
+		formatString: 0
+		lineageTag: fc9d3ffc-51e1-411d-9247-13d01704875d
+		summarizeBy: none
+		sourceColumn: season_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column height_cm
+		dataType: int64
+		formatString: 0
+		lineageTag: 726d6ea2-c116-430c-bf0f-bb24da1a0845
+		summarizeBy: sum
+		sourceColumn: height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: int64
+		formatString: 0
+		lineageTag: cc51210a-0e99-475e-a481-33b60eec5fd5
+		summarizeBy: sum
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		formatString: 0
+		lineageTag: b7152fa3-8665-4095-aef0-56290dba264a
+		summarizeBy: sum
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+
+	column mins
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a0b6ed8-a732-4431-a9f4-90df7501df34
+		summarizeBy: sum
+		sourceColumn: mins
+
+		annotation SummarizationSetBy = Automatic
+
+	column starts
+		dataType: int64
+		formatString: 0
+		lineageTag: 7da3bac2-9187-4c5f-b732-0164668c2f93
+		summarizeBy: sum
+		sourceColumn: starts
+
+		annotation SummarizationSetBy = Automatic
+
+	column sub_appearances
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e9a2a11-1b74-45cd-bb91-69a62ab0ed8b
+		summarizeBy: sum
+		sourceColumn: sub_appearances
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_covered_per_90
+		dataType: double
+		lineageTag: 97f9599c-4ec2-423e-a1f4-88c7304039b4
+		summarizeBy: sum
+		sourceColumn: distance_covered_per_90
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column high_intensity_sprints_per_90
+		dataType: double
+		lineageTag: 7f7ade19-dbc0-4b4b-af49-cdc4bbdf3c71
+		summarizeBy: sum
+		sourceColumn: high_intensity_sprints_per_90
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_injuries
+		dataType: int64
+		formatString: 0
+		lineageTag: fc444a75-b784-47ad-a0d7-c75f6c0d6b72
+		summarizeBy: sum
+		sourceColumn: total_injuries
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_days_lost
+		dataType: double
+		lineageTag: 94494e3e-a96f-4d2b-ba2f-2cf89d743661
+		summarizeBy: sum
+		sourceColumn: total_days_lost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_rating
+		dataType: double
+		lineageTag: e24a78ac-6552-40cc-b6e3-f5dc1a2b157d
+		summarizeBy: sum
+		sourceColumn: average_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column points_per_game
+		dataType: double
+		lineageTag: b8b0aa76-0eda-4c38-bbec-a705770e6891
+		summarizeBy: sum
+		sourceColumn: points_per_game
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column goals_per_90
+		dataType: double
+		lineageTag: 18107332-97a7-4e78-91fd-2d39cd9e75d8
+		summarizeBy: sum
+		sourceColumn: goals_per_90
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column xg_per_90
+		dataType: double
+		lineageTag: 5ed64815-978c-4266-ae5b-8e41fbc090f6
+		summarizeBy: sum
+		sourceColumn: xg_per_90
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'main analytics_player_seasons' = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    main_analytics_player_seasons = Origen{[Schema="main",Item="analytics_player_seasons"]}[Data]
+				in
+				    main_analytics_player_seasons
+

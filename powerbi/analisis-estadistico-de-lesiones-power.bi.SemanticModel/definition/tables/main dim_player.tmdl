@@ -1,0 +1,63 @@
+table 'main dim_player'
+	lineageTag: 01658b84-f87a-412f-ad1d-a052044cafa3
+
+	column player_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 501cf452-00fe-4d1f-999f-bbb7227dde7d
+		summarizeBy: none
+		sourceColumn: player_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: 0125a200-dc4d-4b4f-bafe-beb0195bcc76
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column nation_code
+		dataType: string
+		lineageTag: 2084e56a-92e7-4e73-bb5a-78355c93bcde
+		summarizeBy: none
+		sourceColumn: nation_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column height_cm
+		dataType: int64
+		formatString: 0
+		lineageTag: 5c9dc48a-0001-4e6b-8f52-e23a4b83dfe0
+		summarizeBy: none
+		sourceColumn: height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: int64
+		formatString: 0
+		lineageTag: 09031508-422c-4b16-a1fc-4bc21cbbe350
+		summarizeBy: none
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	column primary_category
+		dataType: string
+		lineageTag: 9ce383f5-8f45-4f3f-b90e-c1baa43fe082
+		summarizeBy: none
+		sourceColumn: primary_category
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'main dim_player' = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    main_dim_player = Origen{[Schema="main",Item="dim_player"]}[Data]
+				in
+				    main_dim_player
+

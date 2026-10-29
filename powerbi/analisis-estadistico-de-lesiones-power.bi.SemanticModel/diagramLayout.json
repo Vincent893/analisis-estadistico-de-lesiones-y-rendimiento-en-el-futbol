@@ -7,7 +7,86 @@
         "x": 0,
         "y": 0
       },
-      "nodes": [],
+      "nodes": [
+        {
+          "location": {
+            "x": 156.93520679593391,
+            "y": 178.86664087582835
+          },
+          "nodeIndex": "main analytics_club_position_seasons",
+          "nodeLineageTag": "cbdbc4ee-8a1f-4aba-9e69-1d0709ae59a4",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 563.04872228718375,
+            "y": 370.011213310946
+          },
+          "nodeIndex": "main analytics_club_seasons",
+          "nodeLineageTag": "e5384c70-c0c5-4032-bc69-2179910c9ec3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 244.80150750859013,
+            "y": 973.40000164998241
+          },
+          "nodeIndex": "main analytics_player_seasons",
+          "nodeLineageTag": "bbbb4707-1329-44b1-925f-f7794c776aa8",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": -50
+          },
+          "nodeIndex": "main dim_club",
+          "nodeLineageTag": "a691f2e9-9368-403e-ae1b-4049b4737aaa",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 277.51301810852146,
+            "y": 529.51956411473066
+          },
+          "nodeIndex": "main dim_player",
+          "nodeLineageTag": "01658b84-f87a-412f-ad1d-a052044cafa3",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 529.67646062995118,
+            "y": 805.62839402329337
+          },
+          "nodeIndex": "main dim_season",
+          "nodeLineageTag": "700f7f59-7271-4e6f-86a7-58ebf6f2f834",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
       "name": "Todas las tablas",
       "zoomValue": 100,
       "pinKeyFieldsToTop": false,

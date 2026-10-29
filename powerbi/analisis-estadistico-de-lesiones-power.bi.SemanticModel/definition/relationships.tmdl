@@ -1,0 +1,24 @@
+relationship AutoDetected_8eb3bea5-8e6f-4fb1-ae62-0affdc11e68b
+	fromColumn: 'main analytics_club_seasons'.club_id
+	toColumn: 'main dim_club'.club_id
+
+relationship AutoDetected_68027401-45bd-41de-a867-4780c09c62c5
+	fromColumn: 'main analytics_club_position_seasons'.club_id
+	toColumn: 'main dim_club'.club_id
+
+relationship AutoDetected_82f867f0-583f-42d9-b236-e4f4b1c1daef
+	fromColumn: 'main analytics_club_seasons'.season_id
+	toColumn: 'main dim_season'.season_id
+
+relationship AutoDetected_76a63efd-cba3-4a18-aa13-ee37a361a208
+	fromColumn: 'main analytics_club_position_seasons'.season_id
+	toColumn: 'main dim_season'.season_id
+
+relationship AutoDetected_1b84aede-be17-47b1-b8e6-2bd1ffb6f486
+	fromColumn: 'main analytics_player_seasons'.season_id
+	toColumn: 'main dim_season'.season_id
+
+relationship AutoDetected_35fdd5a6-27f2-461e-84e4-9b0d22ec0210
+	fromColumn: 'main analytics_player_seasons'.player_id
+	toColumn: 'main dim_player'.player_id
+

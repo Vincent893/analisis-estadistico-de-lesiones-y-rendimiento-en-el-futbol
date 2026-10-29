@@ -1,0 +1,38 @@
+table 'main dim_season'
+	lineageTag: 700f7f59-7271-4e6f-86a7-58ebf6f2f834
+
+	column season_id
+		dataType: int64
+		formatString: 0
+		lineageTag: fce2b013-a5ab-426b-9437-2a669c454fe2
+		summarizeBy: none
+		sourceColumn: season_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column season_label
+		dataType: string
+		lineageTag: e5d55016-29fa-4c91-9359-5a2454b3c9f4
+		summarizeBy: none
+		sourceColumn: season_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column season_order
+		dataType: int64
+		formatString: 0
+		lineageTag: 5f43229d-5f60-435d-a3d4-ef1ec56c6679
+		summarizeBy: sum
+		sourceColumn: season_order
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'main dim_season' = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    main_dim_season = Origen{[Schema="main",Item="dim_season"]}[Data]
+				in
+				    main_dim_season
+

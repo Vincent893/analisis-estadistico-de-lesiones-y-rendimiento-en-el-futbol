@@ -1,0 +1,47 @@
+table 'main dim_club'
+	lineageTag: a691f2e9-9368-403e-ae1b-4049b4737aaa
+
+	column club_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 47f05bcd-05dd-4bde-a395-1a1d876b44b6
+		summarizeBy: none
+		sourceColumn: club_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column club_name
+		dataType: string
+		lineageTag: 01c232b7-7a79-479d-b6fc-798fa2529111
+		summarizeBy: none
+		sourceColumn: club_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column division_name
+		dataType: string
+		lineageTag: 07f523ec-e7b8-4f59-8ecc-203f87f4c74f
+		summarizeBy: none
+		sourceColumn: division_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column division_strength
+		dataType: double
+		lineageTag: 4b48934d-f958-4771-872e-2b85ba3dd710
+		summarizeBy: sum
+		sourceColumn: division_strength
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'main dim_club' = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    main_dim_club = Origen{[Schema="main",Item="dim_club"]}[Data]
+				in
+				    main_dim_club
+

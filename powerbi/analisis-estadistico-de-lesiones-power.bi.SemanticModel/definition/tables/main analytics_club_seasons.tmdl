@@ -1,0 +1,191 @@
+table 'main analytics_club_seasons'
+	lineageTag: e5384c70-c0c5-4032-bc69-2179910c9ec3
+
+	column club_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 826293ac-eda2-4335-bb52-c0683fc60480
+		summarizeBy: none
+		sourceColumn: club_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column club_name
+		dataType: string
+		lineageTag: a0b56b16-6b4e-4a25-babf-c421537044e0
+		summarizeBy: none
+		sourceColumn: club_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column division_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 33d1a369-8304-450c-975a-4f89752b852c
+		summarizeBy: sum
+		sourceColumn: division_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column division_name
+		dataType: string
+		lineageTag: 8ba4901f-be9f-4aa6-a219-63f05c7d6763
+		summarizeBy: none
+		sourceColumn: division_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column division_strength
+		dataType: double
+		lineageTag: 4b8c3974-6502-4290-8830-cff9b5d60b63
+		summarizeBy: sum
+		sourceColumn: division_strength
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column season_id
+		dataType: int64
+		formatString: 0
+		lineageTag: caf48b8f-d6cc-4e2b-9c12-14b29e37b557
+		summarizeBy: none
+		sourceColumn: season_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column season_label
+		dataType: string
+		lineageTag: 64e29f69-36ea-48b2-964b-25c7eeaee884
+		summarizeBy: none
+		sourceColumn: season_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column squad_size
+		dataType: int64
+		formatString: 0
+		lineageTag: c659703d-59ff-48f8-af13-567980ab1d74
+		summarizeBy: sum
+		sourceColumn: squad_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_squad_age
+		dataType: double
+		lineageTag: 4e54bd2f-e53d-4cdd-b08a-8b6bd3dc454a
+		summarizeBy: sum
+		sourceColumn: avg_squad_age
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_mins_per_player
+		dataType: double
+		lineageTag: 0d084fa6-806d-43e4-bd27-0b4a94f0ba96
+		summarizeBy: sum
+		sourceColumn: avg_mins_per_player
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_ability_score
+		dataType: double
+		lineageTag: 4cd16d4e-6ee3-4ebc-8a63-4c60aa41e225
+		summarizeBy: sum
+		sourceColumn: avg_ability_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_player_rating
+		dataType: double
+		lineageTag: be5e4c25-3c7f-4234-afe5-7b4c216cbd2c
+		summarizeBy: sum
+		sourceColumn: avg_player_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column high_performance_players_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 660c087c-4af1-4aa3-95fb-77a1d618362d
+		summarizeBy: sum
+		sourceColumn: high_performance_players_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column pct_high_performance_players
+		dataType: double
+		lineageTag: 7fdb34b1-24e2-41a5-9200-c30c95623334
+		summarizeBy: sum
+		sourceColumn: pct_high_performance_players
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_goals_scored
+		dataType: double
+		lineageTag: b5a84906-b8ff-47cf-a327-b01d6f07b018
+		summarizeBy: sum
+		sourceColumn: total_goals_scored
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_xg
+		dataType: double
+		lineageTag: d210db90-0077-4379-93a0-b1673fe8bb48
+		summarizeBy: sum
+		sourceColumn: total_xg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_ppg
+		dataType: double
+		lineageTag: b78ab094-6710-4951-8f74-d5b2a6f923cb
+		summarizeBy: sum
+		sourceColumn: avg_ppg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column squad_total_injuries
+		dataType: double
+		lineageTag: b7affb63-a8ef-441a-be7d-a43b0d0bcc0d
+		summarizeBy: sum
+		sourceColumn: squad_total_injuries
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column squad_total_days_lost
+		dataType: double
+		lineageTag: ae7500a6-f20f-49ae-b3d9-3918286f8e64
+		summarizeBy: sum
+		sourceColumn: squad_total_days_lost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'main analytics_club_seasons' = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    main_analytics_club_seasons = Origen{[Schema="main",Item="analytics_club_seasons"]}[Data]
+				in
+				    main_analytics_club_seasons
+
