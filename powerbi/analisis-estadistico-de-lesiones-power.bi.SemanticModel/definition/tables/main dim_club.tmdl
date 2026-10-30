@@ -40,7 +40,7 @@ table 'main dim_club'
 		mode: import
 		source =
 				let
-				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "database"),
 				    main_dim_club = Origen{[Schema="main",Item="dim_club"]}[Data]
 				in
 				    main_dim_club

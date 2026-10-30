@@ -184,7 +184,7 @@ table 'main analytics_club_seasons'
 		mode: import
 		source =
 				let
-				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "database"),
 				    main_analytics_club_seasons = Origen{[Schema="main",Item="analytics_club_seasons"]}[Data]
 				in
 				    main_analytics_club_seasons

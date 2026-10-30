@@ -56,7 +56,7 @@ table 'main dim_player'
 		mode: import
 		source =
 				let
-				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "db-compu"),
+				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "database"),
 				    main_dim_player = Origen{[Schema="main",Item="dim_player"]}[Data]
 				in
 				    main_dim_player
