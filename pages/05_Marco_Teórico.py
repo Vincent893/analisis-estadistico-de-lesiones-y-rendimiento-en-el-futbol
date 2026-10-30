@@ -7,7 +7,6 @@ def render_marco_teorico():
     cargar_estilos()
     UI.render_sidebar()
 
-    # CSS adicional adaptado a la estética Dark Cyber y lectura académica de alta gama
     st.markdown("""
         <style>
         .theory-badge {
@@ -29,7 +28,6 @@ def render_marco_teorico():
             padding: 18px 22px;
             border-radius: 0 12px 12px 0;
             margin: 18px 0;
-            font-style: italic;
             color: #E2E8F0;
             line-height: 1.6;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -45,17 +43,14 @@ def render_marco_teorico():
         }
         .concept-card:hover {
             border-color: rgba(0, 229, 255, 0.45);
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 229, 255, 0.15);
         }
         .concept-title {
             color: #00E5FF;
-            font-size: 1.18rem;
+            font-size: 1.15rem;
             font-weight: 700;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
         .bib-item {
             background: rgba(11, 19, 43, 0.55);
@@ -86,23 +81,12 @@ def render_marco_teorico():
             margin-top: 6px;
             border: 1px solid rgba(56, 189, 248, 0.25);
         }
-        .db-badge {
-            background: rgba(139, 92, 246, 0.15);
-            color: #C084FC;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid rgba(192, 132, 252, 0.3);
-            font-family: monospace;
-            display: inline-block;
-        }
         .formula-container {
             background: rgba(2, 6, 23, 0.75);
             border: 1px solid rgba(0, 229, 255, 0.2);
             border-radius: 10px;
-            padding: 14px 18px;
-            margin: 12px 0;
+            padding: 16px 20px;
+            margin: 14px 0;
             text-align: center;
             color: #38BDF8;
         }
@@ -110,7 +94,7 @@ def render_marco_teorico():
             background: rgba(11, 19, 43, 0.6);
             border: 1px solid rgba(0, 229, 255, 0.18);
             border-radius: 12px;
-            padding: 16px;
+            padding: 18px 16px;
             height: 100%;
             transition: all 0.25s ease;
         }
@@ -119,22 +103,33 @@ def render_marco_teorico():
             background: rgba(15, 23, 42, 0.85);
             transform: translateY(-2px);
         }
+        .glossary-term {
+            color: #00E5FF;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+        .glossary-desc {
+            color: #CBD5E1;
+            font-size: 0.93rem;
+            line-height: 1.55;
+            margin: 0;
+        }
         </style>
     """, unsafe_allow_html=True)
 
-    # Hero Header Principal
     st.markdown("""
         <div class="hero-header">
-            <span class="hero-badge">Marco Teórico Académico & Metodológico</span>
-            <div class="hero-title">DASHBOARD ESTADÍSTICO DE FÚTBOL: EVALUACIÓN DE LESIONES Y DINÁMICAS POSICIONALES (2022-2026)</div>
-            <p style="color: #94A3B8; margin: 0; font-size: 1.05rem;">
-                Fundamentación conceptual, epidemiológica, arquitectural y analítica del rendimiento individual y colectivo
+            <span class="hero-badge">Marco Teórico Académico y Metodológico</span>
+            <div class="hero-title">Marco Teórico</div>
+            <p style="color: #94A3B8; margin: 0; font-size: 1.05rem; line-height: 1.6;">
+                El análisis del rendimiento individual y colectivo en el fútbol profesional requiere un sustento conceptual
+                que permita definir, clasificar y cuantificar las variables del estudio.
             </p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Tarjetas métricas del dataset analizado (KPIs)
-    st.markdown("### 📊 Universo Empírico y Estructura del Estudio")
+    st.markdown("### Universo Empírico y Estructura del Estudio")
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -160,7 +155,7 @@ def render_marco_teorico():
             <div class="kpi-card">
                 <div class="kpi-title">Registros Longitudinales</div>
                 <div class="kpi-value">108,639</div>
-                <div class="kpi-footer">Temporadas 2022 - 2026</div>
+                <div class="kpi-footer">Temporadas 2022 – 2026</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -175,28 +170,36 @@ def render_marco_teorico():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Pestañas estructuradas según las 4 secciones + glosario + bibliografía del documento oficial
-    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_refs = st.tabs([
-        "📌 Introducción",
-        "🩺 Sec 1: Epidemiología & Carga",
-        "🛡️ Sec 2: Valor Posicional & Talento",
-        "🏛️ Sec 3: Universo de Datos & Arquitectura",
-        "📖 Sec 4: Glosario de Métricas",
-        "📚 Referencias Bibliográficas"
+    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_glosario, tab_refs = st.tabs([
+        "Introducción",
+        "1. Epidemiología y Carga Física",
+        "2. Valor Posicional y Concentración",
+        "3. Dinámicas Posicionales y Rendimiento",
+        "4. Arquitectura y Ecosistema Analítico",
+        "Glosario de Términos",
+        "Referencias Bibliográficas",
     ])
 
-    # ==========================================
-    # TAB INTRODUCCIÓN
-    # ==========================================
     with tab_intro:
         st.markdown("""
-        <div class="section-container">
-            <span class="theory-badge">Introducción y Planteamiento</span>
-            <h2 style="color: #F8FAFC; margin-top: 5px;">Fundamentación Teórica de la Investigación</h2>
-            <p style="color: #CBD5E1; font-size: 1.05rem; line-height: 1.7;">
-                La fundamentación teórica de esta investigación se articula en torno a los <b>objetivos específicos</b> del proyecto, 
-                empleando exclusivamente fundamentos de la <b>estadística descriptiva</b> y la <b>analítica de datos deportivos</b>. 
-                El sustento conceptual se divide en cuatro secciones principales:
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Introducción</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 12px;">Fundamentación Conceptual de la Investigación</h3>
+            <p style="color: #E2E8F0; font-size: 1.02rem; line-height: 1.7; margin-bottom: 12px;">
+                El análisis del rendimiento individual y colectivo en el fútbol profesional requiere un sustento conceptual
+                que permita definir, clasificar y cuantificar las variables del estudio. El desarrollo teórico se articula
+                en cuatro secciones fundamentales.
+            </p>
+            <p style="color: #CBD5E1; font-size: 1.0rem; line-height: 1.7; margin-bottom: 12px;">
+                La primera sección aborda la epidemiología de lesiones y la carga física, que contextualiza el desgaste biológico del jugador.
+                La segunda sección profundiza en el valor posicional y la concentración de talento, aportando las métricas matemáticas y estadísticas
+                necesarias para medir la distribución del rendimiento. La tercera sección define las dinámicas posicionales y el rendimiento individual,
+                estableciendo las métricas de consistencia y eficiencia. Finalmente, la cuarta sección describe la arquitectura de datos y el ecosistema
+                analítico, explicando cómo se organiza la información (modelo relacional) y cuáles son las herramientas de procesamiento y visualización utilizadas.
+            </p>
+            <p style="color: #CBD5E1; font-size: 1.0rem; line-height: 1.7; margin-bottom: 0;">
+                El desarrollo de estas secciones proporciona el rigor conceptual necesario para abordar las variables históricas del fútbol profesional
+                (2022–2026). El documento se complementa con un glosario de términos que unifica el lenguaje técnico empleado a lo largo de la investigación.
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -205,767 +208,384 @@ def render_marco_teorico():
         with eje1:
             st.markdown("""
             <div class="concept-card">
-                <div class="concept-title">🩺 Sección 1: Epidemiología, Antropometría y Carga</div>
+                <div class="concept-title">1. Epidemiología de Lesiones y Carga Física</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Aborda los conceptos fundamentales de la epidemiología de lesiones bajo el consenso internacional ReFORM, 
-                    el criterio de pérdida de tiempo (<i>time-loss</i>), y su cruce teórico con las características antropométricas 
-                    (altura, peso, IMC, edad) y la carga acumulada de minutos como proxy del estrés biomecánico.
+                    Contextualiza el desgaste biológico del futbolista mediante estándares internacionales (Consenso BioFORM)
+                    y el criterio <i>time-loss</i>, vinculando las características antropométricas (altura, peso, IMC y edad)
+                    y los minutos jugados como estimador del estrés fisiológico.
                 </p>
-                <span class="tag-pill">Consenso ReFORM</span>
-                <span class="tag-pill">Modelo ACWR Proxy</span>
-                <span class="tag-pill">Demarcación Táctica</span>
+                <span class="tag-pill">Consenso BioFORM</span>
+                <span class="tag-pill">Criterio Time-Loss</span>
+                <span class="tag-pill">Antropometría</span>
             </div>
             """, unsafe_allow_html=True)
 
             st.markdown("""
             <div class="concept-card">
-                <div class="concept-title">🏛️ Sección 3: Universo de Datos y Arquitectura Analítica</div>
+                <div class="concept-title">3. Dinámicas Posicionales y Rendimiento Individual</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Describe el universo empírico de aproximadamente 855,000 registros organizados en 17 tablas normalizadas (3FN), 
-                    el stack de procesamiento analítico (Python 3, DuckDB OLAP, Supabase/MotherDuck, Pandas, NumPy, Plotly Express) 
-                    y la estructura interactiva de navegación de la aplicación web Streamlit.
+                    Evalúa la consistencia inter-temporada mediante el Coeficiente de Variación (CV = σ / μ) y la dependencia
+                    del talento a través de la concentración del rendimiento en el quintil superior (Top 20%) de la plantilla.
                 </p>
-                <span class="tag-pill">DuckDB OLAP</span>
-                <span class="tag-pill">Vistas SQL Desnormalizadas</span>
-                <span class="tag-pill">Dark Cyber UI</span>
+                <span class="tag-pill">Coeficiente de Variación (CV)</span>
+                <span class="tag-pill">Dependencia Top 20%</span>
+                <span class="tag-pill">Consistencia Inter-temporada</span>
             </div>
             """, unsafe_allow_html=True)
 
         with eje2:
             st.markdown("""
             <div class="concept-card">
-                <div class="concept-title">🛡️ Sección 2: Valor Posicional, Aportes y Talento</div>
+                <div class="concept-title">2. Valor Posicional y Concentración de Talento</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Define la estructura funcional de las cuatro líneas posicionales (POR, DEF, MED, DEL), el cálculo del aporte porcentual 
-                    por bloque táctico al rendimiento colectivo, y la teoría económica y sociológica de la concentración de talento 
-                    mediante los índices de Gini y Herfindahl-Hirschman (HHI).
+                    Estructura las demarcaciones tácticas en cuatro líneas (POR, DEF, MED, DEL), aborda métricas ofensivas
+                    avanzadas (xG, SOE) y cuantifica la desigualdad competitiva mediante los índices de Gini, Herfindahl-Hirschman (HHI)
+                    y la Curva de Lorenz.
                 </p>
-                <span class="tag-pill">Líneas Posicionales</span>
-                <span class="tag-pill">Índice de Gini & HHI</span>
-                <span class="tag-pill">Profundidad de Plantilla</span>
+                <span class="tag-pill">Estratificación Táctica</span>
+                <span class="tag-pill">Goles Esperados (xG)</span>
+                <span class="tag-pill">Curva de Lorenz & Gini</span>
             </div>
             """, unsafe_allow_html=True)
 
             st.markdown("""
             <div class="concept-card">
-                <div class="concept-title">📖 Sección 4: Glosario de Conceptos y Métricas</div>
+                <div class="concept-title">4. Arquitectura de Datos y Ecosistema Analítico</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Presenta un catálogo exhaustivo y operativo de los términos de investigación: conceptos epidemiológicos y antropométricos, 
-                    métricas ofensivas avanzadas (Goles Esperados xG, xG/90, SOE, consistencia inter-temporada), defensivas y de portería 
-                    (xGP, clean sheets) y valor posicional (Ability Scores).
+                    Detalla el modelo relacional normalizado en Tercera Forma Normal (3FN) con 17 tablas y más de 855,000 registros,
+                    el motor columnar OLAP local DuckDB, la conexión en la nube con Supabase, y el entorno de procesamiento con Python, Pandas,
+                    NumPy, Plotly Express y Streamlit.
                 </p>
-                <span class="tag-pill">Goles Esperados (xG)</span>
-                <span class="tag-pill">Shot Creation (SOE)</span>
-                <span class="tag-pill">Ability Score</span>
+                <span class="tag-pill">Modelo 3FN (17 Tablas)</span>
+                <span class="tag-pill">Motor DuckDB OLAP</span>
+                <span class="tag-pill">Python & Streamlit</span>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("""
-        <div class="quote-box">
-            <b>Relevancia del Período 2022-2026:</b><br>
-            Los datos que contextualizan esta investigación provienen de una base relacional normalizada (<i>SQL Practice DB: Football Players</i>), 
-            la cual alberga 27,343 jugadores, 108,639 registros de temporadas y 26,949 lesiones documentadas. El período 2022-2026 tiene una especial 
-            relevancia teórica por la intensificación del calendario futbolístico internacional, lo que subraya la necesidad de sistemas de información 
-            que resuman, cuantifiquen y visualicen la gestión de cargas y el rendimiento deportivo.
-        </div>
-        """, unsafe_allow_html=True)
-
-    # ==========================================
-    # TAB SECCIÓN 1: LESIONES Y CARGA
-    # ==========================================
     with tab_sec1:
         st.markdown("""
-        <div class="section-container">
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
             <span class="theory-badge">Sección 1</span>
-            <h2 style="color: #F8FAFC;">Epidemiología de Lesiones, Antropometría y Carga de Minutos</h2>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">1. Epidemiología de Lesiones y Carga Física</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Estándares de registro, factores antropométricos y volumen de exposición competitiva.
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("#### 1.1 Definición Operativa y Clasificación de Lesiones en el Fútbol")
+        st.markdown("#### 1.1. El Consenso Internacional y el Criterio Time-Loss")
         st.write("""
-        La epidemiología de lesiones deportivas requiere definiciones estandarizadas para garantizar la coherencia conceptual. 
-        El **consenso ReFORM** (derivado de la posición del Comité Olímpico Internacional) establece el marco unificado adoptado en este proyecto. 
-        La definición operativa central adopta el criterio de **pérdida de tiempo (*time-loss*)**:
+        La epidemiología de lesiones en el fútbol se rige por estándares internacionales para garantizar la comparabilidad de los datos.
+        El **consenso BioFORM** (y sus predecesores) establece que una lesión debe ser registrada bajo el criterio de **time-loss** (pérdida de tiempo).
+        Esto significa que solo se considera lesión aquella que impide al jugador participar en entrenamientos o partidos por al menos 24 horas.
+        Este criterio permite cuantificar objetivamente la gravedad a través de los **días de baja médica**, evitando sesgos subjetivos.
         """)
 
         st.markdown("""
         <div class="quote-box">
-            "Se considera una lesión cuando un jugador no puede participar plenamente en entrenamientos o partidos posteriores debido a un problema de salud."
-            <br><small style="color: #00E5FF;">— Criterio de Pérdida de Tiempo (Consenso ReFORM / COI)</small>
+            <b>Criterio BioFORM / COI:</b><br>
+            "Solo se considera lesión aquella que impide al jugador participar en entrenamientos o partidos por al menos 24 horas,
+            permitiendo cuantificar de forma objetiva la severidad en días de baja médica."
         </div>
         """, unsafe_allow_html=True)
 
+        st.markdown("#### 1.2. Antropometría y Biomecánica")
         st.write("""
-        La severidad de una lesión se conceptualiza a través de los **días de baja médica (*days_out*)**, estructurados formalmente en siete rangos estandarizados:
-        """)
-
-        # Tabla de severidad
-        st.markdown("""
-        | Categoría de Severidad | Rango de Días de Baja | Impacto en la Disponibilidad Competitiva | Contexto Clínico Habitual |
-        | :--- | :--- | :--- | :--- |
-        | **Inmediata / Nula** | `0 días` | Sin pérdida de sesiones formales | Golpes leves, contusiones sin baja |
-        | **Mínima** | `1 a 3 días` | Ausencia transitoria breve | Sobrecargas musculares leves |
-        | **Leve** | `4 a 7 días` | Baja promedio de 1 encuentro | Contracturas, microdistensiones grado I |
-        | **Moderada** | `8 a 28 días` | Compromete entre 2 y 4 semanas de competición | Afecciones musculares grado II, esguinces |
-        | **Severa** | `29 a 90 días` | Baja de 1 a 3 meses de calendario | Desgarros importantes, esguinces grado III |
-        | **Muy Severa** | `91 a 180 días` | Baja prolongada de 3 a 6 meses | Fracturas óseas, cirugías articulares |
-        | **Crónica / Fin de Temporada** | `> 180 días` | Pérdida de la temporada completa | Roturas de ligamento cruzado anterior (LCA), tendón de Aquiles |
-        """)
-
-        st.markdown("""
-        <div style="margin-top: 10px; margin-bottom: 20px;">
-            <span class="db-badge">Tabla BD: injuries</span> &nbsp;
-            <span class="tag-pill">injury_type</span>
-            <span class="tag-pill">days_out</span>
-            <span style="color: #94A3B8; font-size: 0.9rem;">Estas variables representan la frecuencia y duración de los eventos médicos en el universo de estudio.</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 1.2 Características Antropométricas en el Fútbol")
-        st.write("""
-        La antropometría es la ciencia que estudia las dimensiones y proporciones del cuerpo humano. En el ámbito deportivo, 
-        las variables antropométricas fundamentales incluyen la **altura (*height*)**, el **peso (*weight*)** y el **índice de masa corporal (IMC)**:
+        La literatura deportiva vincula las características antropométricas (altura, peso, Índice de Masa Corporal —IMC— y edad) con la incidencia
+        y el tipo de lesión. El exceso de masa corporal o las variaciones de edad influyen en la carga biomecánica durante los esfuerzos de alta intensidad.
+        El análisis de estas variables permite describir perfiles de riesgo de manera poblacional.
         """)
 
         st.markdown(r"""
         <div class="formula-container">
-            <span style="font-size: 1.1rem; font-weight: 600;">Índice de Masa Corporal (IMC):</span><br>
+            <b style="color: #F8FAFC; font-size: 1.05rem;">Índice de Masa Corporal (IMC):</b><br>
             $$\text{IMC} = \frac{\text{Peso (kg)}}{[\text{Altura (m)}]^2}$$
         </div>
         """, unsafe_allow_html=True)
 
         st.write("""
-        - **Biomecánica y Somatotipo:** Teóricamente, el somatotipo y las dimensiones físicas de los futbolistas condicionan su desempeño biomecánico. 
-        Jugadores de mayor altura y masa corporal concentran mayores inercias y fuerzas de frenado en cambios de aceleración excéntrica, lo que incrementa 
-        su exposición a tensiones en la musculatura isquiotibial y estructuras articulares de rodilla y tobillo.
-        - **Factor Edad:** La literatura científica destaca la edad como factor modulador crítico, distinguiendo perfiles entre:
-          - *Veteranos (> 30 años):* Mayor susceptibilidad a lesiones musculares recidivantes por desgaste acumulado y menor velocidad de cicatrización tisular.
-          - *Jóvenes en desarrollo (< 21 años):* Mayor vulnerabilidad a sobrecargas por adaptación musculoesquelética y maduración de cargas de alta competencia.
+        - **Masa Corporal e Inercia:** Jugadores de mayor altura y masa corporal concentran mayores fuerzas de desaceleración e impacto articular, modulando la susceptibilidad a sobrecargas y lesiones tendinosas.
+        - **Factor Edad:** Los cambios biológicos propios de la edad condicionan la tolerancia tisular y el tiempo de recuperación, siendo una variable fundamental para la estratificación demográfica de las plantillas.
         """)
 
-        st.markdown("""
-        <div style="margin-top: 5px; margin-bottom: 20px;">
-            <span class="db-badge">Tabla BD: players</span> &nbsp;
-            <span class="tag-pill">height</span>
-            <span class="tag-pill">weight</span>
-            <span class="tag-pill">date_of_birth (edad)</span>
-            <span style="color: #94A3B8; font-size: 0.9rem;">Permiten vincular conceptual y estadísticamente las dimensiones corporales con el registro médico de lesiones.</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 1.3 Carga de Minutos como Proxy de Carga Externa")
+        st.markdown("#### 1.3. La Carga Física (Minutos Jugados)")
         st.write("""
-        El modelo teórico de la relación entre carga aguda y carga crónica (**ACWR – *Acute:Chronic Workload Ratio***, propuesto por Gabbett et al., 2016) 
-        sostiene que la respuesta biológica del organismo depende del equilibrio dinámico entre la carga reciente de entrenamiento y partidos frente 
-        a la capacidad adaptativa crónica acumulada.
-        
-        En los estudios observacionales de fútbol a gran escala donde no se dispone de telemetría microelectrónica GPS individualizada, 
-        **los minutos jugados se utilizan como una aproximación (*proxy*) válida y estandarizada de la carga externa acumulada**.
-        
-        Conceptualmente, a mayor acumulación de minutos jugados (`minutes_played`) y apariciones (`appearances`), mayor es la exposición 
-        del tejido musculoesquelético al estrés mecánico y a la fatiga neuromuscular. Esta teoría proporciona la base para analizar 
-        la distribución empírica de los minutos en función de los rangos de severidad de días de baja médica.
+        La acumulación de minutos de juego es utilizada en la literatura como un **proxy (aproximación) del estrés fisiológico y biomecánico acumulado**.
+        La saturación del calendario en el fútbol moderno hace que el volumen de exposición competitiva sea un factor crítico a describir cuando se analizan
+        las bajas médicas de una plantilla.
         """)
 
-        st.markdown("""
-        <div style="margin-top: 5px; margin-bottom: 20px;">
-            <span class="db-badge">Tabla BD: player_seasons</span> &nbsp;
-            <span class="tag-pill">minutes_played</span>
-            <span class="tag-pill">appearances</span>
-            <span class="tag-pill">season</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 1.4 Limitaciones del Enfoque de Carga de Minutos")
-        st.write("""
-        El enfoque analítico fundamentado en minutos es estrictamente **observacional y descriptivo**. Desde el punto de vista fisiológico, 
-        la carga externa acumulada no captura en su totalidad:
-        - **La Carga Interna:** Respuesta fisiológica intrínseca individual (frecuencia cardíaca, percepción subjetiva del esfuerzo RPE, niveles de lactato en sangre).
-        - **Factores Contextuales:** Calidad del sueño, higiene nutricional, factores de recuperación biomecánica o estrés psicosocial del deportista.
-        """)
-
-        st.markdown("""
-        <div class="quote-box">
-            <b>Evidencia de Harlow et al. (2021) en la Bundesliga:</b><br>
-            La literatura científica ha documentado variaciones abruptas en las tasas de incidencia lesional ante modificaciones radicales en los 
-            patrones de preparación física. En su análisis de la reanudación tras el confinamiento sanitario, la tasa de lesiones por partido 
-            aumentó dramáticamente de <b>0.27 a 0.84 lesiones por encuentro</b>, demostrando la sensibilidad del tejido conectivo a interrupciones 
-            y desbalances bruscos de carga.
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 1.5 Diferencias Posicionales en Patrones de Lesión")
-        st.write("""
-        La teoría táctica moderna establece que las demandas bioenergéticas varían drásticamente según la función desempeñada en el terreno de juego:
-        - **Extremos y Carrileros:** Presentan la mayor incidencia de lesiones musculares agudas durante partidos oficiales, producto de sprints repetidos a velocidad submáxima y máxima (>25 km/h).
-        - **Defensas Centrales:** Evidencian mayor exposición a traumatismos, impactos articulares y contusiones en disputas aéreas y tackles.
-        - **Centrocampistas:** Experimentan mayor tasa de desgaste por sobreuso articular y fatiga por volumen kilométrico total sostenido (~11 a 13 km por 90 minutos).
-        """)
-
-        st.markdown("""
-        <div style="margin-top: 5px;">
-            <span class="db-badge">Tabla BD: positions (14 posiciones)</span> &nbsp;
-            <span class="db-badge">Tabla BD: player_positions (62,349 registros)</span> &nbsp;
-            <span style="color: #94A3B8; font-size: 0.9rem;">Estructuran el cruce entre rol táctico, exigencia de juego y vulnerabilidad médica.</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # ==========================================
-    # TAB SECCIÓN 2: VALOR POSICIONAL & TALENTO
-    # ==========================================
     with tab_sec2:
         st.markdown("""
-        <div class="section-container">
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
             <span class="theory-badge">Sección 2</span>
-            <h2 style="color: #F8FAFC;">Valor Posicional, Aportes por Líneas y Concentración de Talento</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 2.1 Definición y Funciones de las Líneas Posicionales")
-        st.write("""
-        La estructura organizativa del fútbol contemporáneo se articula en torno a cuatro líneas posicionales con demandas tácticas diferenciadas:
-        """)
-
-        lp1, lp2, lp3, lp4 = st.columns(4)
-        with lp1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🧤 Arqueros (POR)</div>
-                <p style="color: #94A3B8; font-size: 0.9rem;">
-                    Posición más especializada; su función primordial es prevenir goles mediante paradas, atajadas clave y control de centros aéreos.
-                </p>
-                <span class="tag-pill">Saves</span>
-                <span class="tag-pill">Clean Sheets</span>
-                <span class="tag-pill">xGP</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with lp2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🛡️ Defensas (DEF)</div>
-                <p style="color: #94A3B8; font-size: 0.9rem;">
-                    Función primordial de proteger el tercio defensivo, cortar líneas de pase, despejar y recuperar la posesión del balón.
-                </p>
-                <span class="tag-pill">Tackles</span>
-                <span class="tag-pill">Intercepciones</span>
-                <span class="tag-pill">Bloqueos</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with lp3:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⚙️ Mediocampistas (MED)</div>
-                <p style="color: #94A3B8; font-size: 0.9rem;">
-                    Responsabilidades duales: creación y progresión ofensiva, volumen de pases y filtro de contención defensiva en el tercio medio.
-                </p>
-                <span class="tag-pill">Pases Clave</span>
-                <span class="tag-pill">Circulación</span>
-                <span class="tag-pill">Presión</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with lp4:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⚡ Delanteros (DEL)</div>
-                <p style="color: #94A3B8; font-size: 0.9rem;">
-                    Especializados en la finalización de jugadas, desmarques en profundidad y generación de peligro en el tercio final del campo.
-                </p>
-                <span class="tag-pill">Goles</span>
-                <span class="tag-pill">xG</span>
-                <span class="tag-pill">Disparos SOE</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.write("""
-        **Evaluación Multidimensional de Habilidad (`ability_score`):**
-        La tabla hub `player_seasons` sintetiza el nivel competitivo del jugador a través del concepto de **`ability_score`**, 
-        estructurado en cuatro dimensiones de rendimiento: **Overall**, **Offensive**, **Defensive** y **Midfield**. 
-        Estas puntuaciones continuas fundamentan teóricamente el cálculo del aporte relativo y balance cualitativo de la plantilla.
-        """)
-
-        st.markdown("#### 2.2 Aporte Porcentual por Línea Posicional")
-        st.write("""
-        El **aporte porcentual** es un concepto analítico que cuantifica la contribución relativa de cada bloque táctico 
-        al rendimiento colectivo total del equipo. Teóricamente se fundamenta en contrastar los indicadores globales del club 
-        con las métricas agregadas por línea y demarcación espacial ($D, M, ST \times L/R/C$):
-        """)
-
-        st.markdown("""
-        <div class="quote-box">
-            <b>Hallazgo de Pappalardo et al. (2019):</b><br>
-            A través de análisis de grafos y minería de eventos (<i>PlayerRank</i>), se corrobora la especialización técnica por líneas: 
-            los delanteros dominan en goles y finalización; los mediocampistas monopolizan el volumen de circulación y pases de conexión; 
-            mientras que los defensores sostienen el aporte en quites (*tackles*), intercepciones y despejes aéreos.
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div style="margin-top: 5px; margin-bottom: 20px;">
-            <span class="db-badge">player_stats_attacking</span> &nbsp;
-            <span class="db-badge">player_stats_passing</span> &nbsp;
-            <span class="db-badge">player_stats_defending</span> &nbsp;
-            <span class="db-badge">player_stats_goalkeeping</span> &nbsp;
-            <span style="color: #94A3B8; font-size: 0.9rem;">Tablas especializadas que sustentan la agregación del aporte porcentual por línea.</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 2.3 Distribución y Concentración de Talento")
-        st.write("""
-        La concentración de talento es un concepto derivado de la sociología y la economía aplicada al deporte profesional, 
-        que describe la distribución asimétrica y desigual de los futbolistas de élite entre los distintos clubes y divisiones competitivas. 
-        En este proyecto, se operacionaliza a través de tres pilares cuantitativos:
-        """)
-
-        c_g1, c_g2, c_g3 = st.columns(3)
-        with c_g1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📈 Distribución Porcentual</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Frecuencias relativas de futbolistas con alta calificación (<i>Tier Elite / Top Quartile</i>) según club y división competitiva.
-                </p>
-                <span class="tag-pill">Cuotas de Mercado</span>
-                <span class="tag-pill">Concentración Top 10%</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with c_g2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⚖️ Índices de Concentración</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    <b>Índice de Gini:</b> Desigualdad distributiva (0 = equidad perfecta, 1 = monopolio de talento).<br>
-                    <b>Índice HHI:</b> Suma de cuotas al cuadrado.
-                </p>
-                <span class="tag-pill">Gini Coefficient</span>
-                <span class="tag-pill">HHI Index</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with c_g3:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📊 Rangos de Rendimiento</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Estratificación estadística en percentiles y cuartiles sobre los <i>ability_scores</i> para caracterizar asimetrías de calidad.
-                </p>
-                <span class="tag-pill">Percentiles P25-P75</span>
-                <span class="tag-pill">Dispersión Intercuartil</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown(r"""
-        <div class="formula-container">
-            <span style="font-size: 1.05rem; font-weight: 600;">Índice Herfindahl-Hirschman de Talento (HHI):</span><br>
-            $$\text{HHI} = \sum_{i=1}^{N} s_i^2 \quad \text{donde } s_i \text{ representa la cuota porcentual de talento del club } i$$
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div style="margin-top: 5px; margin-bottom: 20px;">
-            <span class="db-badge">Tabla BD: clubs (2,773 clubes)</span> &nbsp;
-            <span class="db-badge">Tabla BD: divisions (299 divisiones)</span> &nbsp;
-            <span style="color: #94A3B8; font-size: 0.9rem;">Proporcionan el marco estructural para cuantificar la dispersión del talento entre ligas.</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 2.4 Implicaciones para la Gestión de Plantillas")
-        st.write("""
-        Desde la teoría de la gestión deportiva profesional, el **valor posicional** y la **profundidad de plantilla** son factores determinantes del éxito competitivo sostenido:
-        - **Profundidad de Plantilla (*Squad Depth*):** Se define como la cantidad y calidad de recambios disponibles por posición sin experimentar caídas drásticas de rendimiento.
-        - **Vulnerabilidad por Lesiones:** Una excesiva concentración de minutos o talento en una sola figura convierte al equipo en altamente dependiente y frágil frente a bajas médicas imprevistas.
-        - **Valor Económico vs. Rendimiento:** El análisis se complementa conceptualmente con la información de mercado de fichajes y estatus contractual para contrastar costo salarial con aporte deportivo.
-        """)
-
-        st.markdown("""
-        <div style="margin-top: 5px;">
-            <span class="db-badge">Tabla BD: transfers (41,425 registros)</span> &nbsp;
-            <span class="db-badge">Tabla BD: contracts (41,425 registros)</span> &nbsp;
-            <span style="color: #94A3B8; font-size: 0.9rem;">Aportan el contexto contractual para estudiar la relación entre valor de mercado y rendimiento.</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # ==========================================
-    # TAB SECCIÓN 3: UNIVERSO DE DATOS & ARQUITECTURA
-    # ==========================================
-    with tab_sec3:
-        st.markdown("""
-        <div class="section-container">
-            <span class="theory-badge">Sección 3</span>
-            <h2 style="color: #F8FAFC;">El Universo de Datos y Arquitectura Analítica</h2>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 3.1 Sustento Empírico y Esquema Relacional Normalizado")
-        st.write("""
-        El sustento empírico de esta investigación se basa en una base de datos relacional normalizada en **Tercera Forma Normal (3FN)**, 
-        la cual totaliza aproximadamente **855,000 registros** distribuidos armónicamente en 17 tablas:
-        """)
-
-        u1, u2 = st.columns(2)
-        with u1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">👥 Población y Participación</div>
-                <ul>
-                    <li><b>27,343 futbolistas registrados:</b> Datos biográficos, fecha de nacimiento, nacionalidad y métricas antropométricas completas (altura, peso).</li>
-                    <li><b>108,639 registros de temporadas (<code>player_seasons</code>):</b> Funciona como la tabla hub central longitudinal que une al jugador con su club, liga, minutos y puntuaciones.</li>
-                </ul>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with u2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🩺 Registro Clínico y Rendimiento</div>
-                <ul>
-                    <li><b>26,949 lesiones documentadas:</b> Eventos médicos catalogados por tipo de afección anatómica y severidad en días de baja (<code>days_out</code>).</li>
-                    <li><b>Tablas especializadas de juego:</b> Subconjuntos analíticos dedicados a ataque, pases, defensa y portería.</li>
-                </ul>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("""
-        <div class="quote-box">
-            <b>Vistas SQL Desnormalizadas:</b><br>
-            Para garantizar que la aplicación web responda de manera fluida y en tiempo real, se implementó un concepto de diseño de bases de datos 
-            orientado a la aceleración analítica mediante <b>vistas SQL precalculadas y desnormalizadas</b>. Estas vistas consolidan uniones complejas 
-            entre jugadores, clubes, lesiones y estadísticas, permitiendo consultas instantáneas en el motor analítico.
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("#### 3.2 Stack Tecnológico de la Aplicación")
-        st.write("""
-        Para el procesamiento y presentación del universo de datos, la arquitectura se fundamenta en un stack moderno de ciencia de datos:
-        """)
-
-        st1, st2, st3, st4, st5 = st.columns(5)
-        with st1:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <div style="font-size: 2rem;">🐍</div>
-                <b style="color: #00E5FF;">Python 3</b>
-                <p style="color: #94A3B8; font-size: 0.82rem; margin-top: 6px;">Lenguaje núcleo de procesamiento estadístico.</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with st2:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <div style="font-size: 2rem;">🦆</div>
-                <b style="color: #00E5FF;">DuckDB OLAP</b>
-                <p style="color: #94A3B8; font-size: 0.82rem; margin-top: 6px;">Motor analítico columnar local de ultra alta velocidad.</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with st3:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <div style="font-size: 2rem;">☁️</div>
-                <b style="color: #00E5FF;">Supabase Cloud</b>
-                <p style="color: #94A3B8; font-size: 0.82rem; margin-top: 6px;">Conexión remota escalable en la nube (PostgreSQL / MotherDuck).</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with st4:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <div style="font-size: 2rem;">📊</div>
-                <b style="color: #00E5FF;">Plotly Express</b>
-                <p style="color: #94A3B8; font-size: 0.82rem; margin-top: 6px;">Visualización interactiva con paleta oscura y cian neón.</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with st5:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <div style="font-size: 2rem;">⚡</div>
-                <b style="color: #00E5FF;">Streamlit UI</b>
-                <p style="color: #94A3B8; font-size: 0.82rem; margin-top: 6px;">Interfaz web reactiva con estética Dark Cyber.</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("#### 3.3 Estructura Conceptual y Navegación de la Aplicación")
-        st.write("""
-        El dashboard operacionaliza la teoría mediante una arquitectura de navegación interactiva estructurada en seis módulos complementarios:
-        """)
-
-        m_col1, m_col2 = st.columns(2)
-        with m_col1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🏠 1. Inicio (<code>app.py</code>)</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Portada institucional de la investigación, presentación del problema y acceso a los módulos analíticos.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📖 2. Marco Teórico (<code>05_Marco_Teórico.py</code>)</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Fundamentación académica completa, definiciones epidemiológicas, arquitectura analítica y glosario en pestañas interactivas.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📊 3. Dashboard General (<code>01_dashboard.py</code>)</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Resumen ejecutivo con tarjetas KPI (máximos goleadores, minutos), gráficos de concentración de talento por liga, rendimiento por posición y evolución histórica de lesiones.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with m_col2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🏆 4. Concentración de Talento (<code>02_Concentración_de_Talento.py</code>)</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Módulo de análisis de la distribución de jugadores clave por club, curvas de desigualdad y cálculo de índices de concentración.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⚽ 5. Análisis Posicional (<code>03_Análisis_Posicional.py</code>)</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Comparación de estadísticas técnicas, contribución ofensiva/defensiva y cálculo del aporte porcentual por cada línea de juego.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🩺 6. Lesiones y Carga Física (<code>04_Lesiones_y_Carga_Física.py</code>)</div>
-                <p style="color: #94A3B8; font-size: 0.92rem;">
-                    Exploración visual mediante diagramas de dispersión y correlaciones entre minutos jugados, peso, altura y tiempo de baja médica.
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-
-    # ==========================================
-    # TAB SECCIÓN 4: GLOSARIO DE CONCEPTOS Y MÉTRICAS
-    # ==========================================
-    with tab_sec4:
-        st.markdown("""
-        <div class="section-container">
-            <span class="theory-badge">Sección 4</span>
-            <h2 style="color: #F8FAFC;">Glosario Integral de Conceptos y Métricas de la Investigación</h2>
-            <p style="color: #CBD5E1; font-size: 1rem;">
-                Catálogo formal y operativo de variables, definiciones estadísticas y métricas analíticas empleadas en el proyecto:
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">2. Valor Posicional y Concentración de Talento</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Estratificación táctica, métricas de rendimiento ofensivo y cuantificación de la desigualdad competitiva.
             </p>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("#### 4.1 Conceptos Epidemiológicos y Antropométricos")
-        ge1, ge2 = st.columns(2)
-        with ge1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🩺 Lesión Deportiva</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Cualquier problema físico que impide al jugador participar plenamente en entrenamientos o partidos posteriores, 
-                    conforme al criterio internacional de <b>pérdida de tiempo (time-loss)</b> del consenso ReFORM.
-                </p>
-                <span class="tag-pill">Time-Loss</span>
-                <span class="tag-pill">Consenso ReFORM</span>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown("#### 2.1. Estratificación Táctica y Demarcaciones")
+        st.write("""
+        El fútbol se estructura funcionalmente en cuatro líneas o bloques: **Arqueros (POR)**, **Defensas (DEF)**, **Mediocampistas (MED)** y **Delanteros (DEL)**.
+        La teoría táctica moderna reconoce una asimetría de responsabilidades: especialización extrema en los extremos del campo
+        (la defensa busca neutralizar, la delantera busca resolver) y una polivalencia bidireccional en la zona media.
+        El análisis del aporte porcentual por bloque permite describir el equilibrio estructural de un equipo.
+        """)
 
+        pos_c1, pos_c2, pos_c3, pos_c4 = st.columns(4)
+        with pos_c1:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⏱️ Días de Baja (days_out)</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Tiempo cronológico total de inactividad médica deportiva del jugador, clasificado en rangos estandarizados de severidad 
-                    (0, 1-3, 4-7, 8-28, 29-90, 91-180 y >180 días).
+            <div class="concept-card" style="text-align: center;">
+                <b style="color: #00E5FF;">Arqueros (POR)</b>
+                <p style="color: #94A3B8; font-size: 0.88rem; margin-top: 6px;">
+                    Demarcación altamente especializada orientada a la contención directa de remates y protección del arco.
                 </p>
-                <span class="tag-pill">days_out</span>
-                <span class="tag-pill">Severidad Clínica</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with ge2:
+            </div>""", unsafe_allow_html=True)
+        with pos_c2:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">📐 Antropometría e IMC</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Dimensiones corporales de altura (<code>height</code>), peso (<code>weight</code>) e Índice de Masa Corporal 
-                    ($\text{Peso} / \text{Altura}^2$) utilizados para tipificar somatotipos y evaluar factores de susceptibilidad física.
+            <div class="concept-card" style="text-align: center;">
+                <b style="color: #10B981;">Defensas (DEF)</b>
+                <p style="color: #94A3B8; font-size: 0.88rem; margin-top: 6px;">
+                    Especialización en neutralización, cortes de juego, intercepciones y protección del área propia.
                 </p>
-                <span class="tag-pill">IMC (kg/m²)</span>
-                <span class="tag-pill">Somatotipo</span>
-            </div>
-            """, unsafe_allow_html=True)
-
+            </div>""", unsafe_allow_html=True)
+        with pos_c3:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🏃 Carga Física Externa (Proxy)</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Acumulación total de minutos oficiales disputados (<code>minutes_played</code>) y apariciones (<code>appearances</code>) 
-                    utilizados como indicador cuantitativo de exposición al desgaste mecánico.
+            <div class="concept-card" style="text-align: center;">
+                <b style="color: #3B82F6;">Mediocampistas (MED)</b>
+                <p style="color: #94A3B8; font-size: 0.88rem; margin-top: 6px;">
+                    Eje híbrido y bidireccional; combina generación de juego, distribución y contención territorial.
                 </p>
-                <span class="tag-pill">minutes_played</span>
-                <span class="tag-pill">appearances</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("#### 4.2 Métricas de Rendimiento Ofensivo")
-        go1, go2 = st.columns(2)
-        with go1:
+            </div>""", unsafe_allow_html=True)
+        with pos_c4:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⚽ Goles y Asistencias</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Eventos discretos tradicionales que representan la conversión directa de remates y el último pase previo al gol, 
-                    reflejando el impacto directo en el marcador.
+            <div class="concept-card" style="text-align: center;">
+                <b style="color: #F59E0B;">Delanteros (DEL)</b>
+                <p style="color: #94A3B8; font-size: 0.88rem; margin-top: 6px;">
+                    Especialización ofensiva en definición, remates a portería y capitalización de ocasiones de gol.
                 </p>
-                <span class="tag-pill">goals</span>
-                <span class="tag-pill">assists</span>
-            </div>
-            """, unsafe_allow_html=True)
+            </div>""", unsafe_allow_html=True)
 
+        st.markdown("#### 2.2. Métricas Ofensivas Avanzadas")
+        st.write("""
+        El análisis descriptivo moderno supera los conteos básicos (goles, asistencias) mediante métricas que contextualizan el rendimiento.
+        Los **Goles Esperados (xG)** cuantifican la calidad de las ocasiones generadas, permitiendo evaluar si un jugador o equipo rinde por encima o por debajo
+        de lo esperado según la probabilidad de gol de sus disparos. Complementariamente, las métricas de **creación de disparos (SOE)** permiten describir
+        la participación de un jugador en la generación de peligro.
+        """)
+
+        st.markdown("#### 2.3. Métricas de Concentración: Gini y HHI")
+        st.write("""
+        Para medir cómo se distribuye el talento o el rendimiento en una liga, la analítica deportiva emplea métricas matemáticas adaptadas del campo
+        de la estadística y la economía:
+        """)
+
+        st.write("""
+        - **Índice de Gini:** Es una medida de desigualdad que se calcula a partir de la Curva de Lorenz; su valor oscila entre 0 (igualdad perfecta) y 1 (concentración total).
+          En el contexto deportivo, un Gini cercano a 0 indica que el rendimiento ofensivo está repartido equitativamente, mientras que un valor alto indica que pocos clubes acaparan la producción.
+        - **Índice Herfindahl-Hirschman (HHI):** Se calcula sumando los cuadrados de las cuotas de participación. Se utiliza para evaluar la concentración del mercado:
+          un HHI bajo indica una estructura competitiva equilibrada, mientras que un HHI alto describe una estructura oligopólica donde unos pocos clubes dominan el talento.
+        """)
+
+        st.markdown(r"""
+        <div class="formula-container">
+            <b style="color: #F8FAFC; font-size: 1.05rem;">Fórmula del Índice Herfindahl-Hirschman (HHI):</b><br>
+            $$\text{HHI} = \sum_{i=1}^{N} s_i^2 \quad \text{donde } s_i \text{ representa la cuota porcentual de participación del club } i$$
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("#### 2.4. La Curva de Lorenz")
+        st.write("""
+        Es la representación gráfica del Índice de Gini. Mide el **porcentaje acumulado de rendimiento (goles, asistencias)** frente al
+        **porcentaje acumulado de jugadores o clubes**. Cuanto más se aleje la curva de la diagonal de 45 grados (línea de igualdad perfecta),
+        mayor será la concentración del talento o del gol en pocos actores.
+        """)
+
+    with tab_sec3:
+        st.markdown("""
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Sección 3</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">3. Dinámicas Posicionales y Rendimiento Individual</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Consistencia temporal, dispersión relativa y centralización de la producción en la plantilla.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("#### 3.1. La Consistencia y el Coeficiente de Variación (CV)")
+        st.write("""
+        La consistencia de un jugador o una demarcación se evalúa mediante la dispersión de sus datos a lo largo del tiempo.
+        El **Coeficiente de Variación (CV)** es una medida estadística que expresa la desviación estándar como un porcentaje de la media aritmética:
+        """)
+
+        st.markdown(r"""
+        <div class="formula-container">
+            <b style="color: #F8FAFC; font-size: 1.05rem;">Fórmula del Coeficiente de Variación (CV):</b><br>
+            $$CV = \frac{\sigma}{\mu} = \frac{\text{Desviación Estándar}}{\text{Media}}$$
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.write("""
+        Su fórmula permite comparar la volatilidad de datos con diferentes escalas.
+        Un **CV bajo** describe un rendimiento estable y homogéneo; un **CV alto** describe un rendimiento volátil, sujeto a altibajos temporada tras temporada.
+        En el análisis posicional, las posiciones defensivas y de contención exhiben habitualmente los CV más bajos, mientras que los atacantes exteriores
+        y delanteros presentan un CV superior derivado de rachas anotadoras y variabilidad táctica.
+        """)
+
+        st.markdown("#### 3.2. La Dependencia del Talento (Top 20%)")
+        st.write("""
+        La distribución interna del rendimiento en una plantilla es un indicador clave. En la literatura de análisis deportivo, se evalúa
+        qué porcentaje del rendimiento total del equipo recae sobre el **20% más productivo de sus jugadores (el quintil superior)**.
+        """)
+
+        st.markdown("""
+        <div class="quote-box">
+            <b>Criterio de Dependencia:</b><br>
+            Una concentración superior al <b>65%</b> describe una alta dependencia de un grupo muy reducido de futbolistas, caracterizando plantillas
+            cuya producción ofensiva está fuertemente centralizada en sus figuras principales. Por el contrario, registros inferiores al <b>50%</b>
+            reflejan un modelo de producción coral y distribuido.
+        </div>
+        """, unsafe_allow_html=True)
+
+    with tab_sec4:
+        st.markdown("""
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Sección 4</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">4. Arquitectura de Datos y Ecosistema Analítico</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Principios de ingeniería de datos, almacenamiento relacional, motores analíticos y stack de visualización.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.write("""
+        Para garantizar el rigor y la escalabilidad del análisis, el estudio se sustenta en principios de ingeniería de datos.
+        La correcta comprensión de estos conceptos es fundamental para entender cómo se organiza la información del proyecto y qué herramientas permiten su procesamiento.
+        """)
+
+        st.markdown("#### 4.1. Modelo Relacional y Normalización (3FN)")
+        st.write("""
+        El universo de datos del proyecto se organiza bajo un modelo relacional normalizado.
+        La **Tercera Forma Normal (3FN)** es un principio de diseño de bases de datos que elimina la redundancia y garantiza la integridad referencial.
+        En lugar de tener una única tabla con datos repetidos, la información se divide en **17 tablas especializadas (entidades)** que se relacionan entre sí
+        mediante claves primarias y foráneas.
+        Esto permite que un jugador, una temporada y una lesión estén vinculados lógicamente sin duplicar información, asegurando la trazabilidad
+        de los más de **855,000 registros** del estudio.
+        """)
+
+        st.markdown("#### 4.2. Procesamiento Analítico (OLAP) y DuckDB")
+        st.write("""
+        Para el análisis de grandes volúmenes de datos, se utiliza un enfoque **OLAP (Online Analytical Processing)**.
+        A diferencia de las bases de datos transaccionales (**OLTP**) diseñadas para registrar operaciones diarias, las bases de datos OLAP están optimizadas
+        para consultas complejas y agregaciones rápidas.
+
+        El motor columnar **DuckDB** es una base de datos analítica local que permite procesar estos datos de manera ultrarrápida,
+        mientras que **Supabase** proporciona una capa de conexión remota en la nube para el despliegue del ecosistema.
+        """)
+
+        st.markdown("#### 4.3. Procesamiento y Visualización: Python, Pandas y Plotly")
+        st.write("""
+        El procesamiento de los datos se realiza mediante **Python**, un lenguaje de programación de propósito general ampliamente utilizado en ciencia de datos.
+        Las librerías **Pandas** y **NumPy** permiten la manipulación, limpieza y cálculo numérico de los registros.
+
+        Para la representación gráfica, se emplea **Plotly Express**, una librería que permite construir visualizaciones interactivas y dinámicas,
+        facilitando la exploración de los datos por parte del usuario.
+        """)
+
+        st.markdown("#### 4.4. Interfaz de Usuario: Streamlit")
+        st.write("""
+        La interfaz de usuario se desarrolla en **Streamlit**, un framework de código abierto que permite desplegar aplicaciones web de datos de forma ágil.
+        Streamlit transforma los scripts de Python en dashboards interactivos, permitiendo que el usuario final navegue por las métricas y visualizaciones
+        sin necesidad de conocimientos técnicos en programación.
+        """)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        col_stk1, col_stk2, col_stk3, col_stk4 = st.columns(4)
+        with col_stk1:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🎯 Goles Esperados (xG) y xG/90</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    <b>xG:</b> Métrica probabilística que cuantifica la calidad objetiva de una ocasión de remate en función de su distancia, ángulo y situación.<br>
-                    <b>xG/90:</b> Estandarización de los goles esperados generados por cada 90 minutos reglamentarios en cancha.
+            <div class="nav-card" style="text-align: center;">
+                <b style="color: #00E5FF; font-size: 1.05rem;">Python & Pandas</b>
+                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
+                    Procesamiento, limpieza y cálculo numérico descriptivo de datos tabulares.
                 </p>
-                <span class="tag-pill">Expected Goals</span>
-                <span class="tag-pill">xG por 90 min</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        with go2:
+            </div>""", unsafe_allow_html=True)
+        with col_stk2:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">💥 Creación de Disparos (SOE)</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Acciones de juego que derivan en un remate a portería (<i>Shots Over Expected</i>), cuantificando la capacidad intrínseca 
-                    del futbolista para generar peligro de ataque.
+            <div class="nav-card" style="text-align: center;">
+                <b style="color: #00E5FF; font-size: 1.05rem;">DuckDB OLAP</b>
+                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
+                    Motor analítico columnar local para agregaciones y consultas masivas inmediatas.
                 </p>
-                <span class="tag-pill">SOE</span>
-                <span class="tag-pill">Shot Creation</span>
-            </div>
-            """, unsafe_allow_html=True)
-
+            </div>""", unsafe_allow_html=True)
+        with col_stk3:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🔄 Consistencia Inter-temporada</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Grado de estabilidad y persistencia que exhiben las métricas clave (xG/90, SOE) de un futbolista a lo largo 
-                    del ciclo longitudinal de cuatro temporadas (2022-2026).
+            <div class="nav-card" style="text-align: center;">
+                <b style="color: #00E5FF; font-size: 1.05rem;">Plotly Express</b>
+                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
+                    Construcción de gráficos interactivos descriptivos con control dinámico de datos.
                 </p>
-                <span class="tag-pill">Persistencia Estadística</span>
-                <span class="tag-pill">Ciclo 2022-2026</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-        st.markdown("#### 4.3 Métricas Defensivas y de Portería")
-        gd1, gd2 = st.columns(2)
-        with gd1:
+            </div>""", unsafe_allow_html=True)
+        with col_stk4:
             st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🛡️ Acciones Defensivas</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Frecuencia cuantificada de intervenciones para recuperar el balón: entradas exitosas (<i>tackles</i>), 
-                    intercepciones de pases rivales, balones divididos ganados y despejes de área.
+            <div class="nav-card" style="text-align: center;">
+                <b style="color: #00E5FF; font-size: 1.05rem;">Streamlit Web</b>
+                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
+                    Despliegue de paneles web reactivos y navegación modular para el usuario.
                 </p>
-                <span class="tag-pill">tackles</span>
-                <span class="tag-pill">interceptions</span>
-                <span class="tag-pill">clearances</span>
-            </div>
-            """, unsafe_allow_html=True)
+            </div>""", unsafe_allow_html=True)
 
-        with gd2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🧤 Atajadas, Vallas Invictas y Goles Prevenidos (xGP)</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    <b>saves:</b> Paradas realizadas por el guardameta.<br>
-                    <b>clean_sheets:</b> Partidos completos sin recibir goles.<br>
-                    <b>xGP (Expected Goals Prevented):</b> Medida avanzada que resta los goles recibidos a la dificultad esperada de los tiros recibidos.
-                </p>
-                <span class="tag-pill">saves</span>
-                <span class="tag-pill">clean_sheets</span>
-                <span class="tag-pill">xGP</span>
-            </div>
-            """, unsafe_allow_html=True)
+    with tab_glosario:
+        st.markdown("""
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Glosario</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">Glosario de Términos y Métricas</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Definición formal y operativa de los términos técnicos y métricas analíticas de la investigación.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.markdown("#### 4.4 Métricas de Distribución y Valor Posicional")
-        gp1, gp2 = st.columns(2)
-        with gp1:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">👥 Líneas Posicionales y Aporte Porcentual</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    <b>Líneas Posicionales:</b> Clasificación táctica en Arqueros (POR), Defensas (DEF), Mediocampistas (MED) y Delanteros (DEL).<br>
-                    <b>Aporte Porcentual:</b> Fracción relativa (%) con la que cada línea contribuye al total de una métrica colectiva del club.
-                </p>
-                <span class="tag-pill">Líneas Tácticas</span>
-                <span class="tag-pill">Aporte Relativo (%)</span>
-            </div>
-            """, unsafe_allow_html=True)
+        g_items = [
+            ("BioFORM", "Consenso internacional para el registro estandarizado de lesiones deportivas."),
+            ("Time-Loss", "Criterio epidemiológico que define una lesión por la incapacidad de participar en entrenamientos o partidos."),
+            ("P90 (Percentil 90)", "Umbral estadístico que identifica al 10% superior de los jugadores en una métrica determinada (jugadores de élite)."),
+            ("Coeficiente de Variación (CV)", "Medida estadística que expresa la desviación estándar como porcentaje de la media (CV = σ / μ)."),
+            ("Gini", "Medida económica que cuantifica la desigualdad en una distribución (0 = igualdad, 1 = concentración total)."),
+            ("HHI (Herfindahl-Hirschman)", "Medida de concentración de mercado que suma los cuadrados de las cuotas de participación."),
+            ("xG (Goles Esperados)", "Métrica probabilística que mide la calidad de un disparo."),
+            ("Top 20%", "El quintil superior de una plantilla (el 20% más productivo)."),
+            ("3FN (Tercera Forma Normal)", "Estándar de diseño de bases de datos relacionales que elimina la redundancia."),
+            ("OLAP", "Procesamiento Analítico en Línea; arquitectura de bases de datos optimizada para consultas multidimensionales y agregación de grandes volúmenes de datos."),
+            ("OLTP", "Procesamiento de Transacciones en Línea; arquitectura de bases de datos optimizada para el registro rápido de operaciones diarias."),
+        ]
 
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⭐ Ability Score</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Puntuación sintética multivariada que resume el nivel de aptitud competitiva del futbolista en cuatro dimensiones 
-                    (Overall, Offensive, Defensive, Midfield).
-                </p>
-                <span class="tag-pill">Overall Ability</span>
-                <span class="tag-pill">Rating Multivariado</span>
-            </div>
-            """, unsafe_allow_html=True)
+        col_g1, col_g2 = st.columns(2)
+        for i, (term, desc) in enumerate(g_items):
+            target_col = col_g1 if i % 2 == 0 else col_g2
+            with target_col:
+                st.markdown(f"""
+                <div class="concept-card">
+                    <div class="glossary-term">{term}</div>
+                    <p class="glossary-desc">{desc}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
-        with gp2:
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">⚖️ Índice de Gini e Índice HHI</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Coeficientes matemáticos para evaluar la asimetría y desigualdad competitiva: Gini mide la distribución de talento 
-                    y HHI calcula la suma de participaciones al cuadrado para identificar monopolios deportivos.
-                </p>
-                <span class="tag-pill">Coeficiente de Gini</span>
-                <span class="tag-pill">HHI de Talento</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("""
-            <div class="concept-card">
-                <div class="concept-title">🔄 Profundidad de Plantilla (Squad Depth)</div>
-                <p style="color: #CBD5E1; font-size: 0.93rem;">
-                    Distribución conceptual de minutos y calidad entre titulares y suplentes, indicando la resiliencia de la plantilla 
-                    para mantener su rendimiento ante lesiones o suspensiones.
-                </p>
-                <span class="tag-pill">Rotación de Plantilla</span>
-                <span class="tag-pill">Resiliencia Deportiva</span>
-            </div>
-            """, unsafe_allow_html=True)
-
-    # ==========================================
-    # TAB REFERENCIAS BIBLIOGRÁFICAS
-    # ==========================================
     with tab_refs:
         st.markdown("""
-        <div class="section-container">
-            <span class="theory-badge">Referencias y Documentación</span>
-            <h2 style="color: #F8FAFC;">Bibliografía Consultada (Formato APA 7ma Edición)</h2>
-            <p style="color: #CBD5E1; font-size: 0.95rem;">
-                Literatura científica especializada en epidemiología de lesiones, modelos de carga física, valoración posicional y analítica deportiva:
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Bibliografía</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">Referencias Bibliográficas (Formato APA 7ma Edición)</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Literatura científica especializada en epidemiología de lesiones, modelos de carga física, valoración posicional y analítica deportiva.
             </p>
         </div>
         """, unsafe_allow_html=True)
 
         referencias = [
+            ("Bahr, R., Clarsen, B., Derman, W., Dvorak, J., Emery, C. A., Finch, C. F., ... & Khan, K. M. (2020)", "International Olympic Committee consensus statement: Methods for recording and reporting of epidemiological data on injury and illness in sport 2020 (including the STROBE Extension for Sport Injury and Illness Surveillance (STROBE-SIIS)). British Journal of Sports Medicine, 54(7), 372–389."),
             ("Frick, B., Quansah, T. K., & Lang, M. (2023)", "Talent concentration and competitive imbalance in European soccer. Frontiers in Sports and Active Living, 5, 1148122. https://doi.org/10.3389/fspor.2023.1148122"),
             ("Fuller, C. W., Ekstrand, J., Junge, A., Andersen, T. E., Bahr, R., Dvorak, J., ... & Meeuwisse, W. H. (2006)", "Consensus statement on injury definitions and data collection procedures in studies of football (soccer) injuries. British Journal of Sports Medicine, 40(3), 193–201."),
             ("Gabbett, T. J., Hulin, B. T., Blanch, P., & Whiteley, R. (2016)", "High chronic training loads and exposure to bouts of maximal velocity running reduce injury risk in elite rugby league players. Journal of Science and Medicine in Sport, 19(3), 234–238."),
@@ -973,10 +593,8 @@ def render_marco_teorico():
             ("Impellizzeri, F. M., Tenan, M. S., Kempton, T., Novak, A., & Coutts, A. J. (2020)", "Acute:Chronic Workload Ratio: Conceptual issues and fundamental pitfalls. International Journal of Sports Physiology and Performance, 15(6), 907–913."),
             ("Krutsch, W., Zeman, F., Zellner, J., Pfeifer, C., Nerlich, M., & Angele, P. (2016)", "Injury patterns among elite football players: A media-based analysis over 6 seasons with emphasis on playing position. International Journal of Sports Medicine, 37(11), 898–908."),
             ("Lucey, P., Bialkowski, A., Monfort, M., Carr, P., & Matthews, I. (2015)", "Quality vs quantity: Improved shot prediction in soccer using strategic features from spatiotemporal data. MIT Sloan Sports Analytics Conference."),
-            ("Malone, S., Owen, A., Newton, M., Mendes, B., Collins, K. D., & Gabbett, T. J. (2016)", "The acute:chronic workload ratio in relation to injury risk in professional soccer. Journal of Science and Medicine in Sport, 20(6), 561–565."),
             ("Pappalardo, L., Cintia, P., Ferragina, P., Massucco, E., Pedreschi, D., & Giannotti, F. (2019)", "PlayerRank: Data-driven performance evaluation and player ranking in soccer via a machine learning approach. ACM Transactions on Intelligent Systems and Technology, 10(5), 1–27."),
             ("Pelechrinis, K., & Winston, W. (2021)", "Positional value in soccer: Expected league points added above replacement. Journal of Quantitative Analysis in Sports, 17(3), 187–201."),
-            ("Walden, M., et al. (2025)", "ReFORM consensus on injury and illness definitions in football. British Journal of Sports Medicine.")
         ]
 
         for autor, obra in referencias:
@@ -985,6 +603,22 @@ def render_marco_teorico():
                 <b style="color: #00E5FF;">{autor}</b>. {obra}
             </div>
             """, unsafe_allow_html=True)
+
+    st.divider()
+
+    st.subheader("Conclusiones del Marco Teórico")
+
+    st.markdown("""
+    <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
+        <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Síntesis Conceptual y Metodológica de la Investigación</h4>
+        <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.0rem;">
+            <li><b>Estandarización Epidemiológica y Cuantificación de Carga:</b> La adopción del consenso internacional BioFORM bajo el criterio de pérdida de tiempo (<i>time-loss</i>) proporciona una delimitación médica objetiva. A su vez, los minutos acumulados se consolidan como un estimador (<i>proxy</i>) reproducible del estrés mecánico y fisiológico en el ciclo 2022–2026.</li>
+            <li><b>Estratificación Táctica y Valor Posicional:</b> La estructuración del juego en cuatro bloques funcionales (Arqueros, Defensas, Mediocampistas y Delanteros) sustenta la asimetría de responsabilidades: especialización extrema en finalización y neutralización en los extremos del campo frente a la polivalencia bidireccional en la zona media.</li>
+            <li><b>Cuantificación de la Desigualdad y Concentración Competitiva:</b> La traslación de métricas económicas como el Coeficiente de Gini, las Curvas de Lorenz y el Índice Herfindahl-Hirschman (HHI) permite diagnosticar con precisión matemática si el rendimiento y el talento de élite (P90) se distribuyen de forma paritaria o se concentran en oligopolios deportivos.</li>
+            <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> La arquitectura normalizada en Tercera Forma Normal (3FN) con 17 entidades y más de 855,000 registros, procesada a través del motor columnar local DuckDB y visualizada en Streamlit y Plotly, asegura la trazabilidad íntegra del estudio bajo una perspectiva estrictamente descriptiva.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     render_marco_teorico()

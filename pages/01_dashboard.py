@@ -30,7 +30,7 @@ if connected or supabase:
     st.divider()
 
     #==========INICIO KPIs=========
-    st.subheader("📊 Indicadores Clave (KPIs)")
+    st.subheader("Indicadores Clave (KPIs)")
     kpi_equipo_mas_goleador, kpi_jugador_mas_goleador, kpi_posicion_destacada, kpi_minutos_jugados_top = st.columns(4)
 
     with kpi_equipo_mas_goleador:
@@ -83,7 +83,7 @@ if connected or supabase:
         fig_donut = Graphics.create_talent_donut_chart(df_ligas)
         fig_donut = apply_theme(fig_donut)
 
-        st.plotly_chart(fig_donut, use_container_width=True)
+        st.plotly_chart(fig_donut, width="stretch")
 
     with columna_grafico_de_barras_rendimiento_por_posicion:
         st.subheader("Rendimiento por Posición")
@@ -95,7 +95,7 @@ if connected or supabase:
         })
         fig_bar_pos = Graphics.create_position_performance_bar_chart(df_posiciones)
         fig_bar_pos = apply_theme(fig_bar_pos)
-        st.plotly_chart(fig_bar_pos, use_container_width=True)
+        st.plotly_chart(fig_bar_pos, width="stretch")
 
     st.divider()
 
@@ -109,7 +109,7 @@ if connected or supabase:
     })
     fig_line = Graphics.create_injury_evolution_line_chart(dataframe_lesiones)
     fig_line = apply_theme(fig_line) 
-    st.plotly_chart(fig_line, use_container_width=True)
+    st.plotly_chart(fig_line, width="stretch")
 
     st.divider()
 
@@ -123,6 +123,6 @@ if connected or supabase:
     })
     fig_top3 = Graphics.create_top_players_bar_chart(dataframe_top3)
     fig_top3 = apply_theme(fig_top3)
-    st.plotly_chart(fig_top3, use_container_width=True)
+    st.plotly_chart(fig_top3, width="stretch")
     
 
