@@ -1,6 +1,36 @@
 table 'main analytics_player_seasons'
 	lineageTag: bbbb4707-1329-44b1-925f-f7794c776aa8
 
+	measure 'Total Lesiones 2022-2026' =
+			
+			CALCULATE(
+			    SUM('main analytics_player_seasons'[total_injuries]),
+			    'main dim_season'[season_label] >= "2022" && 'main dim_season'[season_label] <= "2026"
+			)
+		formatString: 0
+		lineageTag: 80fa543e-dfb0-45a7-aa48-ddd6f44c5ab0
+
+	measure 'Promedio Dias de Baja 2022-2026' =
+			
+			CALCULATE(
+			    AVERAGE('main analytics_player_seasons'[total_days_lost]),
+			    'main dim_season'[season_label] >= "2022" && 'main dim_season'[season_label] <= "2026"
+			)
+		lineageTag: f2179e3f-2794-467b-b4b1-eb0725b3908a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tasa Lesiones por 1000 min' =
+			
+			DIVIDE(
+			    SUM('main analytics_player_seasons'[total_injuries]),
+			    SUM('main analytics_player_seasons'[mins]),
+			    0
+			) * 1000
+		lineageTag: 8dbc6149-aedb-4516-bb15-3000c48cb074
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column player_season_id
 		dataType: int64
 		formatString: 0

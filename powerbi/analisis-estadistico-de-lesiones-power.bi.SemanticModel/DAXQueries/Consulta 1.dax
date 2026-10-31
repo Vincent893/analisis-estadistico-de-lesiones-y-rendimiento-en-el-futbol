@@ -1,0 +1,8 @@
+// Escriba la fórmula a continuación, seleccione "Ejecutar" para probarla. Cuando esté listo, seleccione "Actualizar modelo" para agregar la medida al modelo.
+DEFINE
+	MEASURE 'main analytics_player_seasons'[Nueva medida] = COUNTROWS('main analytics_player_seasons')
+
+EVALUATE
+	SUMMARIZECOLUMNS(
+		"Nueva medida", [Nueva medida]
+	)

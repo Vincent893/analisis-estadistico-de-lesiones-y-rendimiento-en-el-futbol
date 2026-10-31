@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_ProTooling = ["DevMode"]
+annotation PBI_ProTooling = ["DevMode","DaxQueryView_Desktop"]
 
 annotation PBI_QueryOrder = ["main analytics_club_seasons","main analytics_club_position_seasons","main analytics_player_seasons","main dim_club","main dim_player","main dim_season"]
 

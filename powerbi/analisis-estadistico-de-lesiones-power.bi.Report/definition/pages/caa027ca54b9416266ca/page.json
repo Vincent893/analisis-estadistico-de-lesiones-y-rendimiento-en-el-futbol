@@ -14,7 +14,7 @@
               "name": {
                 "expr": {
                   "Literal": {
-                    "Value": "'Green and Yellow Illustrated Football Presentation.png'"
+                    "Value": "'Green and Yellow Illustrated Football Presentation(1).png'"
                   }
                 }
               },
@@ -23,7 +23,7 @@
                   "ResourcePackageItem": {
                     "PackageName": "RegisteredResources",
                     "PackageType": 1,
-                    "ItemName": "Green_and_Yellow_Illustrated_F9707177058805094.png"
+                    "ItemName": "Green_and_Yellow_Illustrated_F6989560429809626.png"
                   }
                 }
               },
