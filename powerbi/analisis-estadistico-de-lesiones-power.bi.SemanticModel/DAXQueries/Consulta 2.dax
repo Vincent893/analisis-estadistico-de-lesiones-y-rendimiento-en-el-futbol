@@ -1,0 +1,6 @@
+Query (1, 7) The syntax for 'Lesiones' is incorrect. (Total Lesiones 2022-2026 = 
+CALCULATE(
+    SUM('main analytics_player_seasons'[total_injuries]),
+    'main analytics_player_seasons'[season_id] >= 2022 
+    && 'main analytics_player_seasons'[season_id] <= 2026
+)).
