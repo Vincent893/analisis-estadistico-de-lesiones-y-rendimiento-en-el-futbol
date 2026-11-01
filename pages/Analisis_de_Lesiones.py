@@ -5,9 +5,13 @@ import plotly.express as px
 import streamlit as st
 
 from dotenv import load_dotenv, find_dotenv
+from models.UI import UI
 from utils.estilos import cargar_estilos
 from utils.graficos import apply_theme
 
+
+UI.setup_page()
+UI.render_sidebar()
 cargar_estilos()
 load_dotenv(find_dotenv(), override=True)
 
