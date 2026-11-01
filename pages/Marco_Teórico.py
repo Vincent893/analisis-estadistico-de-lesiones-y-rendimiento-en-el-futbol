@@ -203,9 +203,7 @@ def render_marco_teorico():
 
         st.info("💡 **Fuente de Datos**: Base de datos `SQL Practice DB: Football Players (17 Tables)`, organizada bajo un diseño normalizado con 855,000 registros totales, permitiendo análisis SQL exploratorios, agregaciones complejas y modelado longitudinal.")
 
-    # ==========================================
-    # TAB SECCIÓN 1: LESIONES Y CARGA
-    # ==========================================
+   
     with tab_sec1:
         st.markdown("""
         <div class="section-container">
@@ -257,9 +255,7 @@ def render_marco_teorico():
         - **Centrocampistas**: Mayor tasa global de no disponibilidad por desgaste continuo de distancia recorrida (~11-13 km por 90 min).
         """)
 
-    # ==========================================
-    # TAB SECCIÓN 2: RENDIMIENTO OFENSIVO Y xG
-    # ==========================================
+    
     with tab_sec2:
         st.markdown("""
         <div class="section-container">
@@ -320,9 +316,7 @@ def render_marco_teorico():
         preservando el equilibrio dinámico entre clubes dominantes y aspirantes.
         """)
 
-    # ==========================================
-    # TAB SECCIÓN 3: VALOR POSICIONAL Y APORTES
-    # ==========================================
+   
     with tab_sec3:
         st.markdown("""
         <div class="section-container">
@@ -357,9 +351,7 @@ def render_marco_teorico():
         """)
 
 
-    # ==========================================
-    # TAB REFERENCIAS BIBLIOGRÁFICAS
-    # ==========================================
+    
     with tab_refs:
         st.markdown("""
         <div class="section-container">
