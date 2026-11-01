@@ -42,11 +42,7 @@ class UI:
 
             
             st.page_link("app.py", label="Inicio")
-            st.page_link("pages/01_dashboard.py", label="Dashboard General")
-            st.page_link("pages/02_Lesiones_y_Carga_Física.py", label="Lesiones y Carga Física")
-            st.page_link("pages/03_Concentración_de_Talento.py", label="Concentración de Talento")
-            st.page_link("pages/04_Análisis_Posicional.py", label="Análisis Posicional")
-            st.page_link("pages/05_Simulador_de_plantilla.py", label="Simulador de Plantilla")
             st.page_link("pages/Analisis_de_lesiones.py", label="Análisis de Lesiones")
+            st.page_link("pages/05_Simulador_de_plantilla.py", label="Simulador de Plantilla")
             
             st.divider()
