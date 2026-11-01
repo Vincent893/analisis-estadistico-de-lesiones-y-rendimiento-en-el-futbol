@@ -18,6 +18,7 @@ class Main:
 
         UI.setup_page()
         cargar_estilos()
+        UI.render_sidebar()
 
         st.markdown("""
         <div class="hero-header">
