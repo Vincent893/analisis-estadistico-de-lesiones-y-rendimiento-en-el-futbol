@@ -19,6 +19,8 @@ class UI:
         """,
             unsafe_allow_html=True,
         )
+        
+        st.markdown('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">', unsafe_allow_html=True)
 
     @staticmethod
     def render_sidebar():
@@ -29,6 +31,7 @@ class UI:
                     display: none;
                 }
             </style>
+            
             """,
             unsafe_allow_html=True
         )
@@ -39,10 +42,7 @@ class UI:
 
             
             st.page_link("app.py", label="Inicio")
-            st.page_link("pages/05_Marco_Teórico.py", label="Marco Teórico")
-            st.page_link("pages/01_dashboard.py", label="Dashboard")
-            st.page_link("pages/02_Concentración_de_Talento.py", label="Concentración de Talento")
-            st.page_link("pages/03_Análisis_Posicional.py", label="Análisis Posicional")
-            st.page_link("pages/04_Lesiones_y_Carga_Física.py", label="Lesiones y Carga Física")
+            st.page_link("pages/Analisis_de_lesiones.py", label="Análisis de Lesiones")
+            st.page_link("pages/05_Simulador_de_plantilla.py", label="Simulador de Plantilla")
             
             st.divider()
