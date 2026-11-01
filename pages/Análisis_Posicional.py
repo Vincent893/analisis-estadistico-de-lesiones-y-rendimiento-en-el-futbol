@@ -237,14 +237,26 @@ df_g2["linea"] = pd.Categorical(df_g2["linea"], categories=LINEAS_ORDEN, ordered
 fig2 = go.Figure()
 for linea in LINEAS_ORDEN:
     sub = df_g2[df_g2["linea"] == linea][metrica_box].dropna()
-    fig2.add_trace(go.Box(
-        y=sub, name=linea,
-        marker_color=colores_kpi.get(linea, "#00E5FF"),
-        boxmean="sd",
-        boxpoints="outliers",
-        line=dict(width=2),
-        fillcolor=colores_kpi.get(linea, "#00E5FF") + "44",
-    ))
+
+    hex_color = colores_kpi.get(linea, "#00E5FF").lstrip("#")
+    r, g, b = (
+        int(hex_color[0:2], 16),
+        int(hex_color[2:4], 16),
+        int(hex_color[4:6], 16),
+    )
+    fill_rgba = f"rgba({r}, {g}, {b}, 0.3)"  
+
+    fig2.add_trace(
+        go.Box(
+            y=sub,
+            name=linea,
+            marker_color=colores_kpi.get(linea, "#00E5FF"),
+            boxmean="sd",
+            boxpoints="outliers",
+            line=dict(width=2),
+            fillcolor=fill_rgba,
+        )
+    )
 
 fig2.update_layout(
     height=430,
@@ -369,19 +381,31 @@ pivot_g4_pct = pivot_g4.div(pivot_g4.sum(axis=1), axis=0) * 100
 
 fig4 = go.Figure()
 for linea in LINEAS_ORDEN:
-    if linea not in pivot_g4_pct.columns:
-        continue
-    fig4.add_trace(go.Scatter(
-        x=pivot_g4_pct.index,
-        y=pivot_g4_pct[linea],
-        mode="lines",
-        name=linea,
-        stackgroup="one",
-        groupnorm="percent",
-        fillcolor=colores_kpi.get(linea, "#00E5FF") + "BB",
-        line=dict(color=colores_kpi.get(linea, "#00E5FF"), width=1.5),
-        hovertemplate="<b>" + linea + "</b><br>%{x}: %{y:.1f}%<extra></extra>",
-    ))
+  if linea not in pivot_g4_pct.columns:
+    continue
+
+  hex_color = colores_kpi.get(linea, "#00E5FF").lstrip("#")
+  r, g, b = (
+      int(hex_color[0:2], 16),
+      int(hex_color[2:4], 16),
+      int(hex_color[4:6], 16),
+  )
+  fill_rgba = f"rgba({r}, {g}, {b}, 0.7)"  
+  fig4.add_trace(
+      go.Scatter(
+          x=pivot_g4_pct.index,
+          y=pivot_g4_pct[linea],
+          mode="lines",
+          name=linea,
+          stackgroup="one",
+          groupnorm="percent",
+          fillcolor=fill_rgba,
+          line=dict(color=colores_kpi.get(linea, "#00E5FF"), width=1.5),
+          hovertemplate=(
+              "<b>" + linea + "</b><br>%{x}: %{y:.1f}%<extra></extra>"
+          ),
+      )
+  )
 
 fig4.update_layout(
     height=420,
@@ -483,18 +507,31 @@ with tab1:
     fig_r = go.Figure()
     theta_labels = list(radar_vars.keys())
     for linea in LINEAS_ORDEN:
-        if linea not in agg_radar_norm.index:
-            continue
-        vals = agg_radar_norm.loc[linea].tolist()
-        vals += [vals[0]]
-        fig_r.add_trace(go.Scatterpolar(
-            r=vals,
-            theta=theta_labels + [theta_labels[0]],
-            fill="toself",
-            name=linea,
-            fillcolor=colores_kpi.get(linea, "#00E5FF") + "44",
-            line=dict(color=colores_kpi.get(linea, "#00E5FF"), width=2),
-        ))
+      if linea not in agg_radar_norm.index:
+        continue
+      vals = agg_radar_norm.loc[linea].tolist()
+      vals += [vals[0]]
+
+      hex_color = colores_kpi.get(linea, "#00E5FF").lstrip("#")
+      r, g, b = (
+          int(hex_color[0:2], 16),
+          int(hex_color[2:4], 16),
+          int(hex_color[4:6], 16),
+      )
+      fill_rgba = (
+          f"rgba({r}, {g}, {b}, 0.3)"  
+      )
+
+      fig_r.add_trace(
+          go.Scatterpolar(
+              r=vals,
+              theta=theta_labels + [theta_labels[0]],
+              fill="toself",
+              name=linea,
+              fillcolor=fill_rgba,
+              line=dict(color=colores_kpi.get(linea, "#00E5FF"), width=2),
+          )
+      )
     fig_r.update_layout(
         polar=dict(
             radialaxis=dict(visible=True, range=[0, 1], tickfont=dict(color="#94A3B8"), gridcolor="rgba(0,229,255,0.1)"),
