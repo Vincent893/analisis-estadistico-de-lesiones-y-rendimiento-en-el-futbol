@@ -8,5 +8,6 @@ venv/
 *.venv/
 
 **/__pycache__/
-**/.pbi/localSettings.json
-**/.pbi/cache.abf
+**/*.pbi/localSettings.json
+**/*.pbi/cache.abf
+**/*.DS_Store
