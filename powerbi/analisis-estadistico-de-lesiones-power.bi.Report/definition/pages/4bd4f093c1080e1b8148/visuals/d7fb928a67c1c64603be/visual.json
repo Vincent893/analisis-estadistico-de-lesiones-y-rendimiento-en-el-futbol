@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "d7fb928a67c1c64603be",
   "position": {
-    "x": 769.76253170672794,
-    "y": 165.30692112573982,
-    "z": 3001,
-    "height": 183.54457572502685,
-    "width": 379.46294307196558,
-    "tabOrder": 3001
+    "x": 368.62745098039215,
+    "y": 133.33333333333334,
+    "z": 2000,
+    "height": 184.22788605697153,
+    "width": 275.07999424945064,
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "main analytics_player_seasons.Promedio Dias de Baja 2022-2026",
-              "nativeQueryRef": "Promedio Dias de Baja 2022-2026"
+              "nativeQueryRef": "Promedio Dias de Baja ",
+              "displayName": "Promedio Dias de Baja "
             }
           ]
         }

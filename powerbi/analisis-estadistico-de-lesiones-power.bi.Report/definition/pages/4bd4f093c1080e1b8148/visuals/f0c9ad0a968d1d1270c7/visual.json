@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "f0c9ad0a968d1d1270c7",
   "position": {
-    "x": 369.01848049281318,
-    "y": 163.63715424568184,
-    "z": 2000,
-    "height": 183.67435680637757,
-    "width": 315,
-    "tabOrder": 1000
+    "x": 50.980392156862742,
+    "y": 133.33333333333334,
+    "z": 1000,
+    "height": 184.22788605697153,
+    "width": 277.60366392146392,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "cardVisual",
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "main analytics_player_seasons.Total Lesiones 2022-2026",
-              "nativeQueryRef": "Total Lesiones 2022-2026"
+              "nativeQueryRef": "Total Lesiones 2022-2026",
+              "displayName": "Total Lesiones "
             }
           ]
         }
@@ -310,7 +311,21 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
                 }
               }
             }

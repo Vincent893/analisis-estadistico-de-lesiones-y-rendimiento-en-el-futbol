@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "6e81d8fe0048dba39020",
   "position": {
-    "x": 404.37890527368154,
-    "y": 33.271682079480129,
+    "x": 403.78714752212937,
+    "y": 20.189357376106468,
     "z": 0,
-    "height": 85.27041679316477,
-    "width": 1108.515418311142,
-    "tabOrder": 3000
+    "height": 98.423117208519031,
+    "width": 1107.8909860138424,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "pageNavigator",
@@ -52,6 +52,27 @@
           "selector": {
             "id": "default"
           }
+        },
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Consolas'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "selected"
+          }
         }
       ],
       "fill": [
@@ -72,6 +93,24 @@
           },
           "selector": {
             "id": "default"
+          }
+        },
+        {
+          "properties": {
+            "fillColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#00E5FF'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "selected"
           }
         }
       ],

@@ -56,6 +56,16 @@
       "type": "RegisteredResources",
       "items": [
         {
+          "name": "Gemini_Generated_Image_8xha3c86203378992880431.jpg",
+          "path": "Gemini_Generated_Image_8xha3c86203378992880431.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "Gemini_Generated_Image_8xha3c88369620397362789.jpg",
+          "path": "Gemini_Generated_Image_8xha3c88369620397362789.jpg",
+          "type": "Image"
+        },
+        {
           "name": "Green_and_Yellow_Illustrated_F6989560429809626.png",
           "path": "Green_and_Yellow_Illustrated_F6989560429809626.png",
           "type": "Image"
