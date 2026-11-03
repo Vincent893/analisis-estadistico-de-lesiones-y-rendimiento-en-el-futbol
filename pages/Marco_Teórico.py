@@ -81,15 +81,6 @@ def render_marco_teorico():
             margin-top: 6px;
             border: 1px solid rgba(56, 189, 248, 0.25);
         }
-        .formula-container {
-            background: rgba(2, 6, 23, 0.75);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin: 14px 0;
-            text-align: center;
-            color: #38BDF8;
-        }
         .nav-card {
             background: rgba(11, 19, 43, 0.6);
             border: 1px solid rgba(0, 229, 255, 0.18);
@@ -120,7 +111,7 @@ def render_marco_teorico():
 
     st.markdown("""
         <div class="hero-header">
-            <span class="hero-badge">Marco Teórico Académico y Metodológico</span>
+            <span class="hero-badge">Marco Teórico Académico</span>
             <div class="hero-title">Marco Teórico</div>
             <p style="color: #94A3B8; margin: 0; font-size: 1.05rem; line-height: 1.6;">
                 El análisis del rendimiento individual y colectivo en el fútbol profesional requiere un sustento conceptual
@@ -129,53 +120,11 @@ def render_marco_teorico():
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("### Universo Empírico y Estructura del Estudio")
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
-        st.markdown("""
-            <div class="kpi-card">
-                <div class="kpi-title">Esquema Relacional</div>
-                <div class="kpi-value">17 Tablas</div>
-                <div class="kpi-footer">Tercera Forma Normal (3FN)</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown("""
-            <div class="kpi-card">
-                <div class="kpi-title">Población de Jugadores</div>
-                <div class="kpi-value">27,343</div>
-                <div class="kpi-footer">Perfiles Antropométricos</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col3:
-        st.markdown("""
-            <div class="kpi-card">
-                <div class="kpi-title">Registros Longitudinales</div>
-                <div class="kpi-value">108,639</div>
-                <div class="kpi-footer">Temporadas 2022 – 2026</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col4:
-        st.markdown("""
-            <div class="kpi-card">
-                <div class="kpi-title">Eventos Médicos</div>
-                <div class="kpi-value">26,949</div>
-                <div class="kpi-footer">Lesiones Documentadas</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_glosario, tab_refs = st.tabs([
+    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_glosario, tab_refs = st.tabs([
         "Introducción",
         "1. Epidemiología y Carga Física",
         "2. Valor Posicional y Concentración",
         "3. Dinámicas Posicionales y Rendimiento",
-        "4. Arquitectura y Ecosistema Analítico",
         "Glosario de Términos",
         "Referencias Bibliográficas",
     ])
@@ -296,13 +245,6 @@ def render_marco_teorico():
         El análisis de estas variables permite describir perfiles de riesgo de manera poblacional.
         """)
 
-        st.markdown(r"""
-        <div class="formula-container">
-            <b style="color: #F8FAFC; font-size: 1.05rem;">Índice de Masa Corporal (IMC):</b><br>
-            $$\text{IMC} = \frac{\text{Peso (kg)}}{[\text{Altura (m)}]^2}$$
-        </div>
-        """, unsafe_allow_html=True)
-
         st.write("""
         - **Masa Corporal e Inercia:** Jugadores de mayor altura y masa corporal concentran mayores fuerzas de desaceleración e impacto articular, modulando la susceptibilidad a sobrecargas y lesiones tendinosas.
         - **Factor Edad:** Los cambios biológicos propios de la edad condicionan la tolerancia tisular y el tiempo de recuperación, siendo una variable fundamental para la estratificación demográfica de las plantillas.
@@ -389,13 +331,6 @@ def render_marco_teorico():
           un HHI bajo indica una estructura competitiva equilibrada, mientras que un HHI alto describe una estructura oligopólica donde unos pocos clubes dominan el talento.
         """)
 
-        st.markdown(r"""
-        <div class="formula-container">
-            <b style="color: #F8FAFC; font-size: 1.05rem;">Fórmula del Índice Herfindahl-Hirschman (HHI):</b><br>
-            $$\text{HHI} = \sum_{i=1}^{N} s_i^2 \quad \text{donde } s_i \text{ representa la cuota porcentual de participación del club } i$$
-        </div>
-        """, unsafe_allow_html=True)
-
         st.markdown("#### 2.4. La Curva de Lorenz")
         st.write("""
         Es la representación gráfica del Índice de Gini. Mide el **porcentaje acumulado de rendimiento (goles, asistencias)** frente al
@@ -417,18 +352,8 @@ def render_marco_teorico():
         st.markdown("#### 3.1. La Consistencia y el Coeficiente de Variación (CV)")
         st.write("""
         La consistencia de un jugador o una demarcación se evalúa mediante la dispersión de sus datos a lo largo del tiempo.
-        El **Coeficiente de Variación (CV)** es una medida estadística que expresa la desviación estándar como un porcentaje de la media aritmética:
-        """)
-
-        st.markdown(r"""
-        <div class="formula-container">
-            <b style="color: #F8FAFC; font-size: 1.05rem;">Fórmula del Coeficiente de Variación (CV):</b><br>
-            $$CV = \frac{\sigma}{\mu} = \frac{\text{Desviación Estándar}}{\text{Media}}$$
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.write("""
-        Su fórmula permite comparar la volatilidad de datos con diferentes escalas.
+        El **Coeficiente de Variación (CV)** es una medida estadística que expresa la desviación estándar como un porcentaje de la media aritmética 
+        y permite comparar la volatilidad de datos con diferentes escalas.
         Un **CV bajo** describe un rendimiento estable y homogéneo; un **CV alto** describe un rendimiento volátil, sujeto a altibajos temporada tras temporada.
         En el análisis posicional, las posiciones defensivas y de contención exhiben habitualmente los CV más bajos, mientras que los atacantes exteriores
         y delanteros presentan un CV superior derivado de rachas anotadoras y variabilidad táctica.
@@ -448,94 +373,6 @@ def render_marco_teorico():
             reflejan un modelo de producción coral y distribuido.
         </div>
         """, unsafe_allow_html=True)
-
-    with tab_sec4:
-        st.markdown("""
-        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
-            <span class="theory-badge">Sección 4</span>
-            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">4. Arquitectura de Datos y Ecosistema Analítico</h3>
-            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
-                Principios de ingeniería de datos, almacenamiento relacional, motores analíticos y stack de visualización.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.write("""
-        Para garantizar el rigor y la escalabilidad del análisis, el estudio se sustenta en principios de ingeniería de datos.
-        La correcta comprensión de estos conceptos es fundamental para entender cómo se organiza la información del proyecto y qué herramientas permiten su procesamiento.
-        """)
-
-        st.markdown("#### 4.1. Modelo Relacional y Normalización (3FN)")
-        st.write("""
-        El universo de datos del proyecto se organiza bajo un modelo relacional normalizado.
-        La **Tercera Forma Normal (3FN)** es un principio de diseño de bases de datos que elimina la redundancia y garantiza la integridad referencial.
-        En lugar de tener una única tabla con datos repetidos, la información se divide en **17 tablas especializadas (entidades)** que se relacionan entre sí
-        mediante claves primarias y foráneas.
-        Esto permite que un jugador, una temporada y una lesión estén vinculados lógicamente sin duplicar información, asegurando la trazabilidad
-        de los más de **855,000 registros** del estudio.
-        """)
-
-        st.markdown("#### 4.2. Procesamiento Analítico (OLAP) y DuckDB")
-        st.write("""
-        Para el análisis de grandes volúmenes de datos, se utiliza un enfoque **OLAP (Online Analytical Processing)**.
-        A diferencia de las bases de datos transaccionales (**OLTP**) diseñadas para registrar operaciones diarias, las bases de datos OLAP están optimizadas
-        para consultas complejas y agregaciones rápidas.
-
-        El motor columnar **DuckDB** es una base de datos analítica local que permite procesar estos datos de manera ultrarrápida,
-        mientras que **Supabase** proporciona una capa de conexión remota en la nube para el despliegue del ecosistema.
-        """)
-
-        st.markdown("#### 4.3. Procesamiento y Visualización: Python, Pandas y Plotly")
-        st.write("""
-        El procesamiento de los datos se realiza mediante **Python**, un lenguaje de programación de propósito general ampliamente utilizado en ciencia de datos.
-        Las librerías **Pandas** y **NumPy** permiten la manipulación, limpieza y cálculo numérico de los registros.
-
-        Para la representación gráfica, se emplea **Plotly Express**, una librería que permite construir visualizaciones interactivas y dinámicas,
-        facilitando la exploración de los datos por parte del usuario.
-        """)
-
-        st.markdown("#### 4.4. Interfaz de Usuario: Streamlit")
-        st.write("""
-        La interfaz de usuario se desarrolla en **Streamlit**, un framework de código abierto que permite desplegar aplicaciones web de datos de forma ágil.
-        Streamlit transforma los scripts de Python en dashboards interactivos, permitiendo que el usuario final navegue por las métricas y visualizaciones
-        sin necesidad de conocimientos técnicos en programación.
-        """)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        col_stk1, col_stk2, col_stk3, col_stk4 = st.columns(4)
-        with col_stk1:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <b style="color: #00E5FF; font-size: 1.05rem;">Python & Pandas</b>
-                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
-                    Procesamiento, limpieza y cálculo numérico descriptivo de datos tabulares.
-                </p>
-            </div>""", unsafe_allow_html=True)
-        with col_stk2:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <b style="color: #00E5FF; font-size: 1.05rem;">DuckDB OLAP</b>
-                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
-                    Motor analítico columnar local para agregaciones y consultas masivas inmediatas.
-                </p>
-            </div>""", unsafe_allow_html=True)
-        with col_stk3:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <b style="color: #00E5FF; font-size: 1.05rem;">Plotly Express</b>
-                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
-                    Construcción de gráficos interactivos descriptivos con control dinámico de datos.
-                </p>
-            </div>""", unsafe_allow_html=True)
-        with col_stk4:
-            st.markdown("""
-            <div class="nav-card" style="text-align: center;">
-                <b style="color: #00E5FF; font-size: 1.05rem;">Streamlit Web</b>
-                <p style="color: #94A3B8; font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
-                    Despliegue de paneles web reactivos y navegación modular para el usuario.
-                </p>
-            </div>""", unsafe_allow_html=True)
 
     with tab_glosario:
         st.markdown("""

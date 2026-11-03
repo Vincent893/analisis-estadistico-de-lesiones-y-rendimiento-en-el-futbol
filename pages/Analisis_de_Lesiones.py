@@ -15,12 +15,10 @@ UI.render_sidebar()
 cargar_estilos()
 load_dotenv(find_dotenv(), override=True)
 
-MOTHERDUCK_TOKEN = os.getenv("MOTHERDUCK_TOKEN", "").strip()
-DB_MOTHERDUCK = f"md:database?motherduck_token={MOTHERDUCK_TOKEN}" if MOTHERDUCK_TOKEN else "md:database"
-
+MOTHERDUCK_TOKEN = os.getenv("DB_CONNECTION_URL", "").strip()
 
 def run_query(query):
-    with duckdb.connect(DB_MOTHERDUCK) as conn:
+    with duckdb.connect(MOTHERDUCK_TOKEN) as conn:
         return conn.execute(query).df()
 
 

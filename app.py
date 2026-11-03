@@ -10,26 +10,26 @@ class Main:
 
     @staticmethod
     def run():
-        
+        with st.spinner("Inicializando conexion"):
         # setup db connection
-        connected = DB.connect()
+            connected = DB.connect()
+            
+            supabase = DB.connect_supabase()
+
+            UI.setup_page()
+            cargar_estilos()
         
-        supabase = DB.connect_supabase()
 
-        UI.setup_page()
-        cargar_estilos()
-       
+            st.markdown("""
+            <div class="hero-header">
+                <span class="hero-badge">Temporadas 2022 - 2026</span>
+                <div class="hero-title">Analisis Estadistico de Lesiones y Rendimiento Individual y Colectivo en Clubes de Futbol Profesional</div>
+                <p style="color: #94A3B8; margin: 0;">Investigación sobre el impacto en clubes de fútbol profesional</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        st.markdown("""
-        <div class="hero-header">
-            <span class="hero-badge">Temporadas 2022 - 2026</span>
-            <div class="hero-title">Analisis Estadistico de Lesiones y Rendimiento Individual y Colectivo en Clubes de Futbol Profesional</div>
-            <p style="color: #94A3B8; margin: 0;">Investigación sobre el impacto en clubes de fútbol profesional</p>
-         </div>
-        """, unsafe_allow_html=True)
-
-        if connected or supabase:        
-            UI.render_sidebar()
+            if connected or supabase:        
+                UI.render_sidebar()
             
             
 
