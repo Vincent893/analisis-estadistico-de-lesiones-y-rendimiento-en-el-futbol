@@ -248,12 +248,13 @@ def render_marco_metodologico():
     """, unsafe_allow_html=True)
 
     # Tabas para los fórmulas usadas
-    tab_media, tab_cv, tab_gini, tab_hhi, tab_aporte = st.tabs([
+    tab_media, tab_cv, tab_gini, tab_hhi, tab_aporte, tab_imc = st.tabs([
         "Media y Mediana",
         "Desviación y CV",
         "Coeficiente de Gini",
         "Índice HHI",
-        "Aporte Posicional (%)"
+        "Aporte Posicional (%)",
+        "IMC"
     ])
 
     with tab_media:
@@ -315,6 +316,17 @@ def render_marco_metodologico():
             st.markdown("##### Se aplicó en:")
             st.markdown("""
             * **Objetivo 3:** Para calcular el porcentaje exacto de goles, asistencias, tackles y pases clave que aporta cada línea táctica (Arqueros, Defensas, Mediocampistas y Delanteros) al club.
+            """)
+
+    with tab_imc:
+        col_formula_imc, col_texto_imc = st.columns([1, 1])
+        with col_formula_imc:
+            st.markdown("##### Índice de Masa Corporal (IMC)")
+            st.latex(r"\text{IMC} = \frac{\text{Peso (kg)}}{\text{Altura (m)}^2}")
+        with col_texto_imc:
+            st.markdown("##### Se aplicó en:")
+            st.markdown("""
+            * **Objetivo 1:** Para evaluar la relación entre la composición corporal de los jugadores y la incidencia o severidad de las lesiones registradas.
             """)
 
     st.markdown("<br>", unsafe_allow_html=True)
