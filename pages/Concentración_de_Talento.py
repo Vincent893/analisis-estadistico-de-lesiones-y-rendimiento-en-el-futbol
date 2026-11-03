@@ -94,9 +94,6 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-if es_simulado:
-    st.info("Aviso: Conexión a la base de datos no detectada. Mostrando conjunto de datos de demostración.")
-
 st.divider()
 
 st.subheader("Indicadores Clave")

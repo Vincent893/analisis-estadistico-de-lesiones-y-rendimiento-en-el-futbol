@@ -102,9 +102,9 @@ def cargar_datos(_conn):
                         "offensive_score": max(0, min(10, off_score)),
                         "defensive_score": max(0, min(10, def_score)),
                     })
-    return pd.DataFrame(rows), True
+    return pd.DataFrame(rows)
 
-df_raw, es_simulado = cargar_datos(conn)
+df_raw = cargar_datos(conn)
 
 if "linea" not in df_raw.columns:
     pos_linea_map = {
@@ -136,9 +136,6 @@ st.markdown("""
         </p>
     </div>
 """, unsafe_allow_html=True)
-
-if es_simulado:
-    st.info("Aviso: Conexión a la base de datos no detectada. Mostrando conjunto de datos de demostración.")
 
 st.divider()
 
