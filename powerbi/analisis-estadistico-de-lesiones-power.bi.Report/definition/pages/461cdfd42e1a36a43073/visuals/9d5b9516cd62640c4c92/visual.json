@@ -1,17 +1,33 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "6e81d8fe0048dba39020",
+  "name": "9d5b9516cd62640c4c92",
   "position": {
-    "x": 404.37890527368154,
-    "y": 33.271682079480129,
+    "x": 345.45454545454544,
+    "y": 18.18181818181818,
     "z": 0,
-    "height": 85.27041679316477,
-    "width": 1108.515418311142,
-    "tabOrder": 3000
+    "height": 70.9090909090909,
+    "width": 1230.9090909090908,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "pageNavigator",
     "objects": {
+      "shape": [
+        {
+          "properties": {
+            "tileShape": {
+              "expr": {
+                "Literal": {
+                  "Value": "'pill'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ],
       "text": [
         {
           "properties": {
@@ -29,40 +45,12 @@
                 }
               }
             },
-            "bold": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
             "fontColor": {
               "solid": {
                 "color": {
                   "expr": {
                     "ThemeDataColor": {
                       "ColorId": 0,
-                      "Percent": 0
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "id": "default"
-          }
-        }
-      ],
-      "fill": [
-        {
-          "properties": {
-            "fillColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 1,
                       "Percent": 0
                     }
                   }
@@ -92,7 +80,7 @@
             "weight": {
               "expr": {
                 "Literal": {
-                  "Value": "4D"
+                  "Value": "3D"
                 }
               }
             }
@@ -113,21 +101,61 @@
               }
             }
           }
-        }
-      ],
-      "shape": [
+        },
         {
           "properties": {
-            "tileShape": {
-              "expr": {
-                "Literal": {
-                  "Value": "'pill'"
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#00E5FF'"
+                    }
+                  }
                 }
               }
             }
           },
           "selector": {
             "id": "default"
+          }
+        }
+      ],
+      "fill": [
+        {
+          "properties": {
+            "fillColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#111F38'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        },
+        {
+          "properties": {
+            "fillColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#00E5FF'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "selected"
           }
         }
       ]
