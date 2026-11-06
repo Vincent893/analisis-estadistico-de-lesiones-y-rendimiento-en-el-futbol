@@ -26,21 +26,21 @@ table 'main dim_player'
 
 		annotation SummarizationSetBy = Automatic
 
-	column height_cm
+	column Altura_cm
 		dataType: int64
 		formatString: 0
 		lineageTag: 5c9dc48a-0001-4e6b-8f52-e23a4b83dfe0
 		summarizeBy: none
-		sourceColumn: height_cm
+		sourceColumn: Altura_cm
 
 		annotation SummarizationSetBy = Automatic
 
-	column weight_kg
+	column Peso_kg
 		dataType: int64
 		formatString: 0
 		lineageTag: 09031508-422c-4b16-a1fc-4bc21cbbe350
 		summarizeBy: none
-		sourceColumn: weight_kg
+		sourceColumn: Peso_kg
 
 		annotation SummarizationSetBy = Automatic
 
@@ -57,7 +57,8 @@ table 'main dim_player'
 		source =
 				let
 				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "database"),
-				    main_dim_player = Origen{[Schema="main",Item="dim_player"]}[Data]
+				    main_dim_player = Origen{[Schema="main",Item="dim_player"]}[Data],
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(main_dim_player,{{"weight_kg", "Peso_kg"}, {"height_cm", "Altura_cm"}})
 				in
-				    main_dim_player
+				    #"Columnas con nombre cambiado"
 

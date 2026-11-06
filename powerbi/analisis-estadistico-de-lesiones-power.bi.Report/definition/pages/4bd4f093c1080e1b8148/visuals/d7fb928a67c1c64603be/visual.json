@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "d7fb928a67c1c64603be",
   "position": {
-    "x": 368.62745098039215,
-    "y": 133.33333333333334,
-    "z": 2000,
-    "height": 184.22788605697153,
-    "width": 275.07999424945064,
-    "tabOrder": 2000
+    "x": 58.18181818181818,
+    "y": 309.09090909090907,
+    "z": 1000,
+    "height": 170.90909090909091,
+    "width": 463.63636363636363,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -77,6 +77,17 @@
           },
           "selector": {
             "id": "default"
+          }
+        },
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
           }
         }
       ],
@@ -178,6 +189,13 @@
                   "Value": "'middle'"
                 }
               }
+            },
+            "calloutSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "59D"
+                }
+              }
             }
           }
         }
@@ -263,6 +281,81 @@
               "expr": {
                 "Literal": {
                   "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ],
+      "referenceLabelLayout": [
+        {
+          "properties": {
+            "position": {
+              "expr": {
+                "Literal": {
+                  "Value": "'right'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ],
+      "divider": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ],
+      "cardImage": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "image": {
+              "image": {
+                "name": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'Captura de pantalla 2026-11-03 sss.png'"
+                    }
+                  }
+                },
+                "url": {
+                  "expr": {
+                    "ResourcePackageItem": {
+                      "PackageName": "RegisteredResources",
+                      "PackageType": 1,
+                      "ItemName": "Captura_de_pantalla_2026-11-030713350783547777.png"
+                    }
+                  }
+                },
+                "scaling": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'Fit'"
+                    }
+                  }
                 }
               }
             }

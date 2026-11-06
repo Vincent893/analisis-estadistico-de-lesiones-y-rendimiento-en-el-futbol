@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "b46ddf0e25c374d839d1",
   "position": {
-    "x": 1045.0980392156862,
-    "y": 498.03921568627447,
-    "z": 6001,
-    "height": 552.94117647058818,
-    "width": 839.21568627450984,
-    "tabOrder": 6001
+    "x": 1067.2727272727273,
+    "y": 498.18181818181813,
+    "z": 6000,
+    "height": 536.36363636363637,
+    "width": 787.27272727272725,
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "scatterChart",
@@ -23,11 +23,11 @@
                       "Entity": "main dim_player"
                     }
                   },
-                  "Property": "weight_kg"
+                  "Property": "Peso_kg"
                 }
               },
               "queryRef": "main dim_player.weight_kg",
-              "nativeQueryRef": "weight_kg",
+              "nativeQueryRef": "Peso_kg",
               "active": true
             }
           ]
@@ -141,7 +141,7 @@
             "gridlineTransparency": {
               "expr": {
                 "Literal": {
-                  "Value": "0D"
+                  "Value": "79D"
                 }
               }
             },
@@ -208,7 +208,7 @@
             "gridlineTransparency": {
               "expr": {
                 "Literal": {
-                  "Value": "27D"
+                  "Value": "79D"
                 }
               }
             },
@@ -338,43 +338,22 @@
                   "Value": "30D"
                 }
               }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#00E5FF'"
+                    }
+                  }
+                }
+              }
             }
           }
         }
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "64b54b566202b083301b",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main dim_player"
-              }
-            },
-            "Property": "weight_kg"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "22270d7500120bd76650",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main analytics_player_seasons"
-              }
-            },
-            "Property": "Tasa Lesiones por 1000 min"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

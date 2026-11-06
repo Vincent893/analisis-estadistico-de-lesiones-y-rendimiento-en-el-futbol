@@ -5788,7 +5788,7 @@ cultureInfo es-ES
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "main dim_player",
-			          "ConceptualProperty": "height_cm"
+			          "ConceptualProperty": "Altura_cm"
 			        }
 			      },
 			      "State": "Generated",
@@ -5817,7 +5817,7 @@ cultureInfo es-ES
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "main dim_player",
-			          "ConceptualProperty": "weight_kg"
+			          "ConceptualProperty": "Peso_kg"
 			        }
 			      },
 			      "State": "Generated",

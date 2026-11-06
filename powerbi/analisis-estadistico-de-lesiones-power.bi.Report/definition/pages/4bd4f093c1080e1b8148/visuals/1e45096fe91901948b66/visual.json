@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "1e45096fe91901948b66",
   "position": {
-    "x": 52,
-    "y": 498,
-    "z": 4000,
-    "height": 552,
-    "width": 974,
-    "tabOrder": 4000
+    "x": 58.18181818181818,
+    "y": 498.18181818181813,
+    "z": 3000,
+    "height": 536.36363636363637,
+    "width": 961.81818181818176,
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "scatterChart",
@@ -46,11 +46,11 @@
                       "Entity": "main dim_player"
                     }
                   },
-                  "Property": "height_cm"
+                  "Property": "Altura_cm"
                 }
               },
               "queryRef": "main dim_player.height_cm",
-              "nativeQueryRef": "height_cm",
+              "nativeQueryRef": "Altura_cm",
               "active": true
             }
           ]
@@ -158,6 +158,13 @@
                   "Value": "'wf_standard-font, helvetica, arial, sans-serif'"
                 }
               }
+            },
+            "gridlineTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "79D"
+                }
+              }
             }
           }
         }
@@ -235,6 +242,13 @@
                   }
                 }
               }
+            },
+            "gridlineTransparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "79D"
+                }
+              }
             }
           }
         }
@@ -252,7 +266,14 @@
             "bubbleSize": {
               "expr": {
                 "Literal": {
-                  "Value": "-12L"
+                  "Value": "-4L"
+                }
+              }
+            },
+            "preventOverflow": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }
@@ -282,7 +303,20 @@
             "transparency": {
               "expr": {
                 "Literal": {
-                  "Value": "65D"
+                  "Value": "72D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "colorByCategory": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -445,6 +479,17 @@
               "expr": {
                 "Literal": {
                   "Value": "30D"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#00E5FF'"
+                    }
+                  }
                 }
               }
             }

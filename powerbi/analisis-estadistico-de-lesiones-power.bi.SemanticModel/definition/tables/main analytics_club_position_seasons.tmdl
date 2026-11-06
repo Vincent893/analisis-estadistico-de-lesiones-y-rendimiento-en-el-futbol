@@ -122,6 +122,19 @@ table 'main analytics_club_position_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	column Rango_Minutos_Posicion =
+			
+			SWITCH(
+			    TRUE(),
+			    'main analytics_club_position_seasons'[avg_mins_played] < 1000, "1. Bajo (< 1,000 min)",
+			    'main analytics_club_position_seasons'[avg_mins_played] <= 2000, "2. Medio (1,000 - 2,000 min)",
+			    "3. Alto (> 2,000 min)"
+			)
+		lineageTag: 371585b9-7c62-4ff1-b46e-2a35f1c08c44
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition 'main analytics_club_position_seasons' = m
 		mode: import
 		source =
