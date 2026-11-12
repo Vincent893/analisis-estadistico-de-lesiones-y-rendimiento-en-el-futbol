@@ -42,11 +42,11 @@ class UI:
 
             
             st.page_link("app.py", label="Inicio")
-            st.page_link("pages/Marco_Teórico.py", label="Marco Teórico")
-            st.page_link("pages/Marco_Metodologico.py", label="Marco Metodológico")
-            st.page_link("pages/Analisis_de_lesiones.py", label="Análisis de Lesiones")
-            st.page_link("pages/Concentración_de_Talento.py", label="Concentración de Talento")
-            st.page_link("pages/Análisis_Posicional.py", label="Análisis Posicional")
-            st.page_link("pages/Simulador_de_plantilla.py", label="Simulador de Plantilla")
+            st.page_link("pages/marco_teorico.py", label="Marco Teórico")
+            st.page_link("pages/marco_metodologico.py", label="Marco Metodológico")
+            st.page_link("pages/analisis_de_lesiones.py", label="Análisis de Lesiones")
+            st.page_link("pages/concentración_de_talento.py", label="Concentración de Talento")
+            st.page_link("pages/analisis_posicional.py", label="Análisis Posicional")
+            st.page_link("pages/simulador_de_plantilla.py", label="Simulador de Plantilla")
             
             st.divider()
