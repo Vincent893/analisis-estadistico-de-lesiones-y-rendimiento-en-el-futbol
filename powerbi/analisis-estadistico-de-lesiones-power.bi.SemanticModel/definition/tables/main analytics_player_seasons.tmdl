@@ -151,6 +151,8 @@ table 'main analytics_player_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"main analytics_player_seasons","TableItemName":"total_days_lost (ubicacion)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
 	column average_rating
 		dataType: double
 		lineageTag: e24a78ac-6552-40cc-b6e3-f5dc1a2b157d
@@ -186,6 +188,72 @@ table 'main analytics_player_seasons'
 		lineageTag: 5ed64815-978c-4266-ae5b-8e41fbc090f6
 		summarizeBy: sum
 		sourceColumn: xg_per_90
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'total_days_lost (ubicacion)' =
+			IF(
+				ISBLANK('main analytics_player_seasons'[total_days_lost]),
+				BLANK(),
+				IF(
+					'main analytics_player_seasons'[total_days_lost] >= 0,
+					ROUNDDOWN('main analytics_player_seasons'[total_days_lost] / 20, 0) * 20,
+					ROUNDUP('main analytics_player_seasons'[total_days_lost] / 20, 0) * 20
+				)
+			)
+		lineageTag: 18249c9a-062a-4242-8110-b91c4a93cad1
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "main analytics_player_seasons"
+				          }
+				        },
+				        "Property": "total_days_lost"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 20.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"m","Entity":"main analytics_player_seasons"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"m"}},"Property":"total_days_lost"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"m"}},"Property":"total_days_lost"}},"Size":20.0}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Intervalo_Dias =
+			
+			SWITCH(
+			    TRUE(),
+			    'main analytics_player_seasons'[total_days_lost] <= 30, "0 - 30 días",
+			    'main analytics_player_seasons'[total_days_lost] <= 60, "31 - 60 días",
+			    'main analytics_player_seasons'[total_days_lost] <= 90, "61 - 90 días",
+			    "Más de 90 días"
+			)
+		lineageTag: 245b4f65-d9cc-452b-a404-1220cbb3ee32
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Total Días de Baja' =
+			
+			SUM( 'main analytics_player_seasons'[total_days_lost] )
+		lineageTag: cdc0e99f-a01c-431c-93f9-66eaaa3a919f
+		summarizeBy: sum
 
 		annotation SummarizationSetBy = Automatic
 

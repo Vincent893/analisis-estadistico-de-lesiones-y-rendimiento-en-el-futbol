@@ -2,21 +2,50 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "4bd4f093c1080e1b8148",
   "displayName": "Página 3",
-  "displayOption": "FitToPage",
+  "displayOption": "ActualSize",
   "height": 1080,
   "width": 1920,
+  "pageBinding": {
+    "name": "56e99a0fb69ec4adb613",
+    "type": "Default",
+    "parameters": [],
+    "acceptsFilterContext": "None"
+  },
   "objects": {
     "background": [
       {
         "properties": {
-          "color": {
-            "solid": {
-              "color": {
+          "image": {
+            "image": {
+              "name": {
                 "expr": {
                   "Literal": {
-                    "Value": "'#0B1329'"
+                    "Value": "'Gemini_Generated_Image_8xha3c8xha3c8xha.jpg'"
                   }
                 }
+              },
+              "url": {
+                "expr": {
+                  "ResourcePackageItem": {
+                    "PackageName": "RegisteredResources",
+                    "PackageType": 1,
+                    "ItemName": "Gemini_Generated_Image_8xha3c86203378992880431.jpg"
+                  }
+                }
+              },
+              "scaling": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'Fit'"
+                  }
+                }
+              }
+            }
+          },
+          "transparency": {
+            "expr": {
+              "Literal": {
+                "Value": "0D"
               }
             }
           }
