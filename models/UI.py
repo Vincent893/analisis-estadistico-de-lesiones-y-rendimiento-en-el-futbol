@@ -45,7 +45,7 @@ class UI:
             st.page_link("pages/marco_teorico.py", label="Marco Teórico")
             st.page_link("pages/marco_metodologico.py", label="Marco Metodológico")
             st.page_link("pages/analisis_de_lesiones.py", label="Análisis de Lesiones")
-            st.page_link("pages/concentración_de_talento.py", label="Concentración de Talento")
+            st.page_link("pages/concentracion_de_talento.py", label="Concentración de Talento")
             st.page_link("pages/analisis_posicional.py", label="Análisis Posicional")
             st.page_link("pages/simulador_de_plantilla.py", label="Simulador de Plantilla")
             
