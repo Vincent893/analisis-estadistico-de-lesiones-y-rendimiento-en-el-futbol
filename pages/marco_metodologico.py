@@ -93,7 +93,6 @@ def render_marco_metodologico():
             <div class="kpi-card">
                 <div class="kpi-title">Tipo de Estudio</div>
                 <div class="kpi-value">Longitudinal</div>
-                <div class="kpi-footer">Panel 2022 – 2026</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -102,25 +101,22 @@ def render_marco_metodologico():
             <div class="kpi-card">
                 <div class="kpi-title">Nivel Analítico</div>
                 <div class="kpi-value">Descriptivo</div>
-                <div class="kpi-footer">Relacional</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col_poblacion_muestral:
         st.markdown("""
             <div class="kpi-card">
-                <div class="kpi-title">Población Muestral</div>
-                <div class="kpi-value">Jugadores Total</div>
-                <div class="kpi-footer">27,343 Jugadores</div>
+                <div class="kpi-title">Tamaño de Muestra</div>
+                <div class="kpi-value">27,343 Jugadores</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col_herramienta:
         st.markdown("""
             <div class="kpi-card">
-                <div class="kpi-title">Herramienta</div>
-                <div class="kpi-value">DuckDB / SQL</div>
-                <div class="kpi-footer">Consultas y Tablas</div>
+                <div class="kpi-title">Herramientas</div>
+                <div class="kpi-value">DuckDB / Supabase</div>
             </div>
         """, unsafe_allow_html=True)
 
