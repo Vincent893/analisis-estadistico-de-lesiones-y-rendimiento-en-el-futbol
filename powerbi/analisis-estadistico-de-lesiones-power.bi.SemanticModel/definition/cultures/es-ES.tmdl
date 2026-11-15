@@ -5784,7 +5784,7 @@ cultureInfo es-ES
 			        }
 			      ]
 			    },
-			    "main_dim_player.height_cm": {
+			    "main_dim_player.altura_cm": {
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "main dim_player",
@@ -5794,26 +5794,20 @@ cultureInfo es-ES
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "height cm": {
+			          "altura cm": {
 			            "State": "Generated"
 			          }
 			        },
 			        {
-			          "height_cm": {
+			          "Altura_cm": {
 			            "Type": "Noun",
 			            "State": "Generated",
 			            "Weight": 0.99
 			          }
-			        },
-			        {
-			          "cm": {
-			            "State": "Generated",
-			            "Weight": 0.97
-			          }
 			        }
 			      ]
 			    },
-			    "main_dim_player.weight_kg": {
+			    "main_dim_player.peso_kg": {
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "main dim_player",
@@ -5823,12 +5817,12 @@ cultureInfo es-ES
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "weight kg": {
+			          "peso kg": {
 			            "State": "Generated"
 			          }
 			        },
 			        {
-			          "weight_kg": {
+			          "Peso_kg": {
 			            "Type": "Noun",
 			            "State": "Generated",
 			            "Weight": 0.99
@@ -6322,6 +6316,124 @@ cultureInfo es-ES
 			          }
 			        }
 			      ]
+			    },
+			    "main_analytics_club_position_season.rango_minutos_posicion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Rango_Minutos_Posicion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "rango minutos posicion": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "rango minuto posicion": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "Rango_Minutos_Posicion": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_player_season.total_days_lost_ubicacion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_player_seasons",
+			          "ConceptualProperty": "total_days_lost (ubicacion)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total_days_lost (ubicacion)": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "total_days_lost": {
+			            "State": "Generated",
+			            "Weight": 0.75
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_player_season.intervalo_dias": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_player_seasons",
+			          "ConceptualProperty": "Intervalo_Dias"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "intervalo dias": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Intervalo_Dias": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_player_season.total_días_de_baja": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_player_seasons",
+			          "ConceptualProperty": "Total Días de Baja"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total días de baja": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "total día de baja": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "aggregate día de baja": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.599
+			          }
+			        },
+			        {
+			          "overall día de baja": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.599
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
@@ -6463,6 +6575,138 @@ cultureInfo es-ES
 			        }
 			      ]
 			    },
+			    "main_analytics_player_season_has_total_días_de_baja": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_player_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_player_season": {
+			          "Target": {
+			            "Entity": "main_analytics_player_season"
+			          }
+			        },
+			        "main_analytics_player_season.total_días_de_baja": {
+			          "Target": {
+			            "Entity": "main_analytics_player_season.total_días_de_baja"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_player_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_player_season.total_días_de_baja"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_player_seasons_have_total_días_de_baja"
+			        }
+			      ]
+			    },
+			    "main_analytics_player_season_has_intervalo_dias": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_player_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_player_season": {
+			          "Target": {
+			            "Entity": "main_analytics_player_season"
+			          }
+			        },
+			        "main_analytics_player_season.intervalo_dias": {
+			          "Target": {
+			            "Entity": "main_analytics_player_season.intervalo_dias"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_player_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_player_season.intervalo_dias"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_player_seasons_have_intervalo_dias"
+			        }
+			      ]
+			    },
+			    "main_analytics_player_season_has_total_days_lost_ubicacion": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_player_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_player_season": {
+			          "Target": {
+			            "Entity": "main_analytics_player_season"
+			          }
+			        },
+			        "main_analytics_player_season.total_days_lost_ubicacion": {
+			          "Target": {
+			            "Entity": "main_analytics_player_season.total_days_lost_ubicacion"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_player_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_player_season.total_days_lost_ubicacion"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_player_seasons_have_total_days_lost_ubicacion"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_rango_minutos_posicion": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.rango_minutos_posicion": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.rango_minutos_posicion"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.rango_minutos_posicion"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_rango_minutos_posicions"
+			        }
+			      ]
+			    },
 			    "main_dim_season_has_season_order": {
 			      "Binding": {
 			        "ConceptualEntity": "main dim_season"
@@ -6595,7 +6839,7 @@ cultureInfo es-ES
 			        }
 			      ]
 			    },
-			    "main_dim_player_has_weight_kg": {
+			    "main_dim_player_has_peso_kg": {
 			      "Binding": {
 			        "ConceptualEntity": "main dim_player"
 			      },
@@ -6606,9 +6850,9 @@ cultureInfo es-ES
 			            "Entity": "main_dim_player"
 			          }
 			        },
-			        "main_dim_player.weight_kg": {
+			        "main_dim_player.peso_kg": {
 			          "Target": {
-			            "Entity": "main_dim_player.weight_kg"
+			            "Entity": "main_dim_player.peso_kg"
 			          }
 			        }
 			      },
@@ -6619,16 +6863,16 @@ cultureInfo es-ES
 			              "Role": "main_dim_player"
 			            },
 			            "Object": {
-			              "Role": "main_dim_player.weight_kg"
+			              "Role": "main_dim_player.peso_kg"
 			            }
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "main_dim_players_have_weight_kg"
+			          "ID": "main_dim_players_have_peso_kg"
 			        }
 			      ]
 			    },
-			    "main_dim_player_has_height_cm": {
+			    "main_dim_player_has_altura_cm": {
 			      "Binding": {
 			        "ConceptualEntity": "main dim_player"
 			      },
@@ -6639,9 +6883,9 @@ cultureInfo es-ES
 			            "Entity": "main_dim_player"
 			          }
 			        },
-			        "main_dim_player.height_cm": {
+			        "main_dim_player.altura_cm": {
 			          "Target": {
-			            "Entity": "main_dim_player.height_cm"
+			            "Entity": "main_dim_player.altura_cm"
 			          }
 			        }
 			      },
@@ -6652,12 +6896,12 @@ cultureInfo es-ES
 			              "Role": "main_dim_player"
 			            },
 			            "Object": {
-			              "Role": "main_dim_player.height_cm"
+			              "Role": "main_dim_player.altura_cm"
 			            }
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "main_dim_players_have_height_cm"
+			          "ID": "main_dim_players_have_altura_cm"
 			        }
 			      ]
 			    },

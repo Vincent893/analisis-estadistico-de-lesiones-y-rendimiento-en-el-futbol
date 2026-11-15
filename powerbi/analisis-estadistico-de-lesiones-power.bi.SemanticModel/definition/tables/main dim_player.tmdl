@@ -28,21 +28,25 @@ table 'main dim_player'
 
 	column Altura_cm
 		dataType: int64
-		formatString: 0
+		formatString: #,##0.00 "Cm"
 		lineageTag: 5c9dc48a-0001-4e6b-8f52-e23a4b83dfe0
 		summarizeBy: none
 		sourceColumn: Altura_cm
 
 		annotation SummarizationSetBy = Automatic
 
+		annotation PBI_FormatHint = {"isCustom":true}
+
 	column Peso_kg
 		dataType: int64
-		formatString: 0
+		formatString: #,##0.00 "Kg"
 		lineageTag: 09031508-422c-4b16-a1fc-4bc21cbbe350
 		summarizeBy: none
 		sourceColumn: Peso_kg
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isCustom":true}
 
 	column primary_category
 		dataType: string
