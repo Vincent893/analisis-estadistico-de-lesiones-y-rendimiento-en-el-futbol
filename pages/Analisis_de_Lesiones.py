@@ -5,18 +5,20 @@ import plotly.express as px
 import streamlit as st
 
 from dotenv import load_dotenv, find_dotenv
+from models.UI import UI
 from utils.estilos import cargar_estilos
 from utils.graficos import apply_theme
 
+
+UI.setup_page()
+UI.render_sidebar()
 cargar_estilos()
 load_dotenv(find_dotenv(), override=True)
 
-MOTHERDUCK_TOKEN = os.getenv("MOTHERDUCK_TOKEN", "").strip()
-DB_MOTHERDUCK = f"md:database?motherduck_token={MOTHERDUCK_TOKEN}" if MOTHERDUCK_TOKEN else "md:database"
-
+MOTHERDUCK_TOKEN = os.getenv("DB_CONNECTION_URL", "").strip()
 
 def run_query(query):
-    with duckdb.connect(DB_MOTHERDUCK) as conn:
+    with duckdb.connect(MOTHERDUCK_TOKEN) as conn:
         return conn.execute(query).df()
 
 
@@ -27,8 +29,60 @@ def mostrar(fig, alto=360):
     st.plotly_chart(fig, use_container_width=True, config={"staticPlot": True})
 
 
-# El CTE principal para cada consulta, es un filtro con el fin de no copiar el cte en cada consulta
-P_CTE = """
+# El categorizador de tiempo en la sidebar
+st.sidebar.markdown("---")
+
+try:
+    df_seasons_sb = run_query("SELECT season_label FROM seasons ORDER BY season_order")
+    seasons_opt_sb = ["Todas las temporadas"] + df_seasons_sb["season_label"].tolist()
+except Exception:
+    seasons_opt_sb = ["Todas las temporadas", "2022/23", "2023/24", "2024/25", "2025/26"]
+
+selected_season = st.sidebar.selectbox("Seleccionar Temporada", seasons_opt_sb)
+
+# El CTE principal con el de tiempo conectado con el filtro del sidebar
+season_where = f"WHERE season_label = '{selected_season}'" if selected_season != "Todas las temporadas" else ""
+
+P_CTE = f"""
+WITH temp AS (
+    SELECT season_id, season_label, season_order,
+           CASE WHEN is_fabricated = 0 THEN 1 ELSE 0 END AS es_real
+    FROM seasons
+    {season_where}
+),
+les AS (
+    SELECT i.injury_id, i.player_id, i.season_id, i.injury_type,
+           TRY_CAST(i.start_date AS DATE) AS f_ini,
+           TRY_CAST(i.end_date   AS DATE) AS f_fin,
+           date_diff('day', TRY_CAST(i.start_date AS DATE), TRY_CAST(i.end_date AS DATE)) AS dias
+    FROM injuries i
+    JOIN temp t ON t.season_id = i.season_id
+),
+les_ps AS (
+    SELECT player_id, season_id, COUNT(*) AS n_les, SUM(dias) AS dias_perdidos
+    FROM les
+    GROUP BY player_id, season_id
+),
+ps_base AS (
+    SELECT a.player_id, a.season_id, t.season_label, t.season_order, t.es_real,
+           a.age, a.mins, p.primary_category, a.height_cm, a.weight_kg,
+           COALESCE(l.n_les, 0) AS n_les,
+           COALESCE(l.dias_perdidos, 0) AS dias_perdidos
+    FROM analytics_player_seasons a
+    JOIN temp t ON t.season_id = a.season_id
+    JOIN players p ON p.player_id = a.player_id
+    LEFT JOIN les_ps l ON l.player_id = a.player_id AND l.season_id = a.season_id
+    WHERE a.height_cm > 0 AND a.weight_kg > 0
+),
+ps AS (
+    SELECT *,
+        CEIL(4 * CUME_DIST() OVER (ORDER BY height_cm))::INT AS q_altura,
+        CEIL(4 * CUME_DIST() OVER (ORDER BY weight_kg))::INT AS q_peso
+    FROM ps_base
+)
+"""
+# El mismo cte, pero sin el filtro del sidebar, es aplicado para los gráficos que necesariamente son independientes
+P_CTE_2 = """
 WITH temp AS (
     SELECT season_id, season_label, season_order,
            CASE WHEN is_fabricated = 0 THEN 1 ELSE 0 END AS es_real
@@ -66,7 +120,6 @@ ps AS (
 )
 """
 
-
 # Título y presentación
 st.title("Estudio Descriptivo de Frecuencia, Duración y Distribución de Lesiones en el Fútbol Profesional (2022-2026)")
 st.markdown("##### *Objetivo: Describir la frecuencia, duración y distribución de las lesiones en los jugadores entre las temporadas comprendidas entre los años 2022 y 2026, relacionándolas con sus características antropométricas (altura y peso) y su carga de minutos jugados.*")
@@ -83,35 +136,42 @@ st.markdown("""
 El análisis descriptivo inicial abarca un total de 108,639 observaciones de jugador-temporada. Esta exploración preliminar permite cuantificar la dimensión global de las afectaciones físicas, estableciendo los parámetros de frecuencia de los futbolistas que presentan al menos un evento lesivo durante el periodo competitivo, así como la distribución acumulada de los días de inactividad.
 """)
 
+st.markdown("""
+    <style>
+    [data-testid="stMetricValue"] {
+        color: #00BFFF;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 sql_q1 = P_CTE + """
 SELECT
   (SELECT COUNT(*) FROM les) AS total_lesiones,
   (SELECT COUNT(DISTINCT player_id) FROM les) AS jugadores_lesionados,
   (SELECT COUNT(*) FROM ps) AS jugadores_temporada,
   (SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) FROM ps) AS pct_con_lesion,
-  (SELECT ROUND(AVG(dias), 1) FROM les) AS dias_promedio,
-  (SELECT MEDIAN(dias) FROM les) AS dias_mediana,
+  (SELECT ROUND(AVG(dias), 0) FROM les) AS dias_promedio,
+  (SELECT ROUND(MEDIAN(dias), 0) FROM les) AS dias_mediana,
   (SELECT MAX(dias) FROM les) AS dias_max,
   (SELECT SUM(dias) FROM les) AS dias_totales;
 """
 k = run_query(sql_q1).iloc[0]
 
 f1 = st.columns(4)
-f1[0].metric("Lesiones registradas", f"{k['total_lesiones']:,}")
-f1[1].metric("Jugadores distintos lesionados", f"{k['jugadores_lesionados']:,}")
-f1[2].metric("Jugador-temporadas analizadas", f"{k['jugadores_temporada']:,}")
+f1[0].metric("Lesiones registradas", f"{int(k['total_lesiones']):,}")
+f1[1].metric("Jugadores distintos lesionados", f"{int(k['jugadores_lesionados']):,}")
+f1[2].metric("Jugador-temporadas analizadas", f"{int(k['jugadores_temporada']):,}")
 f1[3].metric("% con al menos una lesión", f"{k['pct_con_lesion']} %")
 
 f2 = st.columns(4)
-f2[0].metric("Días perdidos (total)", f"{k['dias_totales']:,}")
-f2[1].metric("Duración promedio", f"{k['dias_promedio']} días")
-f2[2].metric("Duración mediana", f"{k['dias_mediana']} días")
-f2[3].metric("Duración máxima", f"{k['dias_max']} días")
+f2[0].metric("Días perdidos (total)", f"{int(k['dias_totales']):,}")
+f2[1].metric("Duración promedio", f"{int(k['dias_promedio'])} días")
+f2[2].metric("Duración mediana", f"{int(k['dias_mediana'])} días")
+f2[3].metric("Duración máxima", f"{int(k['dias_max']):,}")
 
 st.markdown(f"""
-Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38.4 días) es considerablemente mayor que la mediana (15.0 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.
+Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38 días) es considerablemente mayor que la mediana (15 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.
 """)
-
 st.divider()
 
 # Parte 2 Frecuencias
@@ -119,10 +179,10 @@ st.header("2. Frecuencia de las lesiones")
 
 st.subheader("2.1 Evolución y distribución por temporada")
 st.markdown("""
-Con el propósito de evaluar la estabilidad temporal de la variable lesiva, se analiza la frecuencia absoluta acumulada de lesiones y la proporción de jugadores afectados a lo largo de las cuatro temporadas deportivas evaluadas. Esta distribución permite observar el comportamiento global del fenómeno de estudio en el periodo analizado.
+Con o sin el filtro lateral, esta sección evaluará siempre la estabilidad temporal completa de la variable lesiva a lo largo de las cuatro temporadas deportivas evaluadas.
 """)
 
-sql_q2 = P_CTE + """
+sql_q2 = P_CTE_2 + """
 SELECT season_label,
        season_order,
        COUNT(*) AS jugadores,
@@ -141,7 +201,7 @@ fig_q2 = px.bar(q2, x="season_label", y="lesiones", text="top_rect",
                 title="Evolución plurianual: Volumen y tasa de afectación por temporada",
                 labels={"season_label": "Temporada", "lesiones": "Cantidad de Lesiones"})
 
-fig_q2.update_traces(textposition="outside", cliponaxis=False, width=0.45, marker_color="#1f77b4")
+fig_q2.update_traces(textposition="outside", cliponaxis=False, width=0.40)
 fig_q2.update_xaxes(title_text="")
 mostrar(fig_q2, 400)
 
@@ -208,7 +268,7 @@ fig_q6.add_trace(go.Bar(
     text=q6["dias_promedio"].apply(lambda x: f"{x}d prom"),
     textposition="inside",
     insidetextanchor="middle",
-    textangle=0,  # <--- Esto mantiene el texto horizontal
+    textangle=0,
     width=0.5,
     marker=dict(opacity=0),
     showlegend=False
@@ -252,7 +312,7 @@ GROUP BY ALL ORDER BY t.season_label, rango_duracion;
 """
 q4 = run_query(sql_q4)
 tot = q4.groupby("rango_duracion", as_index=False)["lesiones"].sum()
-tot["pct_del_total"] = (100 * tot["lesiones"] / tot["lesiones"].sum()).round(1)
+tot["pct_del_total"] = (tot["lesiones"] / tot["lesiones"].sum() * 100).round(1)
 tot["rango"] = tot["rango_duracion"].str[3:]
 
 fig_q4 = px.bar(
@@ -266,6 +326,7 @@ fig_q4 = px.bar(
         "rango": "Rango de duración"
     }
 )
+
 fig_q4.update_traces(textposition="outside", cliponaxis=False, width=0.55)
 fig_q4.update_yaxes(title_text="Porcentaje Respecto al Total")
 mostrar(fig_q4, 360)
@@ -307,7 +368,7 @@ c1, c2 = st.columns(2)
 with c1:
     fig_dur = px.bar(
         q5o, x="dias_promedio", y="tipo", orientation="h", text_auto=".1f",
-        title="Duración promedio (días) por patología",
+        title="Duración promedio en días por lesíon",
         labels={"dias_promedio": "Días de Baja Promedio por Lesión", "tipo": "Tipo de Lesión"}
     )
     fig_dur.update_layout(yaxis={"categoryorder": "total ascending"})
@@ -320,7 +381,7 @@ with c2:
     fig_comp = px.bar(
         comp, x="valor", y="tipo", orientation="h", barmode="group", color="medida",
         text_auto=".1f",
-        title="Comparativa: % de casos vs % de días de baja",
+        title="Distribución de Porcentaje de casos con el Porcentaje de días de baja",
         labels={"valor": "Porcentaje", "tipo": "Tipo de Lesión", "medida": "Métrica"}
     )
     fig_comp.update_traces(textposition="outside")
@@ -329,8 +390,8 @@ with c2:
 st.markdown("""
 **Lectura clave para la toma de decisiones:**
 * **Duración promedio por lesión:** Mide el costo temporal individual de cada patología. Se observa con claridad que lesiones críticas como la **Rotura de LCA** promedian más de 230 días de baja por cada evento, superando drásticamente a molestias menores como la fatiga muscular o enfermedades comunes, que apenas rondan los 5 o 6 días.
-* **Frecuencia de casos (%):** Mide qué porcentaje de los eventos totales representa cada tipo de lesión. Muchos diagnósticos comunes se distribuyen de forma similar en cuanto al número de veces que ocurren.
-* **Días perdidos acumulados (%):** Mide el impacto real en tiempo de baja global para el equipo. Aquí se evidencia el contraste absoluto: lesiones graves como la **Rotura de LCA** disparan drásticamente el porcentaje de tiempo acumulado fuera de las canchas a pesar de no ser las más numerosas en cantidad de eventos.
+* **Frecuencia de casos:** Mide qué porcentaje de los eventos totales representa cada tipo de lesión. Muchos diagnósticos comunes se distribuyen de forma similar en cuanto al número de veces que ocurren.
+* **Días perdidos acumulados:** Mide el impacto real en tiempo de baja global para el equipo. Aquí se evidencia el contraste absoluto: lesiones graves como la **Rotura de LCA** disparan drásticamente el porcentaje de tiempo acumulado fuera de las canchas a pesar de no ser las más numerosas en cantidad de eventos.
 
 La gravedad clínica de la lesión es el factor crítico que determina la indisponibilidad del plantel, superando con creces a la simple cantidad de veces que se repite una dolencia leve.
 """)
@@ -357,9 +418,9 @@ with col_alt:
     alt["grupo"] = [f"C{c}: {a:g}–{b:g} cm" for c, a, b in zip(alt["cuartil"], alt["min_cm"], alt["max_cm"])]
 
     fig_alt = px.bar(alt, x="grupo", y="pct_lesionados", text_auto=".1f",
-                     title="% de lesionados por cuartil de altura",
+                     title="Porcentaje de lesionados por cuartil de altura",
                      labels={"grupo": "Cuartil de Altura", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
-    fig_alt.update_traces(textposition="outside", cliponaxis=False, width=0.45, marker_color="#1f77b4")
+    fig_alt.update_traces(textposition="outside", cliponaxis=False, width=0.45)
     fig_alt.update_yaxes(range=[0, 40])
     fig_alt.update_xaxes(title_text="")
     mostrar(fig_alt, 360)
@@ -375,9 +436,9 @@ with col_pes:
     pes["grupo"] = [f"C{c}: {a:g}–{b:g} kg" for c, a, b in zip(pes["cuartil"], pes["min_kg"], pes["max_kg"])]
 
     fig_pes = px.bar(pes, x="grupo", y="pct_lesionados", text_auto=".1f",
-                     title="% de lesionados por cuartil de peso",
+                     title="Porcentaje de lesionados por cuartil de peso",
                      labels={"grupo": "Cuartil de Peso", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
-    fig_pes.update_traces(textposition="outside", cliponaxis=False, width=0.45, marker_color="#ff7f0e")
+    fig_pes.update_traces(textposition="outside", cliponaxis=False, width=0.45)
     fig_pes.update_yaxes(range=[0, 40])
     fig_pes.update_xaxes(title_text="")
     mostrar(fig_pes, 360)
@@ -387,37 +448,75 @@ Los gráficos anteriores evidencian la gran independencia entre las característ
 """)
 
 
-# 4.3 Cruce entre altura y peso
-st.subheader("4.3 Relación entre altura y peso")
+# 4.3 Relación entre el IMC y la probabilidad de lesión
+st.subheader("4.3 Relación entre el IMC y la probabilidad de lesión por cuartiles")
 
-col1, col2 = st.columns(2, vertical_alignment="center")
+col_texto, col_grafico = st.columns(2, vertical_alignment="center")
 
-with col1:
+with col_texto:
     st.markdown("""
-    Al analizar conjuntamente la altura y el peso de los futbolistas, los datos muestran que los jugadores se agrupan de manera natural en proporciones equilibradas. 
+    Al segmentar el **Índice de Masa Corporal (IMC)** en cuartiles poblacionales para evaluar su relación con la inactividad médica, los resultados empíricos muestran una notable uniformidad en la tasa de incidencia de lesiones:
+
     
-    La gran mayoría se concentra en los perfiles físicos más habituales, donde la estatura y la masa corporal guardan una relación más estrecha, mientras que los casos con combinaciones extremas o poco comunes tienen menos presentación en la muestra.
+    La estabilidad de estas proporciones indica que la complexión corporal medida por el IMC no constituye un factor determinante ni condiciona el riesgo de sufrir lesiones en la población de futbolistas analizada.
     """)
 
-with col2:
-    sql_q11 = P_CTE + """
-    SELECT q_altura, q_peso, COUNT(*) AS jugadores
-    FROM ps GROUP BY 1, 2 ORDER BY 1, 2;
-    """
-    q11 = run_query(sql_q11)
-    n_mat = q11.pivot(index="q_altura", columns="q_peso", values="jugadores")
-    n_mat.index = [f"Altura C{i}" for i in n_mat.index]
-    n_mat.columns = [f"Peso C{i}" for i in n_mat.columns]
-
-    fig = px.imshow(
-        n_mat, 
-        text_auto=",.0f", 
-        aspect="auto", 
-        title="Concentración de jugador-temporadas por biotipo",
-        color_continuous_scale="Blues"
+with col_grafico:
+    sql_imc = P_CTE + """ ,
+    imc_calculado AS (
+        SELECT 
+            *,
+            (weight_kg / POWER(height_cm / 100.0, 2)) AS imc_val,
+            CASE WHEN n_les > 0 THEN 1 ELSE 0 END AS lesionado
+        FROM ps
+        WHERE height_cm > 0 AND weight_kg > 0
+    ),
+    imc_cuartiles AS (
+        SELECT 
+            *,
+            NTILE(4) OVER (ORDER BY imc_val) AS cuartil
+        FROM imc_calculado
     )
-    fig.update_layout(coloraxis_showscale=False)
-    mostrar(fig, 340)
+    SELECT 
+        CASE cuartil
+            WHEN 1 THEN 'Cuartil 1'
+            WHEN 2 THEN 'Cuartil 2'
+            WHEN 3 THEN 'Cuartil 3'
+            WHEN 4 THEN 'Cuartil 4'
+        END AS categoria,
+        ROUND(AVG(lesionado) * 100.0, 1) AS pct_lesionados,
+        MIN(imc_val) AS min_imc,
+        MAX(imc_val) AS max_imc
+    FROM imc_cuartiles
+    GROUP BY 1, cuartil
+    ORDER BY cuartil;
+    """
+    
+    df_imc = run_query(sql_imc)
+
+    fig_imc = px.bar(
+        df_imc,
+        x="categoria",
+        y="pct_lesionados",
+        text="pct_lesionados",
+        title="Porcentaje de lesionados por cuartil de IMC",
+        labels={"categoria": "Segmentación por Cuartiles para el IMC", "pct_lesionados": "% Lesionados"}
+    )
+    
+    fig_imc.update_traces(
+        texttemplate='%{text:.1f}%', 
+        textposition='outside',
+        width=0.45 
+    )
+    
+    fig_imc.update_layout(
+        yaxis_title="Porcentaje de Lesionados",
+        xaxis_title="Segmentación por Cuartiles para el IMC",
+        yaxis=dict(range=[0, max(df_imc['pct_lesionados']) * 1.2] if not df_imc.empty else [0, 30]),
+        coloraxis_showscale=False
+    )
+    
+    mostrar(fig_imc, 340)
 
 st.divider()
 
@@ -430,7 +529,7 @@ with col_txt_min:
     st.markdown("""
     Una de las hipótesis recurrentes en la medicina deportiva es el desgaste acumulado por exceso de minutos competitivos. Para examinar este factor, la muestra se divide en bandas crecientes de minutos disputados por temporada.
     
-    De manera contundente, el porcentaje de futbolistas que experimentan lesiones permanece invariable (aproximadamente 24% a 25%) independientemente de que acumulen pocos o muchos minutos en el terreno de juego. La carga cuantitativa de participación no condiciona la probabilidad de lesionarse.
+    El porcentaje de futbolistas que experimentan lesiones se mantiene con una leve variación, de aproximadamente 24% a 25%, independientemente de que acumulen pocos o muchos minutos en el terreno de juego. La carga de tiempo en los jugadores no condiciona la probabilidad de lesionarse.
     """)
 
 with col_fig_min:
@@ -452,7 +551,7 @@ with col_fig_min:
     fig_mins = px.bar(q10, x="banda_min", y="pct_lesionados", text_auto=".1f",
                       title="Porcentaje de lesionados según minutos jugados",
                       labels={"banda_min": "Banda de Minutos", "pct_lesionados": "% Lesionados"})
-    fig_mins.update_traces(textposition="outside", cliponaxis=False, width=0.35, marker_color="#4ba3e3")
+    fig_mins.update_traces(textposition="outside", cliponaxis=False, width=0.35)
     fig_mins.update_yaxes(range=[0, 40])
     fig_mins.update_xaxes(title_text="")
     mostrar(fig_mins, 380)
@@ -483,7 +582,7 @@ perfil.index = [etiq.get(i, i) for i in perfil.index]
 st.dataframe(perfil.round(2).reset_index().rename(columns={"index": "Variable Biométrica / Operativa"}), hide_index=True)
 
 st.markdown("""
-Los datos numéricos son concluyentes: los promedios de altura, peso, volumen de minutos y edad son muy idénticos entre los jugadores que completaron la temporada sin lesiones y aquellos que registraron bajas médicas.
+Los promedios de altura, peso, volumen de minutos y edad son muy idénticos entre los jugadores que completaron la temporada sin lesiones y aquellos que registraron bajas médicas.
 """)
 
 st.divider()
@@ -522,8 +621,11 @@ with c1:
         rango = max_val - min_val if max_val != min_val else 1
         pct = (val - min_val) / rango
 
-        opacidad = 0.35 + (pct * 0.65)
-        return f'background-color: rgba(77, 208, 225, {opacidad:.2f}); color: #000000; font-weight: 500;'
+        r = int(140 - (140 - 0) * pct)
+        g = int(210 - (210 - 191) * pct)
+        b = 255
+        text_color = "#FFFFFF" if pct > 0.5 else "#000000"
+        return f'background-color: rgb({r}, {g}, {b}); color: {text_color}; font-weight: 500;'
 
     df_styled = (
         df_renombrado
@@ -534,14 +636,116 @@ with c1:
 
 with c2:
     fig_top = px.bar(q17.sort_values("dias_perdidos"), x="dias_perdidos", y="name", orientation="h", text_auto=",.0f",
-                     title="Top 15 jugadores por días de baja acumulados",
-                     labels={"dias_perdidos": "Días Perdidos", "name": "Jugador"})
+                    title="Top 15 jugadores por días de baja acumulados",
+                    labels={"dias_perdidos": "Días Perdidos", "name": "Jugador"})
     fig_top.update_traces(textposition="outside", cliponaxis=False)
     mostrar(fig_top, 460)
 
 st.markdown("""
-Los futbolistas que encabezan el registro de días perdidos acumulan cifras muy elevadas de inactividad debido a lesiones de larga duración (como roturas ligamentosas), y no a una alta frecuencia de pequeños incidentes. Sus características físicas se encuentran dentro de la media general de la competición.
+Los futbolistas que encabezan el registro de días perdidos acumulan cifras muy elevadas de inactividad debido a lesiones de larga duración (como roturas de ligamentro cruzado), y no a una alta frecuencia de pequeños incidentes. Sus características físicas se encuentran dentro de la media general de la competición.
 """)
+st.divider()
+
+# 8. Análisis Comparativo por Club
+st.header("8. Análisis Comparativo por Club")
+st.markdown("""
+Este apartado permite realizar una comparativa numérica directa entre dos clubes de fútbol independientes (filtrando por temporada y club). Se contrasta el volumen total de días de baja acumulados y la cantidad de lesiones para identificar el impacto físico entre diferentes planteles, de forma totalmente independiente al filtro lateral.
+""")
+
+col_comp1, col_comp2 = st.columns(2)
+
+try:
+    seasons_opt = ["Todas las temporadas"] + run_query("SELECT season_label FROM seasons ORDER BY season_order")["season_label"].tolist()
+    df_clubs = run_query("SELECT DISTINCT club_name FROM analytics_club_seasons WHERE club_name IS NOT NULL ORDER BY 1")
+    clubs_opt = df_clubs["club_name"].tolist() if not df_clubs.empty else ["Real Madrid"]
+except Exception:
+    seasons_opt = ["Todas las temporadas", "2022/23", "2023/24", "2024/25", "2025/26"]
+    clubs_opt = ["Real Madrid", "Barcelona", "Manchester City", "Bayern Munich"]
+
+with col_comp1:
+    st.subheader("Selección Club A")
+    season_a = st.selectbox("Temporada (A)", seasons_opt, key="season_a_c")
+    club_a = st.selectbox("Club (A)", clubs_opt, key="club_a_c")
+
+with col_comp2:
+    st.subheader("Selección Club B")
+    season_b = st.selectbox("Temporada (B)", seasons_opt, key="season_b_c")
+    club_b = st.selectbox("Club (B)", clubs_opt, key="club_b_c")
+
+def get_club_comparison_data(season_sel, club_sel):
+    where_clauses = ["i.start_date IS NOT NULL", "i.end_date IS NOT NULL"]
+    if season_sel != "Todas las temporadas":
+        where_clauses.append(f"t.season_label = '{season_sel}'")
+    if club_sel:
+        where_clauses.append(f"acs.club_name = '{club_sel}'")
+    
+    where_str = " AND ".join(where_clauses)
+    query = f"""
+    SELECT p.name AS Jugador, 
+           i.injury_type AS Lesión, 
+           date_diff('day', TRY_CAST(i.start_date AS DATE), TRY_CAST(i.end_date AS DATE)) AS "Días de baja", 
+           t.season_label AS Temporada,
+           acs.club_name AS Club
+    FROM injuries i
+    JOIN players p ON p.player_id = i.player_id
+    JOIN seasons t ON t.season_id = i.season_id
+    JOIN player_seasons ps ON ps.player_id = i.player_id AND ps.season_id = i.season_id
+    JOIN analytics_club_seasons acs ON acs.club_id = ps.club_id AND acs.season_id = i.season_id
+    WHERE {where_str}
+    ORDER BY "Días de baja" DESC
+    """
+    try:
+        df_res = run_query(query)
+        if df_res.empty and club_sel:
+            query_flex = query.replace(f"acs.club_name = '{club_sel}'", f"acs.club_name ILIKE '%{club_sel}%'")
+            df_res = run_query(query_flex)
+        return df_res
+    except Exception:
+        return pd.DataFrame(columns=["Jugador", "Lesión", "Días de baja", "Temporada", "Club"])
+
+df_a = get_club_comparison_data(season_a, club_a)
+df_b = get_club_comparison_data(season_b, club_b)
+
+tipos_es_comp = {
+    "ACL tear": "Rotura de LCA", "Fracture": "Fractura",
+    "Knee ligament sprain": "Esguince de ligamento de rodilla",
+    "Ankle sprain": "Esguince de tobillo", "Groin strain": "Distensión de ingle",
+    "Calf strain": "Distensión de gemelo", "Hamstring strain": "Distensión de isquiotibiales",
+    "Back spasm": "Espasmo de espalda", "Concussion": "Conmoción cerebral",
+    "Muscle fatigue": "Fatiga muscular", "Illness": "Enfermedad"
+}
+
+if not df_a.empty and "Lesión" in df_a.columns:
+    df_a["Lesión"] = df_a["Lesión"].map(tipos_es_comp).fillna(df_a["Lesión"])
+if not df_b.empty and "Lesión" in df_b.columns:
+    df_b["Lesión"] = df_b["Lesión"].map(tipos_es_comp).fillna(df_b["Lesión"])
+
+tot_les_a = len(df_a)
+tot_dias_a = df_a["Días de baja"].sum() if not df_a.empty else 0
+
+tot_les_b = len(df_b)
+tot_dias_b = df_b["Días de baja"].sum() if not df_b.empty else 0
+
+st.markdown("---")
+st.markdown("### Resumen de Jugadores y Lesiones por Club")
+
+m1, m2, m3, m4 = st.columns(4)
+m1.metric(f"Lesiones Totales (A)", f"{tot_les_a:,}")
+m2.metric(f"Días de baja Totales (A)", f"{tot_dias_a:,}")
+m3.metric(f"Lesiones Totales (B)", f"{tot_les_b:,}")
+m4.metric(f"Días de baja Totales (B)", f"{tot_dias_b:,}")
+
+st.markdown("---")
+
+col_t1, col_t2 = st.columns(2)
+with col_t1:
+    st.markdown(f"**{club_a}** ({season_a}) — Registros: {len(df_a)}")
+    st.dataframe(df_a[["Jugador", "Lesión", "Días de baja"]], hide_index=True, use_container_width=True)
+
+with col_t2:
+    st.markdown(f"**{club_b}** ({season_b}) — Registros: {len(df_b)}")
+    st.dataframe(df_b[["Jugador", "Lesión", "Días de baja"]], hide_index=True, use_container_width=True)
+
 st.divider()
 
 # Conclusión general
@@ -555,7 +759,7 @@ c1, c2 = st.columns(2)
 with c1:
     st.markdown("""
     * **Frecuencia constante:** Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (~24.8%), siendo lo habitual registrar un único episodio por campaña en cada jugador.
-    * **El físico no define el riesgo:** Características corporales como la altura y el peso no tienen relación con las lesiones; los jugadores altos, bajos, delgados o pesados se lesionan exactamente en la misma proporción.
+    * **El físico no define el riesgo:** Características corporales como la altura y el peso no tienen relación con les lesiones; los jugadores altos, bajos, delgados o pesados se lesionan exactamente en la misma proporción.
     """)
 with c2:
     st.markdown("""
