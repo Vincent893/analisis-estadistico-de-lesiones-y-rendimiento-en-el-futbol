@@ -145,32 +145,28 @@ st.subheader("Gráfico 1: Distribución de Jugadores de Alto Rendimiento por Clu
 ligas_disponibles = sorted(df[liga_col].unique())
 liga_sel = st.selectbox("Filtrar por liga:", ["Todas"] + ligas_disponibles, key="g1_liga")
 
-df_g1 = df[df["elite"] == True]
-if liga_sel != "Todas":
-    df_g1 = df_g1[df_g1[liga_col] == liga_sel]
-
-orden_clubes = (
-    df_g1.groupby("club")
-         .size()
-         .sort_values(ascending=False)
-         .index.tolist()
-)
-
-df_g1_agg = (
-    df_g1.groupby(["club", "season"])
-         .size()
-         .reset_index(name="jugadores_elite")
-)
+if liga_sel == "Todas":
+    eje_x, etiqueta_y, modo = liga_col, "Jugadores Élite (P90 global)", "stack"
+    df_glob = df[df[umbral_col] >= df.groupby("season")[umbral_col].transform(lambda x: x.quantile(0.90))]
+    df_g1_agg = df_glob.groupby([liga_col, "season"]).size().reset_index(name="jugadores_elite")
+    # shortcut: solo las 20 ligas con más élite (hay 300), subir si se necesitan todas
+    orden_x = df_glob.groupby(liga_col).size().nlargest(20).index.tolist()
+    df_g1_agg = df_g1_agg[df_g1_agg[liga_col].isin(orden_x)]
+else:
+    eje_x, etiqueta_y, modo = "club", "Jugadores Élite", "stack"
+    df_g1 = df[(df["elite"] == True) & (df[liga_col] == liga_sel)]
+    orden_x = df_g1.groupby("club").size().sort_values(ascending=False).index.tolist()
+    df_g1_agg = df_g1.groupby(["club", "season"]).size().reset_index(name="jugadores_elite")
 
 fig1 = px.bar(
     df_g1_agg,
-    x="club",
+    x=eje_x,
     y="jugadores_elite",
     color="season",
-    barmode="stack",
+    barmode=modo,
     text_auto=True,
-    category_orders={"club": orden_clubes},
-    labels={"jugadores_elite": "Jugadores Élite", "club": "Club", "season": "Temporada"},
+    category_orders={eje_x: orden_x},
+    labels={"jugadores_elite": etiqueta_y, "club": "Club", liga_col: "Liga", "season": "Temporada"},
     color_discrete_sequence=["#00E5FF", "#3B82F6", "#8B5CF6", "#EC4899"],
 )
 fig1.update_layout(height=430, xaxis_tickangle=-35)

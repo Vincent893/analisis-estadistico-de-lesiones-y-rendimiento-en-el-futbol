@@ -82,7 +82,7 @@ def renderizar_panel_seleccion_jugadores(formacion_tactica, lista_arqueros, list
         st.markdown("<br>", unsafe_allow_html=True)
         
         
-        boton_aplicar = st.form_submit_button(label="⚡ Aplicar Alineación", use_container_width=True)
+        boton_aplicar = st.form_submit_button(label="⚡ Aplicar Alineación", width="stretch")
     
     jugadores_seleccionados = [
         arquero, defensa_1, defensa_2, lateral_izq, lateral_der,
@@ -156,5 +156,5 @@ def renderizar_tabla_titulares(datos_alineacion):
     
     st.subheader("📋 Detalle de Jugadores en el Once Titular")
     columnas_mostrar = ['name', 'primary_category', 'age', 'average_rating', 'xg_per_90', 'total_injuries']
-    st.dataframe(datos_alineacion[columnas_mostrar], use_container_width=True)
+    st.dataframe(datos_alineacion[columnas_mostrar], width="stretch")
     

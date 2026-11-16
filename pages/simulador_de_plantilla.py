@@ -83,12 +83,12 @@ if conexion_base_datos:
                 with col_radar:
                     # Gráfico de Radar de la plantilla
                     figura_radar = generar_grafico_radar_plantilla(datos_alineacion_titular)
-                    st.plotly_chart(figura_radar, use_container_width=True)
+                    st.plotly_chart(figura_radar, width="stretch")
 
                 with col_barras:
                     # Gráfico de barras individuales que ya tenías
                     figura_barras = generar_grafico_rating_titulares(datos_alineacion_titular)
-                    st.plotly_chart(figura_barras, use_container_width=True)
+                    st.plotly_chart(figura_barras, width="stretch")
 
                 renderizar_cancha_tactica(datos_alineacion_titular, formacion_tactica)
                

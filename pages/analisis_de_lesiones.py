@@ -26,7 +26,7 @@ def mostrar(fig, alto=360):
     res = apply_theme(fig)
     fig = res if res is not None else fig
     fig.update_layout(height=alto, legend_title_text="")
-    st.plotly_chart(fig, use_container_width=True, config={"staticPlot": True})
+    st.plotly_chart(fig, width="stretch", config={"staticPlot": True})
 
 
 # El CTE principal para cada consulta, es un filtro con el fin de no copiar el cte en cada consulta
