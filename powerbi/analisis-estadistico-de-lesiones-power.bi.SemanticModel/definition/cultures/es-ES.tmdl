@@ -878,7 +878,7 @@ cultureInfo es-ES
 			          }
 			        },
 			        {
-			          "Temporada": {
+			          "Tempoarada": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -888,7 +888,7 @@ cultureInfo es-ES
 			          }
 			        },
 			        {
-			          "Tempoarada": {
+			          "Temporada": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
