@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "2e1615dd99b8339a4ed6",
+  "position": {
+    "x": 1264,
+    "y": 418,
+    "z": 3,
+    "height": 184,
+    "width": 348,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "Tasa Lesiones Jugadores Top"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.Tasa Lesiones Jugadores Top",
+              "nativeQueryRef": "Tasa Lesiones Jugadores Top"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_seasons"
+                  }
+                },
+                "Property": "Tasa Lesiones Jugadores Top"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

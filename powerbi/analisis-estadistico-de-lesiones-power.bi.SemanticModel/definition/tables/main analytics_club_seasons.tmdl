@@ -1,6 +1,31 @@
 table 'main analytics_club_seasons'
 	lineageTag: e5384c70-c0c5-4032-bc69-2179910c9ec3
 
+	measure '% Concentración Jugadores Top' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_seasons'[high_performance_players_count]),
+			    SUM('main analytics_club_seasons'[squad_size]),
+			    0
+			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 59e977ab-5910-46ff-8321-da06a7731351
+
+	measure 'Total Jugadores Top' = SUM('main analytics_club_seasons'[high_performance_players_count])
+		formatString: 0
+		lineageTag: 876634f1-b3e0-457f-8a78-a4e49322fb51
+
+	measure 'Tasa Lesiones Jugadores Top' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_seasons'[squad_total_days_lost]),
+			    SUM('main analytics_club_seasons'[high_performance_players_count]),
+			    0
+			)
+		lineageTag: eeb63fb0-b228-42d0-a835-12dd9bf3e165
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column club_id
 		dataType: int64
 		formatString: 0

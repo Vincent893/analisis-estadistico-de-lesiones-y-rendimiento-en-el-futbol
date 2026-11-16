@@ -6434,101 +6434,287 @@ cultureInfo es-ES
 			          }
 			        }
 			      ]
+			    },
+			    "main_analytics_club_season.concentración_jugadores_top": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "% Concentración Jugadores Top"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% concentración jugadores top": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "% concentración jugadore best": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "% concentración jugadore first": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "% concentración jugadore leading": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "% concentración jugadore maximum": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "% concentración jugadore peak": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "% concentración jugadore upper": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "percentage concentración jugadore top": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.617
+			          }
+			        },
+			        {
+			          "pct concentración jugadore top": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.599
+			          }
+			        },
+			        {
+			          "Concentración Jugadores Top": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season.total_jugadores_top": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Total Jugadores Top"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total jugadores top": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "total jugadore best": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total jugadore first": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total jugadore leading": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total jugadore maximum": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total jugadore peak": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total jugadore upper": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "aggregate jugadore top": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "overall jugadore top": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season.tasa_lesiones_jugadores_top": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Tasa Lesiones Jugadores Top"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tasa lesiones jugadores top": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "tasa lesione jugadore best": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "tasa lesione jugadore first": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "tasa lesione jugadore leading": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "tasa lesione jugadore maximum": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "tasa lesione jugadore peak": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        },
+			        {
+			          "tasa lesione jugadore upper": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.748
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
-			    "main_analytics_club_position_season_has_main_dim_club": {
-			      "Binding": {
-			        "ConceptualEntity": "main analytics_club_position_seasons"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "main_analytics_club_position_season": {
-			          "Target": {
-			            "Entity": "main_analytics_club_position_season"
-			          }
-			        },
-			        "main_dim_club": {
-			          "Target": {
-			            "Entity": "main_dim_club"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_analytics_club_position_season"
-			            },
-			            "Object": {
-			              "Role": "main_dim_club"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_analytics_club_position_seasons_have_main_dim_clubs"
-			        },
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_dim_club"
-			            },
-			            "Object": {
-			              "Role": "main_analytics_club_position_season"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_dim_clubs_have_main_analytics_club_position_seasons"
-			        }
-			      ]
-			    },
-			    "main_analytics_club_season_has_main_dim_season": {
-			      "Binding": {
-			        "ConceptualEntity": "main analytics_club_seasons"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "main_analytics_club_season": {
-			          "Target": {
-			            "Entity": "main_analytics_club_season"
-			          }
-			        },
-			        "main_dim_season": {
-			          "Target": {
-			            "Entity": "main_dim_season"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_analytics_club_season"
-			            },
-			            "Object": {
-			              "Role": "main_dim_season"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_analytics_club_seasons_have_main_dim_seasons"
-			        },
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_dim_season"
-			            },
-			            "Object": {
-			              "Role": "main_analytics_club_season"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_dim_seasons_have_main_analytics_club_seasons"
-			        }
-			      ]
-			    },
 			    "main_analytics_club_season_has_main_dim_club": {
 			      "Binding": {
 			        "ConceptualEntity": "main analytics_club_seasons"
@@ -6572,6 +6758,105 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_clubs_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_tasa_lesiones_jugadores_top": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.tasa_lesiones_jugadores_top": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.tasa_lesiones_jugadores_top"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.tasa_lesiones_jugadores_top"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_tasa_lesiones_jugadores_top"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_total_jugadores_top": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.total_jugadores_top": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.total_jugadores_top"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.total_jugadores_top"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_total_jugadores_top"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_concentración_jugadores_top": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.concentración_jugadores_top": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.concentración_jugadores_top"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.concentración_jugadores_top"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have__concentración_jugadores_top"
 			        }
 			      ]
 			    },
@@ -8764,6 +9049,98 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_players_have_main_analytics_player_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_main_dim_season": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_dim_season": {
+			          "Target": {
+			            "Entity": "main_dim_season"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_dim_season"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_main_dim_seasons"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_dim_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_dim_seasons_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_main_dim_club": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_dim_club": {
+			          "Target": {
+			            "Entity": "main_dim_club"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_dim_club"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_main_dim_clubs"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_dim_club"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_dim_clubs_have_main_analytics_club_position_seasons"
 			        }
 			      ]
 			    },

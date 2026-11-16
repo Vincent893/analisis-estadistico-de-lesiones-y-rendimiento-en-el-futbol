@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "dd89ffec383d7c4054d0",
+  "position": {
+    "x": 1266,
+    "y": 818,
+    "z": 2,
+    "height": 172,
+    "width": 346,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "Total Jugadores Top"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.Total Jugadores Top",
+              "nativeQueryRef": "Total Jugadores Top"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_seasons"
+                  }
+                },
+                "Property": "Total Jugadores Top"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
