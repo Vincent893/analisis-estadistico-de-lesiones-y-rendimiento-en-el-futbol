@@ -165,6 +165,8 @@ table 'main analytics_club_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"main analytics_club_seasons","TableItemName":"total_goals_scored (ubicaciones)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
 	column total_xg
 		dataType: double
 		lineageTag: d210db90-0077-4379-93a0-b1673fe8bb48
@@ -200,6 +202,48 @@ table 'main analytics_club_seasons'
 		lineageTag: ae7500a6-f20f-49ae-b3d9-3918286f8e64
 		summarizeBy: sum
 		sourceColumn: squad_total_days_lost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'total_goals_scored (ubicaciones)' =
+			IF(
+				ISBLANK('main analytics_club_seasons'[total_goals_scored]),
+				BLANK(),
+				IF(
+					'main analytics_club_seasons'[total_goals_scored] >= 0,
+					ROUNDDOWN('main analytics_club_seasons'[total_goals_scored] / 20, 0) * 20,
+					ROUNDUP('main analytics_club_seasons'[total_goals_scored] / 20, 0) * 20
+				)
+			)
+		lineageTag: 6dcfc265-3305-40cc-a05e-818249e954ab
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "main analytics_club_seasons"
+				          }
+				        },
+				        "Property": "total_goals_scored"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 20.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"m","Entity":"main analytics_club_seasons"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"m"}},"Property":"total_goals_scored"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"m"}},"Property":"total_goals_scored"}},"Size":20.0}}}}
 
 		annotation SummarizationSetBy = Automatic
 

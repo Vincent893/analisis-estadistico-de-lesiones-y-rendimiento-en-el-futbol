@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "a352bae6897acee668a8",
   "position": {
-    "x": 0,
-    "y": 148,
-    "z": 5,
-    "height": 106,
+    "x": 36,
+    "y": 132,
+    "z": 5000,
+    "height": 90,
     "width": 1216,
-    "tabOrder": 5
+    "tabOrder": 5000
   },
   "visual": {
     "visualType": "slicer",
@@ -27,8 +27,9 @@
                 }
               },
               "queryRef": "main dim_club.club_name",
-              "nativeQueryRef": "club_name",
-              "active": true
+              "nativeQueryRef": "Nombre de los Clubs",
+              "active": true,
+              "displayName": "Nombre de los Clubs"
             }
           ]
         }
@@ -187,23 +188,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "5c46a6ccd837a7b4ce40",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main dim_club"
-              }
-            },
-            "Property": "club_name"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

@@ -876,6 +876,16 @@ cultureInfo es-ES
 			            },
 			            "Weight": 0.571
 			          }
+			        },
+			        {
+			          "Temporada": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -5299,6 +5309,16 @@ cultureInfo es-ES
 			            },
 			            "Weight": 0.714
 			          }
+			        },
+			        {
+			          "Nombre de los Clubs": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -6712,9 +6732,130 @@ cultureInfo es-ES
 			          }
 			        }
 			      ]
+			    },
+			    "main_analytics_club_season.total_goals_scored_ubicaciones": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "total_goals_scored (ubicaciones)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total_goals_scored (ubicaciones)": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "total_goals_scored (ubicacione)": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.78
+			          }
+			        },
+			        {
+			          "total_goals_scored": {
+			            "State": "Generated",
+			            "Weight": 0.75
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
+			    "main_analytics_club_position_season_has_main_dim_club": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_dim_club": {
+			          "Target": {
+			            "Entity": "main_dim_club"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_dim_club"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_main_dim_clubs"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_dim_club"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_dim_clubs_have_main_analytics_club_position_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_main_dim_season": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_dim_season": {
+			          "Target": {
+			            "Entity": "main_dim_season"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_dim_season"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_main_dim_seasons"
+			        },
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_dim_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_dim_seasons_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
 			    "main_analytics_club_season_has_main_dim_club": {
 			      "Binding": {
 			        "ConceptualEntity": "main analytics_club_seasons"
@@ -6758,6 +6899,39 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_clubs_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_total_goals_scored_ubicaciones": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.total_goals_scored_ubicaciones": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.total_goals_scored_ubicaciones"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.total_goals_scored_ubicaciones"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_total_goals_scored_ubicaciones"
 			        }
 			      ]
 			    },
@@ -9049,98 +9223,6 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_players_have_main_analytics_player_seasons"
-			        }
-			      ]
-			    },
-			    "main_analytics_club_season_has_main_dim_season": {
-			      "Binding": {
-			        "ConceptualEntity": "main analytics_club_seasons"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "main_analytics_club_season": {
-			          "Target": {
-			            "Entity": "main_analytics_club_season"
-			          }
-			        },
-			        "main_dim_season": {
-			          "Target": {
-			            "Entity": "main_dim_season"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_analytics_club_season"
-			            },
-			            "Object": {
-			              "Role": "main_dim_season"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_analytics_club_seasons_have_main_dim_seasons"
-			        },
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_dim_season"
-			            },
-			            "Object": {
-			              "Role": "main_analytics_club_season"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_dim_seasons_have_main_analytics_club_seasons"
-			        }
-			      ]
-			    },
-			    "main_analytics_club_position_season_has_main_dim_club": {
-			      "Binding": {
-			        "ConceptualEntity": "main analytics_club_position_seasons"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "main_analytics_club_position_season": {
-			          "Target": {
-			            "Entity": "main_analytics_club_position_season"
-			          }
-			        },
-			        "main_dim_club": {
-			          "Target": {
-			            "Entity": "main_dim_club"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_analytics_club_position_season"
-			            },
-			            "Object": {
-			              "Role": "main_dim_club"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_analytics_club_position_seasons_have_main_dim_clubs"
-			        },
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "main_dim_club"
-			            },
-			            "Object": {
-			              "Role": "main_analytics_club_position_season"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "main_dim_clubs_have_main_analytics_club_position_seasons"
 			        }
 			      ]
 			    },
