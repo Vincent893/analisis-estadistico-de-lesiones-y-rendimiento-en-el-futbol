@@ -28,6 +28,8 @@ def registrar_tema():
         layout=go.Layout(
             # Paleta: Plotly toma el color de cada categoría aquí por orden
             colorway=PALETA_APP,
+            # Escala para colores numéricos (color="variable_continua"); sin esto Plotly usa plasma (morado-amarillo)
+            colorscale=dict(sequential=["#3B82F6", "#00A8CC", "#00E5FF"]),
             # Fondos transparentes para integrarse al fondo de la app
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",

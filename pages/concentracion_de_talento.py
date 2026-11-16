@@ -29,53 +29,45 @@ def calcular_hhi(valores):
     participaciones = [v / total * 100 for v in valores]
     return sum(p ** 2 for p in participaciones)
 
+POSICIONES_ES = {"GOALKEEPER": "Arquero", "DEFENDER": "Defensa", "MIDFIELDER": "Mediocampista", "ATTACKER": "Delantero"}
+
+# Una fila por jugador-temporada, con la división del club como "liga"
+SQL_JUGADOR_TEMPORADA = """
+SELECT COALESCE(d.division_name, 'Sin división') AS liga,
+       c.club_name          AS club,
+       s.season_label       AS season,
+       p.primary_category   AS position,
+       ps.mins              AS minutes_played,
+       psa.goals,
+       psa.assists,
+       ps.ability_score,
+       psa.xg_per_90        AS xg_90
+FROM player_seasons ps
+JOIN players p                 USING (player_id)
+JOIN clubs c                   USING (club_id)
+LEFT JOIN divisions d          USING (division_id)
+JOIN seasons s                 USING (season_id)
+JOIN player_stats_attacking psa USING (player_season_id)
+"""
+
 @st.cache_data
 def cargar_datos(_conn):
-    if _conn:
-        try:
-            df = _conn.execute("SELECT * FROM players").df()
-            required = {"club", "season", "position", "goals", "assists", "minutes_played", "ability_score"}
-            if required.issubset(set(df.columns)):
-                return df, False
-        except Exception:
-            pass
+    df = _conn.execute(SQL_JUGADOR_TEMPORADA).df()
+    df["position"] = df["position"].map(POSICIONES_ES).fillna(df["position"])
+    return df
 
-    rng = np.random.default_rng(42)
-    ligas = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1"]
-    clubs_por_liga = {
-        "Premier League": ["Man City", "Arsenal", "Liverpool", "Chelsea", "Tottenham"],
-        "La Liga":        ["Real Madrid", "Barcelona", "Atlético", "Sevilla", "Villarreal"],
-        "Serie A":        ["Inter", "Milan", "Juventus", "Napoli", "Roma"],
-        "Bundesliga":     ["Bayern", "Dortmund", "Leipzig", "Leverkusen", "Frankfurt"],
-        "Ligue 1":        ["PSG", "Marseille", "Monaco", "Lyon", "Nice"],
-    }
-    posiciones = ["POR", "DFC", "LI", "LD", "MCD", "MC", "MCO", "EI", "ED", "DC"]
-    temporadas = ["2022-23", "2023-24", "2024-25", "2025-26"]
-    rows = []
-    for liga, clubs in clubs_por_liga.items():
-        for club in clubs:
-            for temp in temporadas:
-                n_jugadores = rng.integers(22, 30)
-                for _ in range(n_jugadores):
-                    pos = rng.choice(posiciones)
-                    mins = int(rng.integers(200, 2800))
-                    goals = int(rng.poisson(2.5 if pos in ["DC", "EI", "ED"] else 0.5))
-                    assists = int(rng.poisson(1.5 if pos in ["EI", "ED", "MC", "MCO"] else 0.3))
-                    ability = round(float(rng.normal(6.5, 1.2)), 2)
-                    ability = max(3.0, min(10.0, ability))
-                    xg90 = round(float(rng.exponential(0.25 if pos in ["DC", "EI", "ED"] else 0.07)), 3)
-                    rows.append({
-                        "liga": liga, "club": club, "season": temp,
-                        "position": pos, "minutes_played": mins,
-                        "goals": goals, "assists": assists,
-                        "ability_score": ability, "xg_90": xg90,
-                    })
-    return pd.DataFrame(rows), True
+if conn is None:
+    st.error("No se pudo conectar a la base de datos. Revisa las variables de entorno.")
+    st.stop()
 
-df_raw, es_simulado = cargar_datos(conn)
+try:
+    df_raw = cargar_datos(conn)
+except Exception as e:
+    st.error(f"Error al consultar los datos del Objetivo 2: {e}")
+    st.stop()
 
-umbral_col = "ability_score" if "ability_score" in df_raw.columns else df_raw.columns[-1]
-liga_col   = "liga"         if "liga"         in df_raw.columns else "club"
+umbral_col = "ability_score"
+liga_col   = "liga"
 
 df = df_raw.copy()
 df["elite"] = df.groupby([liga_col, "season"])[umbral_col].transform(
@@ -215,7 +207,7 @@ st.caption("Curva de Lorenz con diagonal de igualdad perfecta · X = % acumulado
 
 liga_lorenz = st.multiselect(
     "Selecciona ligas:", ligas_disponibles,
-    default=ligas_disponibles[:3], key="g2_ligas"
+    default=df[liga_col].value_counts().index[:3].tolist(), key="g2_ligas"
 )
 
 fig2 = go.Figure()
@@ -335,20 +327,10 @@ st.divider()
 st.subheader("Gráfico 4: Volatilidad del Rendimiento por Posición")
 st.caption("El Coeficiente de Variación (CV) mide la dispersión del rendimiento de cada demarcación a lo largo de las cuatro temporadas. Un CV más alto indica mayor dispersión de los datos.")
 
-datos_cv_pos = [
-    {"position": "POR", "nombre": "Portero", "cv": 0.082, "estabilidad": "Alta Homogeneidad"},
-    {"position": "DFC", "nombre": "Defensa Central", "cv": 0.095, "estabilidad": "Alta Homogeneidad"},
-    {"position": "MCD", "nombre": "Mediocentro Defensivo", "cv": 0.114, "estabilidad": "Alta Homogeneidad"},
-    {"position": "LI",  "nombre": "Lateral Izquierdo", "cv": 0.138, "estabilidad": "Homogéneo"},
-    {"position": "LD",  "nombre": "Lateral Derecho", "cv": 0.145, "estabilidad": "Homogéneo"},
-    {"position": "MC",  "nombre": "Mediocentro", "cv": 0.168, "estabilidad": "Moderado"},
-    {"position": "MCO", "nombre": "Mediapunta", "cv": 0.245, "estabilidad": "Heterogéneo"},
-    {"position": "ED",  "nombre": "Extremo Derecho", "cv": 0.312, "estabilidad": "Alta Dispersión"},
-    {"position": "EI",  "nombre": "Extremo Izquierdo", "cv": 0.328, "estabilidad": "Alta Dispersión"},
-    {"position": "DC",  "nombre": "Delantero Centro", "cv": 0.385, "estabilidad": "Máxima Dispersión"},
-]
-
-df_cv = pd.DataFrame(datos_cv_pos).sort_values("cv", ascending=True)
+# CV = desviación estándar / media de goles + asistencias por línea posicional
+df_cv = df.groupby("position")["goles_asistencias"].agg(["std", "mean", "count"]).reset_index()
+df_cv["cv"] = df_cv["std"] / df_cv["mean"]
+df_cv = df_cv.sort_values("cv", ascending=True)
 
 fig4 = px.bar(
     df_cv,
@@ -357,7 +339,6 @@ fig4 = px.bar(
     orientation="h",
     text=df_cv["cv"].apply(lambda v: f"{v:.3f} ({v*100:.1f}%)"),
     color="cv",
-    color_continuous_scale=[[0.0, "#0284C7"], [0.45, "#0EA5E9"], [1.0, "#F59E0B"]],
     labels={"cv": "Coeficiente de Variación (CV)", "position": "Posición / Demarcación"},
 )
 fig4.update_layout(
@@ -385,8 +366,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<p style='color:#94A3B8; font-weight:600; margin-bottom:8px;'>Tabla Descriptiva de Dispersión Relativa (CV por Posición)</p>", unsafe_allow_html=True)
-tabla_cv_resumen = df_cv[["position", "nombre", "cv", "estabilidad"]].copy()
-tabla_cv_resumen.columns = ["Posición", "Demarcación", "Coeficiente de Variación (CV)", "Estabilidad Competitiva"]
+tabla_cv_resumen = df_cv[["position", "count", "mean", "std", "cv"]].copy()
+tabla_cv_resumen.columns = ["Línea", "N", "Media G+A", "Desv. estándar", "Coeficiente de Variación (CV)"]
+tabla_cv_resumen[["Media G+A", "Desv. estándar"]] = tabla_cv_resumen[["Media G+A", "Desv. estándar"]].round(3)
 tabla_cv_resumen["Coeficiente de Variación (CV)"] = tabla_cv_resumen["Coeficiente de Variación (CV)"].apply(lambda x: f"{x:.3f} ({x*100:.1f}%)")
 st.dataframe(tabla_cv_resumen, width="stretch", hide_index=True)
 
@@ -398,6 +380,9 @@ st.caption("Porcentaje del rendimiento ofensivo del club generado por su 20% má
 liga_hm = st.selectbox("Liga para el mapa de calor:", ligas_disponibles, key="g5_liga")
 
 df_hm = df[df[liga_col] == liga_hm].copy()
+# shortcut: solo los 20 clubes con más G+A (hay divisiones con 189 clubes), subir si se necesita la división completa
+top_clubes_hm = df_hm.groupby("club")["goles_asistencias"].sum().nlargest(20).index
+df_hm = df_hm[df_hm["club"].isin(top_clubes_hm)]
 pct_top20_rows = []
 for (club_h, season_h), grp in df_hm.groupby(["club", "season"]):
     total_ren = grp["goles_asistencias"].sum()
@@ -416,6 +401,9 @@ textos_heatmap = []
 for row in pivot_hm.values:
     fila_t = []
     for v in row:
+        if pd.isna(v):  # el club no jugó esa temporada en esta división
+            fila_t.append("")
+            continue
         color_texto = "#FFFFFF" if v >= 62.0 else "#082F49"
         fila_t.append(f"<b style='color:{color_texto}; font-size:13px;'>{v:.1f}%</b>")
     textos_heatmap.append(fila_t)
