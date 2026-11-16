@@ -1,0 +1,114 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "b4966c47660038b60eae",
+  "position": {
+    "x": 36,
+    "y": 694,
+    "z": 6001,
+    "height": 352,
+    "width": 734,
+    "tabOrder": 6001
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "season_label"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.season_label",
+              "nativeQueryRef": "Temporada",
+              "active": true,
+              "displayName": "Temporada"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "main analytics_club_seasons"
+                        }
+                      },
+                      "Property": "squad_total_days_lost"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(main analytics_club_seasons.squad_total_days_lost)",
+              "nativeQueryRef": "Suma de squad_total_days_lost"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "main analytics_club_seasons"
+                      }
+                    },
+                    "Property": "squad_total_days_lost"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Distribución de días perdidos por lesión'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Severidad Física Acumulada'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

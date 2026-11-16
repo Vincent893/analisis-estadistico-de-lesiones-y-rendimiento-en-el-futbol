@@ -886,6 +886,16 @@ cultureInfo es-ES
 			            },
 			            "Weight": 0.9
 			          }
+			        },
+			        {
+			          "Tempoarada": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -6761,6 +6771,22 @@ cultureInfo es-ES
 			          }
 			        }
 			      ]
+			    },
+			    "main_analytics_club_season.promedio_goles_por_temporada": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Promedio Goles por Temporada"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "promedio goles por temporada": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
@@ -6899,6 +6925,39 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_clubs_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_promedio_goles_por_temporada": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.promedio_goles_por_temporada": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.promedio_goles_por_temporada"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.promedio_goles_por_temporada"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_promedio_goles_por_temporada"
 			        }
 			      ]
 			    },

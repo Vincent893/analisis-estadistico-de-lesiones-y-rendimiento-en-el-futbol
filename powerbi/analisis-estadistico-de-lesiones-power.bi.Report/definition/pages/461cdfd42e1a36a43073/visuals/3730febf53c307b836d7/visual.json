@@ -1,0 +1,114 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "3730febf53c307b836d7",
+  "position": {
+    "x": 796,
+    "y": 694,
+    "z": 6002,
+    "height": 352,
+    "width": 716,
+    "tabOrder": 6002
+  },
+  "visual": {
+    "visualType": "pieChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "season_label"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.season_label",
+              "nativeQueryRef": "Tempoarada",
+              "active": true,
+              "displayName": "Tempoarada"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "main analytics_club_seasons"
+                        }
+                      },
+                      "Property": "squad_total_injuries"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(main analytics_club_seasons.squad_total_injuries)",
+              "nativeQueryRef": "Suma de squad_total_injuries"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "main analytics_club_seasons"
+                      }
+                    },
+                    "Property": "squad_total_injuries"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Distribución del Total de Lesiones por Temporada'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Frecuencia de incidencias médicas registradas'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -26,6 +26,16 @@ table 'main analytics_club_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Promedio Goles por Temporada' =
+			
+			AVERAGEX(
+			    VALUES('main analytics_club_seasons'[club_name]),
+			    CALCULATE(SUM('main analytics_club_seasons'[total_goals_scored]))
+			)
+		lineageTag: 27d6edaa-d9fc-47fe-a591-6821fbbe8d08
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column club_id
 		dataType: int64
 		formatString: 0
