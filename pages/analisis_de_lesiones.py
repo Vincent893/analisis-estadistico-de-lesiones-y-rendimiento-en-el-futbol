@@ -136,14 +136,6 @@ st.markdown("""
 El análisis descriptivo inicial abarca un total de 108,639 observaciones de jugador-temporada. Esta exploración preliminar permite cuantificar la dimensión global de las afectaciones físicas, estableciendo los parámetros de frecuencia de los futbolistas que presentan al menos un evento lesivo durante el periodo competitivo, así como la distribución acumulada de los días de inactividad.
 """)
 
-st.markdown("""
-    <style>
-    [data-testid="stMetricValue"] {
-        color: #00BFFF;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 sql_q1 = P_CTE + """
 SELECT
   (SELECT COUNT(*) FROM les) AS total_lesiones,
@@ -179,10 +171,10 @@ st.header("2. Frecuencia de las lesiones")
 
 st.subheader("2.1 Evolución y distribución por temporada")
 st.markdown("""
-Con o sin el filtro lateral, esta sección evaluará siempre la estabilidad temporal completa de la variable lesiva a lo largo de las cuatro temporadas deportivas evaluadas.
+Con el propósito de evaluar la estabilidad temporal de la variable lesiva, se analiza la frecuencia absoluta acumulada de lesiones y la proporción de jugadores afectados a lo largo de las cuatro temporadas deportivas evaluadas. Esta distribución permite observar el comportamiento global del fenómeno de estudio en el periodo analizado.
 """)
 
-sql_q2 = P_CTE_2 + """
+sql_q2 = P_CTE + """
 SELECT season_label,
        season_order,
        COUNT(*) AS jugadores,
@@ -312,7 +304,7 @@ GROUP BY ALL ORDER BY t.season_label, rango_duracion;
 """
 q4 = run_query(sql_q4)
 tot = q4.groupby("rango_duracion", as_index=False)["lesiones"].sum()
-tot["pct_del_total"] = (tot["lesiones"] / tot["lesiones"].sum() * 100).round(1)
+tot["pct_del_total"] = (100 * tot["lesiones"] / tot["lesiones"].sum()).round(1)
 tot["rango"] = tot["rango_duracion"].str[3:]
 
 fig_q4 = px.bar(
@@ -381,7 +373,7 @@ with c2:
     fig_comp = px.bar(
         comp, x="valor", y="tipo", orientation="h", barmode="group", color="medida",
         text_auto=".1f",
-        title="Distribución de Porcentaje de casos con el Porcentaje de días de baja",
+        title="Comparativa: % de casos vs % de días de baja",
         labels={"valor": "Porcentaje", "tipo": "Tipo de Lesión", "medida": "Métrica"}
     )
     fig_comp.update_traces(textposition="outside")
@@ -390,8 +382,8 @@ with c2:
 st.markdown("""
 **Lectura clave para la toma de decisiones:**
 * **Duración promedio por lesión:** Mide el costo temporal individual de cada patología. Se observa con claridad que lesiones críticas como la **Rotura de LCA** promedian más de 230 días de baja por cada evento, superando drásticamente a molestias menores como la fatiga muscular o enfermedades comunes, que apenas rondan los 5 o 6 días.
-* **Frecuencia de casos:** Mide qué porcentaje de los eventos totales representa cada tipo de lesión. Muchos diagnósticos comunes se distribuyen de forma similar en cuanto al número de veces que ocurren.
-* **Días perdidos acumulados:** Mide el impacto real en tiempo de baja global para el equipo. Aquí se evidencia el contraste absoluto: lesiones graves como la **Rotura de LCA** disparan drásticamente el porcentaje de tiempo acumulado fuera de las canchas a pesar de no ser las más numerosas en cantidad de eventos.
+* **Frecuencia de casos (%):** Mide qué porcentaje de los eventos totales representa cada tipo de lesión. Muchos diagnósticos comunes se distribuyen de forma similar en cuanto al número de veces que ocurren.
+* **Días perdidos acumulados (%):** Mide el impacto real en tiempo de baja global para el equipo. Aquí se evidencia el contraste absoluto: lesiones graves como la **Rotura de LCA** disparan drásticamente el porcentaje de tiempo acumulado fuera de las canchas a pesar de no ser las más numerosas en cantidad de eventos.
 
 La gravedad clínica de la lesión es el factor crítico que determina la indisponibilidad del plantel, superando con creces a la simple cantidad de veces que se repite una dolencia leve.
 """)
