@@ -1,0 +1,6 @@
+Total Lesiones 2022-2026 = 
+CALCULATE(
+    SUM('main_analytics_player_seasons'[total_injuries]),
+    'main_analytics_player_seasons'[season_id] >= 2022,
+    'main_analytics_player_seasons'[season_id] <= 2026
+)
