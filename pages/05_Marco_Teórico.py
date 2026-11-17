@@ -1,6 +1,32 @@
+from database.DB import DB
 from models.UI import UI
 import streamlit as st
 from utils.estilos import cargar_estilos
+
+@st.cache_data
+def obtener_metricas_estudio(_conn):
+    if _conn:
+        try:
+            total_jugadores = _conn.execute("SELECT COUNT(*) FROM players").fetchone()[0]
+            total_registros = _conn.execute("SELECT COUNT(*) FROM player_seasons").fetchone()[0]
+            total_lesiones = _conn.execute("SELECT COUNT(*) FROM injuries").fetchone()[0]
+            tablas_res = _conn.execute("SHOW TABLES").fetchall()
+            return {
+                "tablas": len(tablas_res),
+                "jugadores": total_jugadores,
+                "registros": total_registros,
+                "lesiones": total_lesiones,
+                "conectado": True
+            }
+        except Exception:
+            pass
+    return {
+        "tablas": 0,
+        "jugadores": 0,
+        "registros": 0,
+        "lesiones": 0,
+        "conectado": False
+    }
 
 def render_marco_teorico():
     UI.setup_page()
@@ -129,41 +155,48 @@ def render_marco_teorico():
         </div>
     """, unsafe_allow_html=True)
 
+    conn = DB.get_connection()
+    metricas = obtener_metricas_estudio(conn)
+
+    if not metricas.get("conectado"):
+        st.error("No conectado a la base de datos.")
+        st.stop()
+
     st.markdown("### Universo Empírico y Estructura del Estudio")
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.markdown("""
+        st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-title">Esquema Relacional</div>
-                <div class="kpi-value">17 Tablas</div>
-                <div class="kpi-footer">Tercera Forma Normal (3FN)</div>
+                <div class="kpi-value">{metricas['tablas']} Tablas / Vistas</div>
+                <div class="kpi-footer">Tercera Forma Normal (3FN) + OLAP</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col2:
-        st.markdown("""
+        st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-title">Población de Jugadores</div>
-                <div class="kpi-value">27,343</div>
+                <div class="kpi-value">{metricas['jugadores']:,}</div>
                 <div class="kpi-footer">Perfiles Antropométricos</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col3:
-        st.markdown("""
+        st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-title">Registros Longitudinales</div>
-                <div class="kpi-value">108,639</div>
+                <div class="kpi-value">{metricas['registros']:,}</div>
                 <div class="kpi-footer">Temporadas 2022 – 2026</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col4:
-        st.markdown("""
+        st.markdown(f"""
             <div class="kpi-card">
                 <div class="kpi-title">Eventos Médicos</div>
-                <div class="kpi-value">26,949</div>
+                <div class="kpi-value">{metricas['lesiones']:,}</div>
                 <div class="kpi-footer">Lesiones Documentadas</div>
             </div>
         """, unsafe_allow_html=True)

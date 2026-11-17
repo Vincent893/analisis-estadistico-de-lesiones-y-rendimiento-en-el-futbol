@@ -33,55 +33,71 @@ def calcular_hhi(valores):
 def cargar_datos(_conn):
     if _conn:
         try:
-            df = _conn.execute("SELECT * FROM players").df()
+            query = """
+            WITH primary_pos AS (
+                SELECT player_id, MIN(position_id) as position_id
+                FROM player_positions
+                WHERE position_rank = 1
+                GROUP BY player_id
+            )
+            SELECT 
+                ps.player_season_id,
+                p.player_id,
+                p.name AS player_name,
+                c.club_name AS club,
+                CASE 
+                    WHEN d.division_name = 'English Premier Division' THEN 'Premier League'
+                    WHEN d.division_name = 'Spanish First Division' THEN 'La Liga'
+                    WHEN d.division_name = 'Italian Serie A' THEN 'Serie A'
+                    WHEN d.division_name = 'Bundesliga' THEN 'Bundesliga'
+                    WHEN d.division_name = 'Ligue 1 Uber Eats' THEN 'Ligue 1'
+                    ELSE d.division_name
+                END AS liga,
+                s.season_label AS season,
+                CASE 
+                    WHEN pos.role_code = 'GK' THEN 'POR'
+                    WHEN pos.role_code = 'D' AND pos.side_code = 'C' THEN 'DFC'
+                    WHEN pos.role_code = 'D' AND pos.side_code = 'L' THEN 'LI'
+                    WHEN pos.role_code = 'D' AND pos.side_code = 'R' THEN 'LD'
+                    WHEN pos.role_code = 'WB' AND pos.side_code = 'L' THEN 'LI'
+                    WHEN pos.role_code = 'WB' AND pos.side_code = 'R' THEN 'LD'
+                    WHEN pos.role_code = 'DM' THEN 'MCD'
+                    WHEN pos.role_code = 'M' AND pos.side_code = 'C' THEN 'MC'
+                    WHEN pos.role_code = 'M' AND pos.side_code = 'L' THEN 'EI'
+                    WHEN pos.role_code = 'M' AND pos.side_code = 'R' THEN 'ED'
+                    WHEN pos.role_code = 'AM' AND pos.side_code = 'C' THEN 'MCO'
+                    WHEN pos.role_code = 'AM' AND pos.side_code = 'L' THEN 'EI'
+                    WHEN pos.role_code = 'AM' AND pos.side_code = 'R' THEN 'ED'
+                    WHEN pos.role_code = 'ST' THEN 'DC'
+                    WHEN p.primary_category = 'GOALKEEPER' THEN 'POR'
+                    WHEN p.primary_category = 'DEFENDER' THEN 'DFC'
+                    WHEN p.primary_category = 'MIDFIELDER' THEN 'MC'
+                    WHEN p.primary_category = 'ATTACKER' THEN 'DC'
+                    ELSE 'MC'
+                END AS position,
+                ps.mins AS minutes_played,
+                COALESCE(psa.goals, 0) AS goals,
+                COALESCE(psa.assists, 0) AS assists,
+                ROUND(ps.ability_score / 100.0, 2) AS ability_score,
+                COALESCE(psa.xg_per_90, 0.0) AS xg_90,
+                COALESCE(psa.xg, 0.0) AS xg
+            FROM player_seasons ps
+            JOIN players p ON ps.player_id = p.player_id
+            JOIN clubs c ON ps.club_id = c.club_id
+            JOIN divisions d ON c.division_id = d.division_id
+            JOIN seasons s ON ps.season_id = s.season_id
+            LEFT JOIN primary_pos pp ON p.player_id = pp.player_id
+            LEFT JOIN positions pos ON pp.position_id = pos.position_id
+            LEFT JOIN player_stats_attacking psa ON ps.player_season_id = psa.player_season_id
+            WHERE d.division_id IN (55, 141, 24, 261, 170)
+            """
+            df = _conn.execute(query).df()
             required = {"club", "season", "position", "goals", "assists", "minutes_played", "ability_score"}
-            if required.issubset(set(df.columns)):
-                return df, False
+            if required.issubset(set(df.columns)) and len(df) > 0:
+                return df
         except Exception:
             pass
-
-    rng = np.random.default_rng(42)
-    ligas = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1"]
-    clubs_por_liga = {
-        "Premier League": ["Man City", "Arsenal", "Liverpool", "Chelsea", "Tottenham"],
-        "La Liga":        ["Real Madrid", "Barcelona", "Atlético", "Sevilla", "Villarreal"],
-        "Serie A":        ["Inter", "Milan", "Juventus", "Napoli", "Roma"],
-        "Bundesliga":     ["Bayern", "Dortmund", "Leipzig", "Leverkusen", "Frankfurt"],
-        "Ligue 1":        ["PSG", "Marseille", "Monaco", "Lyon", "Nice"],
-    }
-    posiciones = ["POR", "DFC", "LI", "LD", "MCD", "MC", "MCO", "EI", "ED", "DC"]
-    temporadas = ["2022-23", "2023-24", "2024-25", "2025-26"]
-    rows = []
-    for liga, clubs in clubs_por_liga.items():
-        for club in clubs:
-            for temp in temporadas:
-                n_jugadores = rng.integers(22, 30)
-                for _ in range(n_jugadores):
-                    pos = rng.choice(posiciones)
-                    mins = int(rng.integers(200, 2800))
-                    goals = int(rng.poisson(2.5 if pos in ["DC", "EI", "ED"] else 0.5))
-                    assists = int(rng.poisson(1.5 if pos in ["EI", "ED", "MC", "MCO"] else 0.3))
-                    ability = round(float(rng.normal(6.5, 1.2)), 2)
-                    ability = max(3.0, min(10.0, ability))
-                    xg90 = round(float(rng.exponential(0.25 if pos in ["DC", "EI", "ED"] else 0.07)), 3)
-                    rows.append({
-                        "liga": liga, "club": club, "season": temp,
-                        "position": pos, "minutes_played": mins,
-                        "goals": goals, "assists": assists,
-                        "ability_score": ability, "xg_90": xg90,
-                    })
-    return pd.DataFrame(rows), True
-
-df_raw, es_simulado = cargar_datos(conn)
-
-umbral_col = "ability_score" if "ability_score" in df_raw.columns else df_raw.columns[-1]
-liga_col   = "liga"         if "liga"         in df_raw.columns else "club"
-
-df = df_raw.copy()
-df["elite"] = df.groupby([liga_col, "season"])[umbral_col].transform(
-    lambda x: x >= x.quantile(0.90)
-)
-df["goles_asistencias"] = df["goals"] + df["assists"]
+    return None
 
 st.markdown("""
     <div class="hero-header">
@@ -94,8 +110,20 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-if es_simulado:
-    st.info("Aviso: Conexión a la base de datos no detectada. Mostrando conjunto de datos de demostración.")
+df_raw = cargar_datos(conn)
+
+if df_raw is None or df_raw.empty:
+    st.error("No conectado a la base de datos.")
+    st.stop()
+
+umbral_col = "ability_score" if "ability_score" in df_raw.columns else df_raw.columns[-1]
+liga_col   = "liga"         if "liga"         in df_raw.columns else "club"
+
+df = df_raw.copy()
+df["elite"] = df.groupby([liga_col, "season"])[umbral_col].transform(
+    lambda x: x >= x.quantile(0.90)
+)
+df["goles_asistencias"] = df["goals"] + df["assists"]
 
 st.divider()
 
@@ -166,6 +194,10 @@ orden_clubes = (
          .sort_values(ascending=False)
          .index.tolist()
 )
+
+if liga_sel == "Todas" and len(orden_clubes) > 25:
+    orden_clubes = orden_clubes[:25]
+    df_g1 = df_g1[df_g1["club"].isin(orden_clubes)]
 
 df_g1_agg = (
     df_g1.groupby(["club", "season"])
@@ -338,18 +370,29 @@ st.divider()
 st.subheader("Gráfico 4: Volatilidad del Rendimiento por Posición")
 st.caption("El Coeficiente de Variación (CV) mide la dispersión del rendimiento de cada demarcación a lo largo de las cuatro temporadas. Un CV más alto indica mayor dispersión de los datos.")
 
-datos_cv_pos = [
-    {"position": "POR", "nombre": "Portero", "cv": 0.082, "estabilidad": "Alta Homogeneidad"},
-    {"position": "DFC", "nombre": "Defensa Central", "cv": 0.095, "estabilidad": "Alta Homogeneidad"},
-    {"position": "MCD", "nombre": "Mediocentro Defensivo", "cv": 0.114, "estabilidad": "Alta Homogeneidad"},
-    {"position": "LI",  "nombre": "Lateral Izquierdo", "cv": 0.138, "estabilidad": "Homogéneo"},
-    {"position": "LD",  "nombre": "Lateral Derecho", "cv": 0.145, "estabilidad": "Homogéneo"},
-    {"position": "MC",  "nombre": "Mediocentro", "cv": 0.168, "estabilidad": "Moderado"},
-    {"position": "MCO", "nombre": "Mediapunta", "cv": 0.245, "estabilidad": "Heterogéneo"},
-    {"position": "ED",  "nombre": "Extremo Derecho", "cv": 0.312, "estabilidad": "Alta Dispersión"},
-    {"position": "EI",  "nombre": "Extremo Izquierdo", "cv": 0.328, "estabilidad": "Alta Dispersión"},
-    {"position": "DC",  "nombre": "Delantero Centro", "cv": 0.385, "estabilidad": "Máxima Dispersión"},
-]
+pos_nombres = {
+    "POR": "Portero", "DFC": "Defensa Central", "MCD": "Mediocentro Defensivo",
+    "LI": "Lateral Izquierdo", "LD": "Lateral Derecho", "MC": "Mediocentro",
+    "MCO": "Mediapunta", "ED": "Extremo Derecho", "EI": "Extremo Izquierdo", "DC": "Delantero Centro"
+}
+datos_cv_pos = []
+for pos, nombre in pos_nombres.items():
+    sub_df = df[df["position"] == pos]
+    if len(sub_df) > 0 and sub_df["ability_score"].mean() > 0:
+        cv_val = float(sub_df["ability_score"].std() / sub_df["ability_score"].mean())
+    else:
+        cv_val = 0.10
+    if cv_val < 0.14:
+        est = "Alta Homogeneidad"
+    elif cv_val < 0.165:
+        est = "Homogéneo"
+    elif cv_val < 0.18:
+        est = "Moderado"
+    elif cv_val < 0.22:
+        est = "Heterogéneo"
+    else:
+        est = "Alta Dispersión"
+    datos_cv_pos.append({"position": pos, "nombre": nombre, "cv": round(cv_val, 3), "estabilidad": est})
 
 df_cv = pd.DataFrame(datos_cv_pos).sort_values("cv", ascending=True)
 
@@ -413,7 +456,10 @@ for (club_h, season_h), grp in df_hm.groupby(["club", "season"]):
     pct_top20_rows.append({"club": club_h, "season": season_h, "pct_top20": round(pct, 1)})
 
 df_hm_agg = pd.DataFrame(pct_top20_rows)
-pivot_hm = df_hm_agg.pivot(index="club", columns="season", values="pct_top20")
+pivot_hm = df_hm_agg.pivot(index="club", columns="season", values="pct_top20").fillna(0.0)
+pivot_hm = pivot_hm[pivot_hm.sum(axis=1) > 0]
+if len(pivot_hm) > 0:
+    pivot_hm = pivot_hm.loc[pivot_hm.mean(axis=1).sort_values(ascending=False).index]
 
 textos_heatmap = []
 for row in pivot_hm.values:

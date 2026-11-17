@@ -1,6 +1,6 @@
 streamlit
 pandas
 python-dotenv
-duckdb
+duckdb<=1.5.6
 supabase
 plotly

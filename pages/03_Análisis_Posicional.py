@@ -18,93 +18,99 @@ conn = DB.get_connection()
 def cargar_datos(_conn):
     if _conn:
         try:
-            df = _conn.execute("SELECT * FROM players").df()
+            query = """
+            WITH primary_pos AS (
+                SELECT player_id, MIN(position_id) as position_id
+                FROM player_positions
+                WHERE position_rank = 1
+                GROUP BY player_id
+            )
+            SELECT 
+                ps.player_season_id,
+                p.player_id,
+                p.name AS player_name,
+                c.club_name AS club,
+                CASE 
+                    WHEN d.division_name = 'English Premier Division' THEN 'Premier League'
+                    WHEN d.division_name = 'Spanish First Division' THEN 'La Liga'
+                    WHEN d.division_name = 'Italian Serie A' THEN 'Serie A'
+                    WHEN d.division_name = 'Bundesliga' THEN 'Bundesliga'
+                    WHEN d.division_name = 'Ligue 1 Uber Eats' THEN 'Ligue 1'
+                    ELSE d.division_name
+                END AS liga,
+                s.season_label AS season,
+                CASE 
+                    WHEN p.primary_category = 'GOALKEEPER' THEN 'Arquero'
+                    WHEN p.primary_category = 'DEFENDER' THEN 'Defensa'
+                    WHEN p.primary_category = 'MIDFIELDER' THEN 'Mediocampista'
+                    WHEN p.primary_category = 'ATTACKER' THEN 'Delantero'
+                    ELSE 'Otro'
+                END AS linea,
+                CASE 
+                    WHEN pos.role_code = 'GK' THEN 'POR'
+                    WHEN pos.role_code = 'D' AND pos.side_code = 'C' THEN 'DFC'
+                    WHEN pos.role_code = 'D' AND pos.side_code = 'L' THEN 'LI'
+                    WHEN pos.role_code = 'D' AND pos.side_code = 'R' THEN 'LD'
+                    WHEN pos.role_code = 'WB' AND pos.side_code = 'L' THEN 'LI'
+                    WHEN pos.role_code = 'WB' AND pos.side_code = 'R' THEN 'LD'
+                    WHEN pos.role_code = 'DM' THEN 'MCD'
+                    WHEN pos.role_code = 'M' AND pos.side_code = 'C' THEN 'MC'
+                    WHEN pos.role_code = 'M' AND pos.side_code = 'L' THEN 'EI'
+                    WHEN pos.role_code = 'M' AND pos.side_code = 'R' THEN 'ED'
+                    WHEN pos.role_code = 'AM' AND pos.side_code = 'C' THEN 'MCO'
+                    WHEN pos.role_code = 'AM' AND pos.side_code = 'L' THEN 'EI'
+                    WHEN pos.role_code = 'AM' AND pos.side_code = 'R' THEN 'ED'
+                    WHEN pos.role_code = 'ST' THEN 'DC'
+                    WHEN p.primary_category = 'GOALKEEPER' THEN 'POR'
+                    WHEN p.primary_category = 'DEFENDER' THEN 'DFC'
+                    WHEN p.primary_category = 'MIDFIELDER' THEN 'MC'
+                    WHEN p.primary_category = 'ATTACKER' THEN 'DC'
+                    ELSE 'MC'
+                END AS position,
+                ps.mins AS minutes_played,
+                COALESCE(psa.goals, 0) AS goals,
+                COALESCE(psa.assists, 0) AS assists,
+                COALESCE(psd.tackles_completed, 0) AS tackles,
+                COALESCE(psa.chances_created, 0) AS key_passes,
+                ROUND(ps.ability_score / 100.0, 2) AS ability_score,
+                LEAST(10.0, GREATEST(0.0, ROUND(COALESCE(psa.goals, 0) * 0.35 + COALESCE(psa.assists, 0) * 0.25 + COALESCE(psa.chances_created, 0) * 0.08 + COALESCE(psa.xg, 0.0) * 0.2, 2))) AS offensive_score,
+                LEAST(10.0, GREATEST(0.0, ROUND(COALESCE(psd.tackles_completed, 0) * 0.08 + COALESCE(psd.interceptions, 0) * 0.08 + COALESCE(psd.blocks, 0) * 0.05 + COALESCE(psgk.clean_sheets, 0) * 0.4 + COALESCE(psgk.saves_held, 0) * 0.05, 2))) AS defensive_score
+            FROM player_seasons ps
+            JOIN players p ON ps.player_id = p.player_id
+            JOIN clubs c ON ps.club_id = c.club_id
+            JOIN divisions d ON c.division_id = d.division_id
+            JOIN seasons s ON ps.season_id = s.season_id
+            LEFT JOIN primary_pos pp ON p.player_id = pp.player_id
+            LEFT JOIN positions pos ON pp.position_id = pos.position_id
+            LEFT JOIN player_stats_attacking psa ON ps.player_season_id = psa.player_season_id
+            LEFT JOIN player_stats_defending psd ON ps.player_season_id = psd.player_season_id
+            LEFT JOIN player_stats_goalkeeping psgk ON ps.player_season_id = psgk.player_season_id
+            WHERE d.division_id IN (55, 141, 24, 261, 170)
+            """
+            df = _conn.execute(query).df()
             required = {"club", "season", "position", "goals", "assists", "minutes_played", "ability_score"}
-            if required.issubset(set(df.columns)):
-                return df, False
+            if required.issubset(set(df.columns)) and len(df) > 0:
+                return df
         except Exception:
             pass
+    return None
 
-    rng = np.random.default_rng(7)
-    ligas = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1"]
-    clubs_por_liga = {
-        "Premier League": ["Man City", "Arsenal", "Liverpool", "Chelsea", "Tottenham"],
-        "La Liga":        ["Real Madrid", "Barcelona", "Atlético", "Sevilla", "Villarreal"],
-        "Serie A":        ["Inter", "Milan", "Juventus", "Napoli", "Roma"],
-        "Bundesliga":     ["Bayern", "Dortmund", "Leipzig", "Leverkusen", "Frankfurt"],
-        "Ligue 1":        ["PSG", "Marseille", "Monaco", "Lyon", "Nice"],
-    }
-    pos_linea = {
-        "Arquero":       ["POR"],
-        "Defensa":       ["DFC", "LI", "LD"],
-        "Mediocampista": ["MCD", "MC", "MCO"],
-        "Delantero":     ["EI", "ED", "DC"],
-    }
-    temporadas = ["2022-23", "2023-24", "2024-25", "2025-26"]
+st.markdown("""
+    <div class="hero-header">
+        <span class="hero-badge">Objetivo 3 · Temporadas 2022 – 2026</span>
+        <div class="hero-title">Dinámicas Posicionales</div>
+        <p style="color:#94A3B8; margin:0; font-size:1.05rem; line-height:1.5;">
+            Examinar el aporte porcentual y el promedio de rendimiento de las líneas posicionales (arqueros, defensas,
+            mediocampistas y delanteros) dentro de la estructura de los equipos durante el ciclo 2022-2026.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
-    rows = []
-    for liga, clubs in clubs_por_liga.items():
-        for club in clubs:
-            for temp in temporadas:
-                n_jugadores = rng.integers(22, 30)
-                for _ in range(n_jugadores):
-                    linea = rng.choice(list(pos_linea.keys()), p=[0.061, 0.368, 0.310, 0.261])
-                    pos = rng.choice(pos_linea[linea])
+df_raw = cargar_datos(conn)
 
-                    if pos in ["POR", "DFC"]:
-                        mins = int(rng.integers(1800, 3100))
-                    elif pos in ["EI", "ED", "LI", "LD"]:
-                        mins = int(rng.integers(400, 2600))
-                    else:
-                        mins = int(rng.integers(800, 2800))
-
-                    if linea == "Delantero":
-                        goals = int(rng.poisson(3.8))
-                        assists = int(rng.poisson(1.8))
-                    elif linea == "Mediocampista":
-                        goals = int(rng.poisson(0.8))
-                        assists = int(rng.poisson(2.0))
-                    elif linea == "Defensa":
-                        goals = int(rng.poisson(0.3))
-                        assists = int(rng.poisson(0.5))
-                    else:
-                        goals = 0
-                        assists = int(rng.binomial(1, 0.05))
-
-                    tackles = int(rng.poisson(45 if linea == "Defensa" else (35 if linea == "Mediocampista" else 8)))
-                    key_passes = int(rng.poisson(22 if linea == "Mediocampista" else (14 if linea == "Delantero" else 4)))
-
-                    if linea == "Delantero":
-                        ability = round(float(rng.normal(6.9, 1.35) + rng.exponential(0.3)), 2)
-                        off_score = round(float(rng.normal(6.5, 1.3)), 2)
-                        def_score = round(float(rng.normal(1.8, 0.8)), 2)
-                    elif linea == "Mediocampista":
-                        ability = round(float(rng.normal(6.6, 1.15)), 2)
-                        off_score = round(float(rng.normal(5.0, 1.2)), 2)
-                        def_score = round(float(rng.normal(4.8, 1.2)), 2)
-                    elif linea == "Defensa":
-                        ability = round(float(rng.normal(6.35, 0.85)), 2)
-                        off_score = round(float(rng.normal(2.2, 0.9)), 2)
-                        def_score = round(float(rng.normal(6.4, 1.1)), 2)
-                    else:
-                        ability = round(float(rng.normal(6.15, 0.75)), 2)
-                        off_score = round(float(rng.normal(0.8, 0.4)), 2)
-                        def_score = round(float(rng.normal(7.2, 1.0)), 2)
-
-                    ability = max(3.0, min(10.0, ability))
-
-                    rows.append({
-                        "liga": liga, "club": club, "season": temp,
-                        "position": pos, "linea": linea,
-                        "minutes_played": mins, "goals": goals, "assists": assists,
-                        "tackles": tackles, "key_passes": key_passes,
-                        "ability_score": ability,
-                        "offensive_score": max(0, min(10, off_score)),
-                        "defensive_score": max(0, min(10, def_score)),
-                    })
-    return pd.DataFrame(rows), True
-
-df_raw, es_simulado = cargar_datos(conn)
+if df_raw is None or df_raw.empty:
+    st.error("No conectado a la base de datos.")
+    st.stop()
 
 if "linea" not in df_raw.columns:
     pos_linea_map = {
@@ -125,20 +131,6 @@ colores_kpi = {
     "Mediocampista": "#3B82F6",
     "Delantero": "#F59E0B",
 }
-
-st.markdown("""
-    <div class="hero-header">
-        <span class="hero-badge">Objetivo 3 · Temporadas 2022 – 2026</span>
-        <div class="hero-title">Dinámicas Posicionales</div>
-        <p style="color:#94A3B8; margin:0; font-size:1.05rem; line-height:1.5;">
-            Examinar el aporte porcentual y el promedio de rendimiento de las líneas posicionales (arqueros, defensas,
-            mediocampistas y delanteros) dentro de la estructura de los equipos durante el ciclo 2022-2026.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
-
-if es_simulado:
-    st.info("Aviso: Conexión a la base de datos no detectada. Mostrando conjunto de datos de demostración.")
 
 st.divider()
 
