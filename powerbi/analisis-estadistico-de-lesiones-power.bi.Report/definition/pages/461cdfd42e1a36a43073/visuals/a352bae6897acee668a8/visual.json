@@ -20,16 +20,15 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "main dim_club"
+                      "Entity": "main analytics_club_seasons"
                     }
                   },
-                  "Property": "club_name"
+                  "Property": "division_name"
                 }
               },
-              "queryRef": "main dim_club.club_name",
-              "nativeQueryRef": "Nombre de los Clubs",
-              "active": true,
-              "displayName": "Nombre de los Clubs"
+              "queryRef": "main analytics_club_seasons.division_name",
+              "nativeQueryRef": "division_name",
+              "active": true
             }
           ]
         }

@@ -116,5 +116,61 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "08c2fad6a794739a1a54",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "season_label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "422bba3c82ab1e94882e",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_seasons"
+                  }
+                },
+                "Property": "total_goals_scored"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1cc2d6cb93537a4b04ec",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_seasons"
+                  }
+                },
+                "Property": "avg_ppg"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

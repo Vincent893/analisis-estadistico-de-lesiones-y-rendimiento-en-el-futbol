@@ -10,7 +10,7 @@
     "tabOrder": 8000
   },
   "visual": {
-    "visualType": "pieChart",
+    "visualType": "waterfallChart",
     "query": {
       "queryState": {
         "Category": {
@@ -45,14 +45,14 @@
                           "Entity": "main analytics_club_seasons"
                         }
                       },
-                      "Property": "squad_total_injuries"
+                      "Property": "high_performance_players_count"
                     }
                   },
                   "Function": 0
                 }
               },
-              "queryRef": "Sum(main analytics_club_seasons.squad_total_injuries)",
-              "nativeQueryRef": "Suma de squad_total_injuries"
+              "queryRef": "Sum(main analytics_club_seasons.high_performance_players_count)",
+              "nativeQueryRef": "Suma de high_performance_players_count"
             }
           ]
         }
@@ -69,7 +69,7 @@
                         "Entity": "main analytics_club_seasons"
                       }
                     },
-                    "Property": "squad_total_injuries"
+                    "Property": "high_performance_players_count"
                   }
                 },
                 "Function": 0
@@ -88,7 +88,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Distribución del Total de Lesiones por Temporada'"
+                  "Value": "'Evolución y Acomulación de Jugadores de Alto rendimiento'"
                 }
               }
             }
@@ -101,7 +101,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Frecuencia de incidencias médicas registradas'"
+                  "Value": "'Variación Interanual de Futbolista Élite en Plantillas'"
                 }
               }
             }

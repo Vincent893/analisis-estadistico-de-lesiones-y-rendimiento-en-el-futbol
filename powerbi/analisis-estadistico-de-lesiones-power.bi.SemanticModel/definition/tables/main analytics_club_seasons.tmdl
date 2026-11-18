@@ -36,6 +36,10 @@ table 'main analytics_club_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	measure 'Es Top 10' = INT(CONTAINS(TOPN(10, ALLSELECTED('main analytics_club_seasons'[division_name]), AVERAGE('main analytics_club_seasons'[pct_high_performance_players])), 'main analytics_club_seasons'[division_name], SELECTEDVALUE('main analytics_club_seasons'[division_name])))
+		formatString: 0
+		lineageTag: e4f8cd46-e58b-4213-823d-cfb21e68bdb4
+
 	column club_id
 		dataType: int64
 		formatString: 0

@@ -5319,16 +5319,6 @@ cultureInfo es-ES
 			            },
 			            "Weight": 0.714
 			          }
-			        },
-			        {
-			          "Nombre de los Clubs": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -6787,6 +6777,82 @@ cultureInfo es-ES
 			          }
 			        }
 			      ]
+			    },
+			    "main_analytics_club_season.es_top_10": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Es Top 10"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "es top 10": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "es best 10": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "es first 10": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "es leading 10": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "es maximum 10": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "es peak 10": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "es upper 10": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
@@ -6925,6 +6991,39 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_clubs_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_es_top_10": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.es_top_10": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.es_top_10"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.es_top_10"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_es_top_10"
 			        }
 			      ]
 			    },
