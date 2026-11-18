@@ -128,7 +128,11 @@ for i, linea in enumerate(LINEAS_ORDEN):
 st.divider()
 
 st.subheader("Gráfico 1: Aporte Porcentual por Línea y Temporada")
-st.caption("Porcentaje de goles, asistencias y tackleos aportado por cada línea posicional respecto al total de la muestra.")
+# Gráficos 1 y 2: sin arqueros, su aporte en goles, asistencias y tackles es prácticamente nulo
+df_campo = df[df["linea"] != "Arquero"]
+NOTA_ARQUEROS = "Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles)."
+
+st.caption("Porcentaje de goles, asistencias y tackles aportado por cada línea de campo respecto al total de la muestra. " + NOTA_ARQUEROS)
 
 metrica_g1 = st.radio(
     "Métrica de aporte:", ["Goles + Asistencias", "Goles", "Asistencias", "Tackles"],
@@ -141,8 +145,8 @@ col_metrica = {
     "Tackles":             "tackles",
 }[metrica_g1]
 
-total_por_temp = df.groupby("season")[col_metrica].sum().rename("total_temp")
-agg_g1 = df.groupby(["season", "linea"])[col_metrica].sum().reset_index(name="suma")
+total_por_temp = df_campo.groupby("season")[col_metrica].sum().rename("total_temp")
+agg_g1 = df_campo.groupby(["season", "linea"])[col_metrica].sum().reset_index(name="suma")
 agg_g1 = agg_g1.merge(total_por_temp, on="season")
 agg_g1["pct"] = agg_g1["suma"] / agg_g1["total_temp"] * 100
 agg_g1["linea"] = pd.Categorical(agg_g1["linea"], categories=LINEAS_ORDEN, ordered=True)
@@ -176,6 +180,58 @@ st.markdown("""
 
 st.divider()
 
+st.subheader("Gráfico 2: Promedio por Jugador por Línea y Temporada")
+st.caption("Promedio por jugador de goles, asistencias y tackles en cada línea posicional. Contrasta con el Gráfico 1: aquel muestra cuánto aporta cada línea al total; este, cuánto aporta un jugador típico de cada línea. " + NOTA_ARQUEROS)
+
+metrica_prom = st.radio(
+    "Métrica promedio:", ["Goles + Asistencias", "Goles", "Asistencias", "Tackles"],
+    horizontal=True, key="g2_prom_metrica"
+)
+col_prom = {
+    "Goles + Asistencias": "goles_asistencias",
+    "Goles":               "goals",
+    "Asistencias":         "assists",
+    "Tackles":             "tackles",
+}[metrica_prom]
+
+# Promedio por jugador: no depende de cuántos jugadores tenga cada línea
+agg_prom = df_campo.groupby(["season", "linea"])[col_prom].mean().reset_index(name="promedio")
+agg_prom["linea"] = pd.Categorical(agg_prom["linea"], categories=LINEAS_ORDEN, ordered=True)
+agg_prom = agg_prom.sort_values(["season", "linea"])
+
+fig_prom = px.bar(
+    agg_prom, x="season", y="promedio", color="linea",
+    barmode="group",
+    color_discrete_map=colores_kpi,
+    category_orders={"linea": LINEAS_ORDEN},
+    labels={"season": "Temporada", "promedio": f"{metrica_prom} promedio por jugador", "linea": "Línea"},
+)
+fig_prom.update_traces(texttemplate="%{y:.2f}", textposition="outside")
+fig_prom.update_layout(height=430)
+fig_prom = apply_theme(fig_prom)
+st.plotly_chart(fig_prom, width="stretch")
+
+with st.expander("Explicación de Lectura"):
+    st.markdown("""
+    Este gráfico de barras agrupadas muestra, para cada temporada, cuántos goles, asistencias o tackles registró en promedio un jugador de cada línea posicional. A diferencia del aporte porcentual del Gráfico 1, este promedio no depende de cuántos jugadores tenga cada línea: una línea con muchos jugadores puede aportar mucho al total aunque cada jugador produzca poco, y al revés. Comparar ambos gráficos permite distinguir el peso colectivo de una línea de su rendimiento individual típico.
+    """)
+
+st.markdown("""
+<div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+    <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
+        La composición del aporte por línea se mantiene estable a lo largo del ciclo 2022-2026, sin transferencias significativas de carga entre demarcaciones. Los delanteros conservan la franja más amplia, representando más de la mitad del aporte total en todas las temporadas. Los mediocampistas mantienen una franja estable cercana al 30%, mientras que defensas y arqueros ocupan las franjas inferiores con variaciones mínimas. Esta estabilidad en la composición describe una estructura de responsabilidades funcional que no ha experimentado cambios bruscos en la distribución de la producción entre líneas.
+    </p>
+    <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
+    <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
+        <li><b>Estabilidad:</b> La estructura de aporte por línea se mantiene constante a lo largo de las cuatro temporadas, sin variaciones significativas en la proporción de cada demarcación.</li>
+        <li><b>Dominio Ofensivo:</b> Los delanteros conservan la mayor cuota de participación en el total de la métrica, seguidos por los mediocampistas, mientras que defensas y arqueros mantienen una participación menor y estable.</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
+
+st.divider()
+
 NOMBRES_VAR = {
     "ability_score": "Puntuacion de Habilidad",
     "goles_asistencias": "Goles + Asistencias",
@@ -187,7 +243,7 @@ NOMBRES_VAR = {
     "minutes_played": "Minutos Jugados",
 }
 
-st.subheader("Gráfico 2: Distribución del Rendimiento Individual por Línea")
+st.subheader("Gráfico 3: Distribución del Rendimiento Individual por Línea")
 
 metrica_box = st.selectbox(
     "Variable analizada:", list(NOMBRES_VAR), format_func=NOMBRES_VAR.get,
@@ -260,7 +316,7 @@ st.dataframe(desc_table, width="stretch")
 
 st.divider()
 
-st.subheader("Gráfico 3: Promedio de Rendimiento por Línea")
+st.subheader("Gráfico 4: Promedio de Rendimiento por Línea")
 
 metrica_g3 = st.selectbox(
     "Variable evaluada:", list(NOMBRES_VAR), format_func=NOMBRES_VAR.get,
@@ -313,86 +369,6 @@ st.markdown("""
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
         <li><b>Promedio:</b> La línea de delanteros registra la media de rendimiento más alta, seguida por mediocampistas, defensas y arqueros.</li>
         <li><b>Dispersión:</b> Los delanteros y mediocampistas presentan una mayor desviación estándar, lo que describe una mayor heterogeneidad en su rendimiento. Arqueros y defensas muestran una menor dispersión, indicando registros más homogéneos.</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
-
-st.divider()
-
-st.subheader("Gráfico 4: Composición Evolutiva del Aporte por Línea")
-st.caption("Proporción acumulada del aporte de cada línea posicional sobre el total de la métrica, por temporada. Cada franja representa el porcentaje relativo de cada demarcación.")
-
-metrica_g4 = st.radio(
-    "Métrica de composición:", ["Goles + Asistencias", "Goles", "Asistencias", "Tackles"],
-    horizontal=True, key="g4_metrica"
-)
-col_m4 = {
-    "Goles + Asistencias": "goles_asistencias",
-    "Goles":               "goals",
-    "Asistencias":         "assists",
-    "Tackles":             "tackles",
-}[metrica_g4]
-
-pivot_g4 = (
-    df.groupby(["season", "linea"])[col_m4]
-      .sum()
-      .unstack(fill_value=0)
-)
-pivot_g4_pct = pivot_g4.div(pivot_g4.sum(axis=1), axis=0) * 100
-
-fig4 = go.Figure()
-for linea in LINEAS_ORDEN:
-  if linea not in pivot_g4_pct.columns:
-    continue
-
-  hex_color = colores_kpi[linea].lstrip("#")
-  r, g, b = (
-      int(hex_color[0:2], 16),
-      int(hex_color[2:4], 16),
-      int(hex_color[4:6], 16),
-  )
-  fill_rgba = f"rgba({r}, {g}, {b}, 0.7)"  
-  fig4.add_trace(
-      go.Scatter(
-          x=pivot_g4_pct.index,
-          y=pivot_g4_pct[linea],
-          mode="lines",
-          name=linea,
-          stackgroup="one",
-          groupnorm="percent",
-          fillcolor=fill_rgba,
-          line=dict(color=colores_kpi[linea], width=1.5),
-          hovertemplate=(
-              "<b>" + linea + "</b><br>%{x}: %{y:.1f}%<extra></extra>"
-          ),
-      )
-  )
-
-fig4.update_layout(
-    height=420,
-    yaxis_title="% Acumulado del Aporte",
-    xaxis_title="Temporada",
-    yaxis_ticksuffix="%",
-    hovermode="x unified",
-)
-fig4 = apply_theme(fig4)
-st.plotly_chart(fig4, width="stretch")
-
-with st.expander("Explicación de Lectura"):
-    st.markdown("""
-    Este gráfico de área apilada al 100% muestra la evolución del aporte relativo de cada línea posicional a lo largo de las temporadas. El eje vertical (0% a 100%) representa el total de la métrica seleccionada (goles, asistencias o tackles). El grosor vertical de cada franja de color indica el porcentaje que aporta esa línea sobre el total. Si una franja se ensancha con el tiempo, significa que esa posición ha ganado peso relativo en la producción total; si se estrecha, ha perdido participación.
-    """)
-
-st.markdown("""
-<div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
-    <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
-    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        La composición del aporte por línea se mantiene estable a lo largo del ciclo 2022-2026, sin transferencias significativas de carga entre demarcaciones. Los delanteros conservan la franja más amplia, representando más de la mitad del aporte total en todas las temporadas. Los mediocampistas mantienen una franja estable cercana al 30%, mientras que defensas y arqueros ocupan las franjas inferiores con variaciones mínimas. Esta estabilidad en la composición describe una estructura de responsabilidades funcional que no ha experimentado cambios bruscos en la distribución de la producción entre líneas.
-    </p>
-    <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
-    <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Estabilidad:</b> La estructura de aporte por línea se mantiene constante a lo largo de las cuatro temporadas, sin variaciones significativas en la proporción de cada demarcación.</li>
-        <li><b>Dominio Ofensivo:</b> Los delanteros conservan la mayor cuota de participación en el total de la métrica, seguidos por los mediocampistas, mientras que defensas y arqueros mantienen una participación menor y estable.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
