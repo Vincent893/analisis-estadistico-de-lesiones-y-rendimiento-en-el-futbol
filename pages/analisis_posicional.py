@@ -14,7 +14,6 @@ cargar_estilos()
 conn = DB.get_connection()
 
 LINEAS_ES = {"GOALKEEPER": "Arquero", "DEFENDER": "Defensa", "MIDFIELDER": "Mediocampista", "ATTACKER": "Delantero"}
-# role_code-side_code de la tabla positions -> abreviatura en español
 POSICIONES_ES = {
     "GK": "POR", "D-C": "DFC", "D-L": "LI", "D-R": "LD", "WB-L": "CI", "WB-R": "CD",
     "DM": "MCD", "M-C": "MC", "M-L": "MI", "M-R": "MD",
@@ -74,6 +73,10 @@ except Exception as e:
 
 df = df_raw.copy()
 df["goles_asistencias"] = df["goals"] + df["assists"]
+MIN_MINUTOS_90 = 450
+_min_ok = df["minutes_played"].where(df["minutes_played"] >= MIN_MINUTOS_90)
+for col in ["goles_asistencias", "goals", "assists"]:
+    df[f"{col}_90"] = df[col] * 90 / _min_ok
 liga_col = "liga"
 LINEAS_ORDEN = ["Arquero", "Defensa", "Mediocampista", "Delantero"]
 colores_kpi = {
@@ -177,13 +180,25 @@ st.markdown("""
 
 st.divider()
 
+NOMBRES_VAR = {
+    "ability_score": "Puntuacion de Habilidad",
+    "goles_asistencias": "Goles + Asistencias",
+    "goals": "Goles",
+    "assists": "Asistencias",
+    "goles_asistencias_90": "Goles + Asistencias por 90'",
+    "goals_90": "Goles por 90'",
+    "assists_90": "Asistencias por 90'",
+    "minutes_played": "Minutos Jugados",
+}
+
 st.subheader("Gráfico 2: Distribución del Rendimiento Individual por Línea")
-st.caption("Comparación de la distribución del Ability Score para cada línea posicional. La caja representa el rango intercuartílico, la línea central la mediana y los puntos los valores atípicos")
 
 metrica_box = st.selectbox(
-    "Variable analizada:", ["ability_score", "goles_asistencias", "goals", "assists", "minutes_played"],
-    index=0, key="g2_var"
+    "Variable analizada:", list(NOMBRES_VAR), format_func=NOMBRES_VAR.get,
+    index=list(NOMBRES_VAR).index("goles_asistencias_90"), key="g2_var"
 )
+st.caption(f"Distribución de {NOMBRES_VAR[metrica_box]} por línea posicional. La caja representa el rango intercuartílico, la línea central la mediana y la línea punteada la media. Los valores atípicos no se dibujan (son miles de registros); sus extremos figuran en la tabla inferior."
+           + (f" Las métricas por 90' solo incluyen jugadores con {MIN_MINUTOS_90}+ minutos." if metrica_box.endswith("_90") else ""))
 
 df_g2 = df[df["linea"].isin(LINEAS_ORDEN)].copy()
 df_g2["linea"] = pd.Categorical(df_g2["linea"], categories=LINEAS_ORDEN, ordered=True)
@@ -205,8 +220,8 @@ for linea in LINEAS_ORDEN:
             y=sub,
             name=linea,
             marker_color=colores_kpi.get(linea, "#00E5FF"),
-            boxmean="sd",
-            boxpoints="outliers",
+            boxmean=True,
+            boxpoints=False,
             line=dict(width=2),
             fillcolor=fill_rgba,
         )
@@ -214,7 +229,7 @@ for linea in LINEAS_ORDEN:
 
 fig2.update_layout(
     height=430,
-    yaxis_title=metrica_box.replace("_", " ").title(),
+    yaxis_title=NOMBRES_VAR[metrica_box],
     showlegend=False,
 )
 fig2 = apply_theme(fig2)
@@ -222,7 +237,7 @@ st.plotly_chart(fig2, width="stretch")
 
 with st.expander("Explicación de Lectura"):
     st.markdown("""
-    Este diagrama de caja (boxplot) resume la distribución del rendimiento individual (Ability Score) de cada posición. La línea central de cada caja indica la mediana (percentil 50). La caja representa el rango intercuartílico (Rango IQ), donde se concentra el 50% central de los jugadores (entre el percentil 25 y el 75). La línea punteada marca la media aritmética. Los bigotes (líneas verticales que salen de la caja) indican el rango de los datos comunes, mientras que los puntos señalan valores atípicos (jugadores con rendimiento excepcionalmente alto o bajo). La longitud de la caja y de los bigotes describe la dispersión de los datos: cajas más largas indican mayor heterogeneidad, cajas más compactas indican mayor homogeneidad.
+    Este boxplot resume la distribución de la variable seleccionada en cada línea posicional. La línea central de cada caja indica la mediana (percentil 50). La caja representa el rango intercuartílico (Rango IQ), donde se concentra el 50% central de los jugadores (entre el percentil 25 y el 75). La línea punteada marca la media aritmética. Los bigotes (líneas verticales que salen de la caja) llegan hasta 1,5 veces el rango intercuartílico; los valores más allá de ese límite (atípicos) no se dibujan, y el máximo de cada línea se informa en la tabla inferior. La longitud de la caja y de los bigotes describe la dispersión de los datos: cajas más largas indican mayor heterogeneidad, cajas más compactas indican mayor homogeneidad.
     """)
 
 st.markdown("""
@@ -249,49 +264,45 @@ st.dataframe(desc_table, width="stretch")
 
 st.divider()
 
-st.subheader("Gráfico 3: Promedio de Rendimiento por Línea con Desviación Estándar")
-st.caption("Media aritmética del Ability Score por línea posicional. Las líneas de error representan la desviación estándar de cada grupo).")
+st.subheader("Gráfico 3: Promedio de Rendimiento por Línea")
 
 metrica_g3 = st.selectbox(
-    "Variable evaluada:", ["ability_score", "goles_asistencias", "goals", "assists", "minutes_played"],
+    "Variable evaluada:", list(NOMBRES_VAR), format_func=NOMBRES_VAR.get,
     index=0, key="g3_var"
 )
+st.caption(f"Media aritmética de {NOMBRES_VAR[metrica_g3]} por línea posicional."
+           + (f" Solo jugadores con {MIN_MINUTOS_90}+ minutos." if metrica_g3.endswith("_90") else ""))
 
 agg_g3 = (
     df.groupby("linea")[metrica_g3]
-      .agg(["mean", "std", "count"])
+      .agg(["mean", "count"])
       .reset_index()
-      .rename(columns={"mean": "media", "std": "de", "count": "n"})
+      .rename(columns={"mean": "media", "count": "n"})
 )
 agg_g3["linea"] = pd.Categorical(agg_g3["linea"], categories=LINEAS_ORDEN, ordered=True)
 agg_g3 = agg_g3.sort_values("linea")
-agg_g3["de"] = agg_g3["de"].fillna(0)
 
 fig3 = go.Figure()
 for _, row in agg_g3.iterrows():
     linea = row["linea"]
+    texto = f"{row['media']:.3f}" if row["media"] < 10 else f"{row['media']:,.1f}"
     fig3.add_trace(go.Bar(
         y=[linea], x=[row["media"]],
         orientation="h",
-        error_x=dict(type="data", array=[row["de"]], visible=True, color="#94A3B8", thickness=2, width=10),
         marker_color=colores_kpi.get(linea, "#00E5FF"),
         name=linea,
-        text=f"μ={row['media']:.2f} ± σ={row['de']:.2f}",
-        textposition="auto",
-        hovertemplate=(
-            f"<b>{linea}</b><br>"
-            f"Media: {row['media']:.3f}<br>"
-            f"DE: ±{row['de']:.3f}<br>"
-            f"N: {row['n']}<extra></extra>"
-        ),
+        text=texto,
+        textposition="outside",
+        cliponaxis=False,
+        hovertemplate=f"<b>{linea}</b><br>Media: {texto}<br>N: {row['n']:,}<extra></extra>",
     ))
 
 fig3.update_layout(
     height=340,
-    xaxis_title=metrica_g3.replace("_", " ").title(),
+    xaxis_title=NOMBRES_VAR[metrica_g3],
     yaxis_title="Línea Posicional",
     showlegend=False,
-    barmode="relative",
+    bargap=0.35,
 )
 fig3 = apply_theme(fig3)
 st.plotly_chart(fig3, width="stretch")
