@@ -2,7 +2,6 @@ from database.DB import DB
 from models.UI import UI
 import streamlit as st
 import pandas as pd
-import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.estilos import cargar_estilos
@@ -14,110 +13,68 @@ cargar_estilos()
 
 conn = DB.get_connection()
 
+LINEAS_ES = {"GOALKEEPER": "Arquero", "DEFENDER": "Defensa", "MIDFIELDER": "Mediocampista", "ATTACKER": "Delantero"}
+# role_code-side_code de la tabla positions -> abreviatura en español
+POSICIONES_ES = {
+    "GK": "POR", "D-C": "DFC", "D-L": "LI", "D-R": "LD", "WB-L": "CI", "WB-R": "CD",
+    "DM": "MCD", "M-C": "MC", "M-L": "MI", "M-R": "MD",
+    "AM-C": "MCO", "AM-L": "EI", "AM-R": "ED", "ST-C": "DC",
+}
+
+# Una fila por jugador-temporada. Un jugador puede tener varias posiciones con rank 1;
+# se toma una sola (menor position_id) para no duplicar filas.
+SQL_JUGADOR_TEMPORADA = """
+WITH pos_principal AS (
+    SELECT pp.player_id, po.role_code || COALESCE('-' || po.side_code, '') AS pos
+    FROM player_positions pp
+    JOIN positions po USING (position_id)
+    WHERE pp.position_rank = 1
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY pp.player_id ORDER BY pp.position_id) = 1
+)
+SELECT COALESCE(d.division_name, 'Sin división') AS liga,
+       c.club_name            AS club,
+       s.season_label         AS season,
+       pp.pos                 AS position,
+       p.primary_category     AS linea,
+       ps.mins                AS minutes_played,
+       psa.goals,
+       psa.assists,
+       psd.tackles_completed  AS tackles,
+       psp.key_passes,
+       ps.ability_score,
+       psa.goals_per_90 + psa.assists_per_90                    AS offensive_score,
+       psd.tackles_completed_per_90 + psd.interceptions_per_90  AS defensive_score
+FROM player_seasons ps
+JOIN players p                   USING (player_id)
+JOIN pos_principal pp            USING (player_id)
+JOIN clubs c                     USING (club_id)
+LEFT JOIN divisions d            USING (division_id)
+JOIN seasons s                   USING (season_id)
+JOIN player_stats_attacking psa  USING (player_season_id)
+JOIN player_stats_defending psd  USING (player_season_id)
+JOIN player_stats_passing psp    USING (player_season_id)
+"""
+
 @st.cache_data
 def cargar_datos(_conn):
-    if _conn:
-        try:
-            df = _conn.execute("SELECT * FROM players").df()
-            required = {"club", "season", "position", "goals", "assists", "minutes_played", "ability_score"}
-            if required.issubset(set(df.columns)):
-                return df, False
-        except Exception:
-            pass
+    df = _conn.execute(SQL_JUGADOR_TEMPORADA).df()
+    df["linea"] = df["linea"].map(LINEAS_ES).fillna(df["linea"])
+    df["position"] = df["position"].map(POSICIONES_ES).fillna(df["position"])
+    return df
 
-    rng = np.random.default_rng(7)
-    ligas = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1"]
-    clubs_por_liga = {
-        "Premier League": ["Man City", "Arsenal", "Liverpool", "Chelsea", "Tottenham"],
-        "La Liga":        ["Real Madrid", "Barcelona", "Atlético", "Sevilla", "Villarreal"],
-        "Serie A":        ["Inter", "Milan", "Juventus", "Napoli", "Roma"],
-        "Bundesliga":     ["Bayern", "Dortmund", "Leipzig", "Leverkusen", "Frankfurt"],
-        "Ligue 1":        ["PSG", "Marseille", "Monaco", "Lyon", "Nice"],
-    }
-    pos_linea = {
-        "Arquero":       ["POR"],
-        "Defensa":       ["DFC", "LI", "LD"],
-        "Mediocampista": ["MCD", "MC", "MCO"],
-        "Delantero":     ["EI", "ED", "DC"],
-    }
-    temporadas = ["2022-23", "2023-24", "2024-25", "2025-26"]
+if conn is None:
+    st.error("No se pudo conectar a la base de datos. Revisa las variables de entorno.")
+    st.stop()
 
-    rows = []
-    for liga, clubs in clubs_por_liga.items():
-        for club in clubs:
-            for temp in temporadas:
-                n_jugadores = rng.integers(22, 30)
-                for _ in range(n_jugadores):
-                    linea = rng.choice(list(pos_linea.keys()), p=[0.061, 0.368, 0.310, 0.261])
-                    pos = rng.choice(pos_linea[linea])
-
-                    if pos in ["POR", "DFC"]:
-                        mins = int(rng.integers(1800, 3100))
-                    elif pos in ["EI", "ED", "LI", "LD"]:
-                        mins = int(rng.integers(400, 2600))
-                    else:
-                        mins = int(rng.integers(800, 2800))
-
-                    if linea == "Delantero":
-                        goals = int(rng.poisson(3.8))
-                        assists = int(rng.poisson(1.8))
-                    elif linea == "Mediocampista":
-                        goals = int(rng.poisson(0.8))
-                        assists = int(rng.poisson(2.0))
-                    elif linea == "Defensa":
-                        goals = int(rng.poisson(0.3))
-                        assists = int(rng.poisson(0.5))
-                    else:
-                        goals = 0
-                        assists = int(rng.binomial(1, 0.05))
-
-                    tackles = int(rng.poisson(45 if linea == "Defensa" else (35 if linea == "Mediocampista" else 8)))
-                    key_passes = int(rng.poisson(22 if linea == "Mediocampista" else (14 if linea == "Delantero" else 4)))
-
-                    if linea == "Delantero":
-                        ability = round(float(rng.normal(6.9, 1.35) + rng.exponential(0.3)), 2)
-                        off_score = round(float(rng.normal(6.5, 1.3)), 2)
-                        def_score = round(float(rng.normal(1.8, 0.8)), 2)
-                    elif linea == "Mediocampista":
-                        ability = round(float(rng.normal(6.6, 1.15)), 2)
-                        off_score = round(float(rng.normal(5.0, 1.2)), 2)
-                        def_score = round(float(rng.normal(4.8, 1.2)), 2)
-                    elif linea == "Defensa":
-                        ability = round(float(rng.normal(6.35, 0.85)), 2)
-                        off_score = round(float(rng.normal(2.2, 0.9)), 2)
-                        def_score = round(float(rng.normal(6.4, 1.1)), 2)
-                    else:
-                        ability = round(float(rng.normal(6.15, 0.75)), 2)
-                        off_score = round(float(rng.normal(0.8, 0.4)), 2)
-                        def_score = round(float(rng.normal(7.2, 1.0)), 2)
-
-                    ability = max(3.0, min(10.0, ability))
-
-                    rows.append({
-                        "liga": liga, "club": club, "season": temp,
-                        "position": pos, "linea": linea,
-                        "minutes_played": mins, "goals": goals, "assists": assists,
-                        "tackles": tackles, "key_passes": key_passes,
-                        "ability_score": ability,
-                        "offensive_score": max(0, min(10, off_score)),
-                        "defensive_score": max(0, min(10, def_score)),
-                    })
-    return pd.DataFrame(rows)
-
-df_raw = cargar_datos(conn)
-
-if "linea" not in df_raw.columns:
-    pos_linea_map = {
-        "POR": "Arquero",
-        "DFC": "Defensa", "LI": "Defensa", "LD": "Defensa",
-        "MCD": "Mediocampista", "MC": "Mediocampista", "MCO": "Mediocampista",
-        "EI": "Delantero", "ED": "Delantero", "DC": "Delantero",
-    }
-    df_raw["linea"] = df_raw["position"].map(pos_linea_map).fillna("Otro")
+try:
+    df_raw = cargar_datos(conn)
+except Exception as e:
+    st.error(f"Error al consultar los datos del Objetivo 3: {e}")
+    st.stop()
 
 df = df_raw.copy()
 df["goles_asistencias"] = df["goals"] + df["assists"]
-liga_col = "liga" if "liga" in df.columns else "club"
+liga_col = "liga"
 LINEAS_ORDEN = ["Arquero", "Defensa", "Mediocampista", "Delantero"]
 colores_kpi = {
     "Arquero": "#00A8CC",
@@ -161,7 +118,7 @@ for i, linea in enumerate(LINEAS_ORDEN):
         st.markdown(f"""
         <div class="kpi-card" style="border-top-color:{color};">
             <div class="kpi-title">{linea}</div>
-            <div class="kpi-value" style="font-size:1.35rem;">{row['Jugadores']:,} jug.</div>
+            <div class="kpi-value" style="font-size:1.35rem;">{row['Jugadores']:,.0f} jug.</div>
             <div class="kpi-footer" style="font-size:0.85rem; line-height:1.4;">
                 {pct:.1f}% del censo · Goles prom: {row['Goles_prom']:.2f}<br>
                 Asist prom: {row['Asist_prom']:.2f} · Tackles prom: {row['Tackles_prom']:.1f}<br>
@@ -575,17 +532,19 @@ with tab2:
     st.plotly_chart(fig_ov, width="stretch")
 
 with tab3:
-    st.caption("Dispersión · X = Offensive Score · Y = Defensive Score · Color = línea posicional")
+    st.caption("Dispersión · X = Goles + Asistencias por 90' · Y = Tackles + Intercepciones por 90' · Color = línea posicional · Jugadores con 450+ minutos")
     if "offensive_score" in df.columns and "defensive_score" in df.columns:
-        df_sc = df.sample(min(800, len(df)), random_state=1)
+        # Con pocos minutos las métricas por 90' se disparan
+        df_sc = df[df["minutes_played"] >= 450]
+        df_sc = df_sc.sample(min(800, len(df_sc)), random_state=1)
         fig_sc = px.scatter(
             df_sc, x="offensive_score", y="defensive_score",
             color="linea", color_discrete_map=colores_kpi,
             opacity=0.65,
             hover_data=["club", "position", "season"],
             labels={
-                "offensive_score": "Offensive Score",
-                "defensive_score": "Defensive Score",
+                "offensive_score": "Goles + Asistencias por 90'",
+                "defensive_score": "Tackles + Intercepciones por 90'",
                 "linea": "Línea",
             },
         )
