@@ -25,15 +25,14 @@
                           "Entity": "main analytics_club_seasons"
                         }
                       },
-                      "Property": "squad_total_days_lost"
+                      "Property": "avg_ppg"
                     }
                   },
-                  "Function": 0
+                  "Function": 1
                 }
               },
-              "queryRef": "Sum(main analytics_club_seasons.squad_total_days_lost)",
-              "nativeQueryRef": "total de días perdidos por lesión",
-              "displayName": "total de días perdidos por lesión"
+              "queryRef": "Sum(main analytics_club_seasons.avg_ppg)",
+              "nativeQueryRef": "Promedio de avg_ppg"
             }
           ]
         }
@@ -50,10 +49,10 @@
                         "Entity": "main analytics_club_seasons"
                       }
                     },
-                    "Property": "squad_total_days_lost"
+                    "Property": "avg_ppg"
                   }
                 },
-                "Function": 0
+                "Function": 1
               }
             },
             "direction": "Descending"
@@ -61,6 +60,34 @@
         ],
         "isDefaultSort": true
       }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Rendimiento Competitivo Medio (PPG)'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Promedio de puntos obtenidos por partido en la competición'"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

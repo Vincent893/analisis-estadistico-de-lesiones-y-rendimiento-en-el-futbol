@@ -27,8 +27,9 @@
                 }
               },
               "queryRef": "main analytics_club_seasons.division_name",
-              "nativeQueryRef": "division_name",
-              "active": true
+              "nativeQueryRef": "Nombre de Ligas",
+              "active": true,
+              "displayName": "Nombre de Ligas"
             }
           ]
         }

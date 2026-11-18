@@ -536,6 +536,16 @@ cultureInfo es-ES
 			            },
 			            "Weight": 0.466
 			          }
+			        },
+			        {
+			          "Nombre de Ligas": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
