@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme
+from utils.graficos import apply_theme, PALETA_APP
 
 UI.setup_page()
 UI.render_sidebar()
@@ -79,12 +79,8 @@ for col in ["goles_asistencias", "goals", "assists"]:
     df[f"{col}_90"] = df[col] * 90 / _min_ok
 liga_col = "liga"
 LINEAS_ORDEN = ["Arquero", "Defensa", "Mediocampista", "Delantero"]
-colores_kpi = {
-    "Arquero": "#00A8CC",
-    "Defensa": "#10B981",
-    "Mediocampista": "#3B82F6",
-    "Delantero": "#F59E0B",
-}
+# Un color fijo por línea en toda la página, tomado de la paleta del tema
+colores_kpi = dict(zip(LINEAS_ORDEN, PALETA_APP))
 
 st.markdown("""
     <div class="hero-header">
@@ -116,7 +112,7 @@ for i, linea in enumerate(LINEAS_ORDEN):
         continue
     row = agg_kpi.loc[linea]
     pct = row["Jugadores"] / total_jug * 100
-    color = colores_kpi.get(linea, "#00E5FF")
+    color = colores_kpi[linea]
     with cols_kpi[i]:
         st.markdown(f"""
         <div class="kpi-card" style="border-top-color:{color};">
@@ -207,7 +203,7 @@ fig2 = go.Figure()
 for linea in LINEAS_ORDEN:
     sub = df_g2[df_g2["linea"] == linea][metrica_box].dropna()
 
-    hex_color = colores_kpi.get(linea, "#00E5FF").lstrip("#")
+    hex_color = colores_kpi[linea].lstrip("#")
     r, g, b = (
         int(hex_color[0:2], 16),
         int(hex_color[2:4], 16),
@@ -219,7 +215,7 @@ for linea in LINEAS_ORDEN:
         go.Box(
             y=sub,
             name=linea,
-            marker_color=colores_kpi.get(linea, "#00E5FF"),
+            marker_color=colores_kpi[linea],
             boxmean=True,
             boxpoints=False,
             line=dict(width=2),
@@ -289,7 +285,7 @@ for _, row in agg_g3.iterrows():
     fig3.add_trace(go.Bar(
         y=[linea], x=[row["media"]],
         orientation="h",
-        marker_color=colores_kpi.get(linea, "#00E5FF"),
+        marker_color=colores_kpi[linea],
         name=linea,
         text=texto,
         textposition="outside",
@@ -349,7 +345,7 @@ for linea in LINEAS_ORDEN:
   if linea not in pivot_g4_pct.columns:
     continue
 
-  hex_color = colores_kpi.get(linea, "#00E5FF").lstrip("#")
+  hex_color = colores_kpi[linea].lstrip("#")
   r, g, b = (
       int(hex_color[0:2], 16),
       int(hex_color[2:4], 16),
@@ -365,7 +361,7 @@ for linea in LINEAS_ORDEN:
           stackgroup="one",
           groupnorm="percent",
           fillcolor=fill_rgba,
-          line=dict(color=colores_kpi.get(linea, "#00E5FF"), width=1.5),
+          line=dict(color=colores_kpi[linea], width=1.5),
           hovertemplate=(
               "<b>" + linea + "</b><br>%{x}: %{y:.1f}%<extra></extra>"
           ),
@@ -477,7 +473,7 @@ with tab1:
       vals = agg_radar_norm.loc[linea].tolist()
       vals += [vals[0]]
 
-      hex_color = colores_kpi.get(linea, "#00E5FF").lstrip("#")
+      hex_color = colores_kpi[linea].lstrip("#")
       r, g, b = (
           int(hex_color[0:2], 16),
           int(hex_color[2:4], 16),
@@ -494,19 +490,13 @@ with tab1:
               fill="toself",
               name=linea,
               fillcolor=fill_rgba,
-              line=dict(color=colores_kpi.get(linea, "#00E5FF"), width=2),
+              line=dict(color=colores_kpi[linea], width=2),
           )
       )
     fig_r.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 1], tickfont=dict(color="#94A3B8"), gridcolor="rgba(0,229,255,0.1)"),
-            angularaxis=dict(tickfont=dict(color="#E2E8F0"), gridcolor="rgba(0,229,255,0.15)"),
-            bgcolor="rgba(0,0,0,0)",
-        ),
+        polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
         height=430,
         showlegend=True,
-        paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#E2E8F0"), bgcolor="rgba(11,19,43,0.7)", bordercolor="rgba(0,229,255,0.2)", borderwidth=1),
     )
     st.plotly_chart(fig_r, width="stretch")
 
@@ -525,13 +515,13 @@ with tab2:
     fig_ov.add_trace(go.Bar(
         y=agg_ov_pct["linea"], x=agg_ov_pct["aporte_ofensivo"],
         name="Ofensivo", orientation="h",
-        marker_color="#00E5FF", text=agg_ov_pct["aporte_ofensivo"].round(1).astype(str) + "%",
+        marker_color=PALETA_APP[0], text=agg_ov_pct["aporte_ofensivo"].round(1).astype(str) + "%",
         textposition="inside",
     ))
     fig_ov.add_trace(go.Bar(
         y=agg_ov_pct["linea"], x=agg_ov_pct["aporte_defensivo"],
         name="Defensivo", orientation="h",
-        marker_color="#10B981", text=agg_ov_pct["aporte_defensivo"].round(1).astype(str) + "%",
+        marker_color=PALETA_APP[1], text=agg_ov_pct["aporte_defensivo"].round(1).astype(str) + "%",
         textposition="inside",
     ))
     fig_ov.update_layout(
