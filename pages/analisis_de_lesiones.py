@@ -30,8 +30,6 @@ def mostrar(fig, alto=360):
 
 
 # El categorizador de tiempo en la sidebar
-st.sidebar.markdown("---")
-
 try:
     df_seasons_sb = run_query("SELECT season_label FROM seasons ORDER BY season_order")
     seasons_opt_sb = ["Todas las temporadas"] + df_seasons_sb["season_label"].tolist()
@@ -150,21 +148,62 @@ SELECT
 k = run_query(sql_q1).iloc[0]
 
 f1 = st.columns(4)
-f1[0].metric("Lesiones registradas", f"{int(k['total_lesiones']):,}")
-f1[1].metric("Jugadores distintos lesionados", f"{int(k['jugadores_lesionados']):,}")
-f1[2].metric("Jugador-temporadas analizadas", f"{int(k['jugadores_temporada']):,}")
-f1[3].metric("% con al menos una lesión", f"{k['pct_con_lesion']} %")
+with f1[0]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Lesiones registradas</div>
+        <div class="kpi-value">{int(k['total_lesiones']):,}</div>
+    </div>""", unsafe_allow_html=True)
+
+with f1[1]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Jugadores distintos lesionados</div>
+        <div class="kpi-value">{int(k['jugadores_lesionados']):,}</div>
+    </div>""", unsafe_allow_html=True)
+
+with f1[2]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Jugador-temporadas analizadas</div>
+        <div class="kpi-value">{int(k['jugadores_temporada']):,}</div>
+    </div>""", unsafe_allow_html=True)
+
+with f1[3]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Porcentaje con al menos una lesión</div>
+        <div class="kpi-value">{k['pct_con_lesion']} %</div>
+    </div>""", unsafe_allow_html=True)
 
 f2 = st.columns(4)
-f2[0].metric("Días perdidos (total)", f"{int(k['dias_totales']):,}")
-f2[1].metric("Duración promedio", f"{int(k['dias_promedio'])} días")
-f2[2].metric("Duración mediana", f"{int(k['dias_mediana'])} días")
-f2[3].metric("Duración máxima", f"{int(k['dias_max']):,}")
+with f2[0]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Días perdidos (total)</div>
+        <div class="kpi-value">{int(k['dias_totales']):,}</div>
+    </div>""", unsafe_allow_html=True)
 
-st.markdown(f"""
-Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38 días) es considerablemente mayor que la mediana (15 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.
-""")
-st.divider()
+with f2[1]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Duración promedio</div>
+        <div class="kpi-value">{int(k['dias_promedio'])} días</div>
+    </div>""", unsafe_allow_html=True)
+
+with f2[2]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Duración mediana</div>
+        <div class="kpi-value">{int(k['dias_mediana'])} días</div>
+    </div>""", unsafe_allow_html=True)
+
+with f2[3]:
+    st.markdown(f"""
+    <div class="kpi-card">
+        <div class="kpi-title">Duración máxima</div>
+        <div class="kpi-value">{int(k['dias_max']):,}</div>
+    </div>""", unsafe_allow_html=True)
 
 # Parte 2 Frecuencias
 st.header("2. Frecuencia de las lesiones")
