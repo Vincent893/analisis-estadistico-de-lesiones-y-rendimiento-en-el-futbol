@@ -20,7 +20,7 @@ query_seleccionado = st.selectbox(
             "Query 3: Lesiones Recurrentes",
             "Query 4: Cartera de las Agencias de Representación",
             "Query 5: Peso de los Jugadores Extranjeros en las Ligas Principales",
-            "Query 6"
+            "Query 6: Persistencia de la Sobreperformance Goleadora"
         ]
     )
 if query_seleccionado == "Query 1: Rotación de Planteles en las Ligas Principales": 
@@ -235,7 +235,8 @@ Trabajá con las 15 divisiones de mayor fuerza, incluidas las que empaten en el 
 extranjeros en la primera y en la última temporada cronológica, la variación entre ambas y el puesto de la división en el ranking de crecimiento.
 
 Para la temporada más reciente agregá la nacionalidad extranjera con más minutos en la liga, su peso dentro de los minutos de extranjeros y qué proporción 
-de los minutos de extranjeros corresponde a jugadores extracomunitarios. """)
+de los minutos de extranjeros corresponde a jugadores extracomunitarios. 
+    """)
     with st.expander("**Ver Query**"):
         query = """
         """
@@ -246,6 +247,38 @@ de los minutos de extranjeros corresponde a jugadores extracomunitarios. """)
                 try: 
                     result = supabase.table("query_5").select("*").execute()
                     # query_5 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
+                    df = pd.DataFrame(result.data)
+                    st.success("Consulta ejecutada con éxito.")
+                    st.dataframe(df, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Error al ejecutar la consulta: {str(e)}")
+
+if query_seleccionado == "Query 6: Persistencia de la Sobreperformance Goleadora": 
+    st.subheader("**Persistencia de la Sobreperformance Goleadora**")
+
+    with st.expander("**Ver Pregunta**"):
+        st.text("""
+Marcar más goles que los esperados (xG) puede ser talento o suerte. Si es talento, debería repetirse.
+
+Considerá las temporadas con al menos 900 minutos y 30 remates. Normalizá la sobreperformance (goles menos xG) por 90 minutos y, dentro de cada temporada, 
+asigná a cada jugador un quintil (1 = peor, 5 = mejor). Emparejá cada temporada de un jugador con su temporada cronológicamente siguiente cuando ambas 
+cumplan el filtro.
+
+Construí la matriz de transición entre el quintil de origen y el de destino, acumulando todos los pares de temporadas. Para cada celda mostrá la cantidad 
+de jugadores, la proporción sobre el total de su fila, el lift (proporción de fila dividida por la proporción que el quintil de destino representa sobre 
+el total), la sobreperformance media en destino, la proporción de jugadores de la celda que cambió de club y una columna que indique si el jugador persiste,
+ mejora o empeora de quintil.
+""")
+    with st.expander("**Ver Query**"):
+        query = """
+        """
+        st.code(query, language="sql")
+
+        if st.button("Ejecutar Query"):
+            with st.spinner("Ejecutando consulta..."):
+                try: 
+                    result = supabase.table("query_6").select("*").execute()
+                    # query_6 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
                     df = pd.DataFrame(result.data)
                     st.success("Consulta ejecutada con éxito.")
                     st.dataframe(df, use_container_width=True)
