@@ -58,6 +58,12 @@ table 'main analytics_club_seasons'
 		formatString: 0
 		lineageTag: 25332d4e-605f-43ca-b317-1ccd96489535
 
+	measure 'Elite Total' =
+			
+			SUM('main analytics_club_seasons'[high_performance_players_count])
+		formatString: 0
+		lineageTag: 53170119-0110-445c-98ad-7fb8e44dcfdc
+
 	column club_id
 		dataType: int64
 		formatString: 0

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "dd89ffec383d7c4054d0",
   "position": {
     "x": 1552.7272727272725,
@@ -192,5 +192,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "58dd35ee409531706a82",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "Total Jugadores Top"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

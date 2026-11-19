@@ -1,0 +1,249 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "fea1a53707d0e1798a18",
+  "position": {
+    "x": 795.71428571428578,
+    "y": 210,
+    "z": 8001,
+    "height": 464.28571428571433,
+    "width": 735.71428571428578,
+    "tabOrder": 8001
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "club_name"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.club_name",
+              "nativeQueryRef": "club_name",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "season_label"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.season_label",
+              "nativeQueryRef": "season_label"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
+                    }
+                  },
+                  "Property": "Total Jugadores Top"
+                }
+              },
+              "queryRef": "main analytics_club_seasons.Total Jugadores Top",
+              "nativeQueryRef": "Total Jugadores Top"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_seasons"
+                  }
+                },
+                "Property": "Total Jugadores Top"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Concentración de Jugadores Élites por Club'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Jugadores de Alto Rendimiento por Temporada'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "260c13404dd3bd01389d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "club_name"
+          }
+        },
+        "type": "TopN",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "subquery",
+              "Expression": {
+                "Subquery": {
+                  "Query": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "m",
+                        "Entity": "main analytics_club_seasons",
+                        "Type": 0
+                      }
+                    ],
+                    "Select": [
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "m"
+                            }
+                          },
+                          "Property": "club_name"
+                        },
+                        "Name": "field"
+                      }
+                    ],
+                    "OrderBy": [
+                      {
+                        "Direction": 2,
+                        "Expression": {
+                          "Measure": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "m"
+                              }
+                            },
+                            "Property": "Total Jugadores Top"
+                          }
+                        }
+                      }
+                    ],
+                    "Top": 9
+                  }
+                }
+              },
+              "Type": 2
+            },
+            {
+              "Name": "m",
+              "Entity": "main analytics_club_seasons",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "m"
+                          }
+                        },
+                        "Property": "club_name"
+                      }
+                    }
+                  ],
+                  "Table": {
+                    "SourceRef": {
+                      "Source": "subquery"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "89c94a87169e87ed842c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "season_label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f0d4314b250ae20080d0",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "Total Jugadores Top"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}
