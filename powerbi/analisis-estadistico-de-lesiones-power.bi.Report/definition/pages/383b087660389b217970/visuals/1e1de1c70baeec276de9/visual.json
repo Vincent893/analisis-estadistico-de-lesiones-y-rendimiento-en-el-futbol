@@ -1,16 +1,16 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "12190d3e2d50500a013c",
+  "name": "1e1de1c70baeec276de9",
   "position": {
-    "x": 89.090909090909079,
-    "y": 183.63636363636363,
-    "z": 1000,
-    "height": 356.36363636363632,
-    "width": 496.36363636363632,
-    "tabOrder": 1000
+    "x": 150.90909090909091,
+    "y": 258.18181818181819,
+    "z": 7000,
+    "height": 409.09090909090907,
+    "width": 643.63636363636363,
+    "tabOrder": 7000
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -60,11 +60,11 @@
                       "Entity": "main analytics_club_position_seasons"
                     }
                   },
-                  "Property": "% Aporte Goles"
+                  "Property": "Rend. Ponderado"
                 }
               },
-              "queryRef": "main analytics_club_position_seasons.% Aporte Goles",
-              "nativeQueryRef": "% Aporte Goles"
+              "queryRef": "main analytics_club_position_seasons.Rend. Ponderado",
+              "nativeQueryRef": "Rend. Ponderado"
             }
           ]
         }
@@ -73,19 +73,31 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Column": {
                 "Expression": {
                   "SourceRef": {
                     "Entity": "main analytics_club_position_seasons"
                   }
                 },
-                "Property": "% Aporte Goles"
+                "Property": "season_label"
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_position_seasons"
+                  }
+                },
+                "Property": "primary_category"
+              }
+            },
+            "direction": "Ascending"
           }
-        ],
-        "isDefaultSort": true
+        ]
       }
     },
     "drillFilterOtherVisuals": true

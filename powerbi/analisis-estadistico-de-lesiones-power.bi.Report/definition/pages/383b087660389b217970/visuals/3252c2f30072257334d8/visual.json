@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "3252c2f30072257334d8",
+  "position": {
+    "x": 1545.4545454545453,
+    "y": 105.45454545454544,
+    "z": 4000,
+    "height": 150,
+    "width": 296,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "% Minutos Línea"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.% Minutos Línea",
+              "nativeQueryRef": "% Minutos Línea"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_position_seasons"
+                  }
+                },
+                "Property": "% Minutos Línea"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

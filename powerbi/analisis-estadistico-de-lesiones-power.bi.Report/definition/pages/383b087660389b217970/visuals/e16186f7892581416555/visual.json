@@ -1,38 +1,19 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "e2eb0a523d209487ab03",
+  "name": "e16186f7892581416555",
   "position": {
-    "x": 69.090909090909079,
-    "y": 560,
-    "z": 2000,
-    "height": 489.09090909090907,
-    "width": 930.90909090909088,
-    "tabOrder": 2000
+    "x": 150.90909090909091,
+    "y": 696.36363636363626,
+    "z": 5000,
+    "height": 352.72727272727269,
+    "width": 643.63636363636363,
+    "tabOrder": 5000
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "donutChart",
     "query": {
       "queryState": {
         "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "main analytics_club_position_seasons"
-                    }
-                  },
-                  "Property": "season_label"
-                }
-              },
-              "queryRef": "main analytics_club_position_seasons.season_label",
-              "nativeQueryRef": "season_label",
-              "active": true
-            }
-          ]
-        },
-        "Series": {
           "projections": [
             {
               "field": {
@@ -46,7 +27,8 @@
                 }
               },
               "queryRef": "main analytics_club_position_seasons.primary_category",
-              "nativeQueryRef": "primary_category"
+              "nativeQueryRef": "primary_category",
+              "active": true
             }
           ]
         },
@@ -60,11 +42,11 @@
                       "Entity": "main analytics_club_position_seasons"
                     }
                   },
-                  "Property": "Promedio Rating Línea"
+                  "Property": "% Aporte Línea (Goles)"
                 }
               },
-              "queryRef": "main analytics_club_position_seasons.Promedio Rating Línea",
-              "nativeQueryRef": "Promedio Rating Línea"
+              "queryRef": "main analytics_club_position_seasons.% Aporte Línea (Goles)",
+              "nativeQueryRef": "% Aporte Línea (Goles)"
             }
           ]
         }
@@ -79,7 +61,7 @@
                     "Entity": "main analytics_club_position_seasons"
                   }
                 },
-                "Property": "Promedio Rating Línea"
+                "Property": "% Aporte Línea (Goles)"
               }
             },
             "direction": "Descending"
@@ -87,6 +69,21 @@
         ],
         "isDefaultSort": true
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelStyle": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Percent of total'"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

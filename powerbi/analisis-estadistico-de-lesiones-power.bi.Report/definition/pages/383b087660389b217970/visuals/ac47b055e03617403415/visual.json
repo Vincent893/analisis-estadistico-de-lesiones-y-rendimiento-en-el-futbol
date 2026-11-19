@@ -1,0 +1,109 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "ac47b055e03617403415",
+  "position": {
+    "x": 832.72727272727263,
+    "y": 256.36363636363632,
+    "z": 7001,
+    "height": 410.90909090909088,
+    "width": 680,
+    "tabOrder": 7001
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "primary_category"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.primary_category",
+              "nativeQueryRef": "primary_category",
+              "active": true
+            }
+          ]
+        },
+        "Size": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "% Minutos Línea"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.% Minutos Línea",
+              "nativeQueryRef": "% Minutos Línea"
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "Rend. Ponderado"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.Rend. Ponderado",
+              "nativeQueryRef": "Rend. Ponderado",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "% Aporte Línea (Goles)"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.% Aporte Línea (Goles)",
+              "nativeQueryRef": "% Aporte Línea (Goles)"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

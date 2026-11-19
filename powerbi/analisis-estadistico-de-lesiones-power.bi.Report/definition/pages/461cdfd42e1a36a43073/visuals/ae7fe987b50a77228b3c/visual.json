@@ -347,23 +347,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "08c2fad6a794739a1a54",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main analytics_club_seasons"
-              }
-            },
-            "Property": "season_label"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
   }
 }

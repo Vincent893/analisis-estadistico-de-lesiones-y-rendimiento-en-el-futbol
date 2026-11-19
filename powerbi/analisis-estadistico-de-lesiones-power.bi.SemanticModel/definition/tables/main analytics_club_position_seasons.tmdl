@@ -46,12 +46,13 @@ table 'main analytics_club_position_seasons'
 			    ),
 			    0
 			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: c572745f-de88-47d4-80a7-23f1f9de8c0c
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
-	measure 'Rend. Promedio' = AVERAGE('main analytics_club_position_seasons[line_avg_rating]))
+	measure 'Rend. Promedio' = AVERAGE('main analytics_club_position_seasons'[line_avg_rating])
 		lineageTag: 688e05c1-1399-48c5-90f8-a54e334dbb8b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Rend. Ponderado' =
 			
@@ -63,9 +64,8 @@ table 'main analytics_club_position_seasons'
 			    SUM('main analytics_club_position_seasons'[avg_mins_played]),
 			    0
 			)
+		formatString: 0.00
 		lineageTag: 1df61089-5ac4-4b77-8d30-f2c55920be02
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure '% Minutos Línea' =
 			
@@ -77,9 +77,8 @@ table 'main analytics_club_position_seasons'
 			    ),
 			    0
 			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: e71d33d0-5524-4c93-9b3b-2205e22b4b6c
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column club_id
 		dataType: int64

@@ -288,37 +288,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "35295d94e7e029d3a47c",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main analytics_club_seasons"
-              }
-            },
-            "Property": "season_label"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "121d29697bdb84606321",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main analytics_club_seasons"
-              }
-            },
-            "Property": "Variación Jugadores Top"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }
