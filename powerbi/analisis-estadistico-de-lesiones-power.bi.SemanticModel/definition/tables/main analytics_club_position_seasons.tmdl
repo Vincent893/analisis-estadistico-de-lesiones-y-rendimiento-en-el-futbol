@@ -1,6 +1,86 @@
 table 'main analytics_club_position_seasons'
 	lineageTag: cbdbc4ee-8a1f-4aba-9e69-1d0709ae59a4
 
+	measure 'Total Goles Línea' = SUM('main analytics_club_position_seasons'[line_total_goals])
+		lineageTag: 5574ca3d-1312-4e1d-8091-0f12abe07524
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Goles Club' =
+			
+			CALCULATE(
+			    [Total Goles Línea],
+			    ALL('main analytics_club_position_seasons'[primary_category])
+			)
+		formatString: 0
+		lineageTag: 31dfa997-d3d3-46b2-a95d-cf3816859f28
+
+	measure '% Aporte Goles' =
+			
+			DIVIDE(
+			    [Total Goles Línea],
+			    [Total Goles Club],
+			    0
+			)
+		lineageTag: 7b32bd7f-5217-4aec-9cc0-a9a6cdef94f3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promedio Rating Línea' = AVERAGE('main analytics_club_position_seasons'[line_avg_rating])
+		lineageTag: 64764013-b9d3-4e5b-bb15-5eb525c9baa6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Aporte Línea (intercepciones)' = SUM('main analytics_club_position_seasons'[line_total_interceptions])
+		lineageTag: d9fe239d-03e2-43b3-9df8-c10db60cc6f9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Aporte Línea (Goles)' =
+			
+			DIVIDE(
+			    [% Aporte Goles],
+			    CALCULATE(
+			        [% Aporte Goles],
+			        ALL('main analytics_club_position_seasons'[primary_category])
+			    ),
+			    0
+			)
+		lineageTag: c572745f-de88-47d4-80a7-23f1f9de8c0c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rend. Promedio' = AVERAGE('main analytics_club_position_seasons[line_avg_rating]))
+		lineageTag: 688e05c1-1399-48c5-90f8-a54e334dbb8b
+
+	measure 'Rend. Ponderado' =
+			
+			DIVIDE(
+			    SUMX(
+			        'main analytics_club_position_seasons',
+			        'main analytics_club_position_seasons'[line_avg_rating] * 'main analytics_club_position_seasons'[avg_mins_played]
+			    ),
+			    SUM('main analytics_club_position_seasons'[avg_mins_played]),
+			    0
+			)
+		lineageTag: 1df61089-5ac4-4b77-8d30-f2c55920be02
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Minutos Línea' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_position_seasons'[avg_mins_played]),
+			    CALCULATE(
+			        SUM('main analytics_club_position_seasons'[avg_mins_played]),
+			        ALL('main analytics_club_position_seasons'[primary_category])
+			    ),
+			    0
+			)
+		lineageTag: e71d33d0-5524-4c93-9b3b-2205e22b4b6c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column club_id
 		dataType: int64
 		formatString: 0

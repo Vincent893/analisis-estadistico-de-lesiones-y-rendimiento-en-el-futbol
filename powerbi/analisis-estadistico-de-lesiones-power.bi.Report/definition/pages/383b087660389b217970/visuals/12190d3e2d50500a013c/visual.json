@@ -1,0 +1,93 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "12190d3e2d50500a013c",
+  "position": {
+    "x": 89.090909090909079,
+    "y": 183.63636363636363,
+    "z": 1000,
+    "height": 356.36363636363632,
+    "width": 496.36363636363632,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "season_label"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.season_label",
+              "nativeQueryRef": "season_label",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "primary_category"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.primary_category",
+              "nativeQueryRef": "primary_category"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main analytics_club_position_seasons"
+                    }
+                  },
+                  "Property": "% Aporte Goles"
+                }
+              },
+              "queryRef": "main analytics_club_position_seasons.% Aporte Goles",
+              "nativeQueryRef": "% Aporte Goles"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_position_seasons"
+                  }
+                },
+                "Property": "% Aporte Goles"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
