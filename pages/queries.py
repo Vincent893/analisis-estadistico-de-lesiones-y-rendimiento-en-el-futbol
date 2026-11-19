@@ -106,7 +106,51 @@ if query_seleccionado == "Query 3: Lesiones Recurrentes":
         """)
         
     with st.expander("**Ver Query**"):
-        query = """
+        query = """ WITH lesion AS (    
+        SELECT player_id, start_date,
+            end_date - start_date AS dias,
+            CASE WHEN injury_type LIKE '%strain' OR injury_type LIKE '%spasm' OR injury_type = 'Muscle fatigue' THEN 'Muscular'
+                WHEN injury_type = 'Illness' THEN 'Enfermedad'
+                ELSE 'Traumática' END AS clase,
+            start_date - LAG(end_date) OVER (PARTITION BY player_id ORDER BY start_date) AS intervalo,
+            COUNT(*) OVER (PARTITION BY player_id) AS lesiones
+        FROM injuries
+    ),
+    recurrente AS (
+    SELECT *, LAG(intervalo) OVER (PARTITION BY player_id ORDER BY start_date) AS intervalo_anterior
+        FROM lesion
+        WHERE lesiones >= 3
+    ),
+    jugador AS (
+        SELECT p.player_id, p.name, p.primary_category,
+            COUNT(*) AS lesiones,
+            SUM(CASE WHEN r.clase = 'Muscular' THEN 1 ELSE 0 END) AS musculares,
+            SUM(r.dias) AS dias_baja,
+            SUM(r.intervalo) AS suma_intervalos,
+            COUNT(r.intervalo) AS intervalos,
+            1 - MAX(CASE WHEN r.intervalo >= r.intervalo_anterior THEN 1 ELSE 0 END) AS acorta,
+            MAX(CASE WHEN r.intervalo < 0 THEN 1 ELSE 0 END) AS solapa,
+            ROW_NUMBER() OVER (PARTITION BY p.primary_category ORDER BY SUM(r.dias) DESC) AS pos
+        FROM recurrente r
+        JOIN players p ON p.player_id = r.player_id
+        GROUP BY p.player_id, p.name, p.primary_category
+    )
+    SELECT t.primary_category AS categoria,
+        t.total AS total_jugadores,
+        COUNT(*) AS recurrentes,
+        ROUND(COUNT(*) * 1.0 / t.total, 4) AS tasa_recurrencia,
+        ROUND(AVG(CASE WHEN j.musculares >= 2 THEN 1.0 ELSE 0 END), 4) AS proporcion_dos_o_mas_musculares,
+        ROUND(SUM(j.dias_baja) * 1.0 / SUM(j.lesiones), 1) AS dias_baja_promedio,
+        ROUND(SUM(j.suma_intervalos) * 1.0 / SUM(j.intervalos), 1) AS intervalo_medio_dias,
+        ROUND(AVG(j.acorta * 1.0), 4) AS proporcion_patron_acortamiento,
+        SUM(j.solapa) AS recurrentes_con_solapamiento,
+        MAX(CASE WHEN j.pos = 1 THEN j.name END) AS jugador_con_mas_dias_baja,
+        MAX(j.dias_baja) AS dias_baja_acumulados
+    FROM jugador j
+    JOIN (SELECT primary_category, COUNT(*) AS total FROM players GROUP BY primary_category) t
+    ON t.primary_category = j.primary_category
+    GROUP BY t.primary_category, t.total
+    ORDER BY tasa_recurrencia DESC
         """
         st.code(query, language="sql")
 
