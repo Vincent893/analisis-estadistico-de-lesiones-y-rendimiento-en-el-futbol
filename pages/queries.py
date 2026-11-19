@@ -270,7 +270,30 @@ el total), la sobreperformance media en destino, la proporción de jugadores de 
  mejora o empeora de quintil.
 """)
     with st.expander("**Ver Query**"):
-        query = """
+        query = """WITH temporada AS (
+    SELECT ps.player_id, ps.club_id, s.season_order,
+           (a.goals - a.xg) * 90.0 / ps.mins AS sobre_90,
+           NTILE(5) OVER (PARTITION BY s.season_order ORDER BY (a.goals - a.xg) * 90.0 / ps.mins) AS quintil
+    FROM player_seasons ps
+    JOIN seasons s ON s.season_id = ps.season_id
+    JOIN player_stats_attacking a ON a.player_season_id = ps.player_season_id
+    WHERE ps.mins >= 900 AND a.shots >= 30
+)
+SELECT o.quintil AS quintil_origen,
+       d.quintil AS quintil_destino,
+       COUNT(*) AS jugadores,
+       ROUND(COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (PARTITION BY o.quintil), 4) AS proporcion_fila,
+       ROUND((COUNT(*) * 1.0 / SUM(COUNT(*)) OVER (PARTITION BY o.quintil))
+             / (SUM(COUNT(*)) OVER (PARTITION BY d.quintil) * 1.0 / SUM(COUNT(*)) OVER ()), 4) AS lift,
+       ROUND(AVG(d.sobre_90), 4) AS sobreperformance_media_destino,
+       ROUND(AVG(CASE WHEN d.club_id <> o.club_id THEN 1.0 ELSE 0 END), 4) AS proporcion_cambio_club,
+       CASE WHEN d.quintil = o.quintil THEN 'Persiste'
+            WHEN d.quintil > o.quintil THEN 'Mejora'
+            ELSE 'Empeora' END AS evolucion
+FROM temporada o
+JOIN temporada d ON d.player_id = o.player_id AND d.season_order = o.season_order - 1
+GROUP BY o.quintil, d.quintil
+ORDER BY o.quintil, d.quintil
         """
         st.code(query, language="sql")
 
