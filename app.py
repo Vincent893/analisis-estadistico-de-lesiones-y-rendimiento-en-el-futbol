@@ -88,6 +88,7 @@ class Main:
             - **Análisis de Lesiones:** responde al objetivo 1.
             - **Concentración de Talento:** responde al objetivo 2.
             - **Análisis Posicional:** responde al objetivo 3.
+            - **Conclusiones:** síntesis de los resultados y respuesta al objetivo general.
             - **Simulador de Plantilla:** permite armar un once titular y ver sus métricas colectivas.
             """)
 
