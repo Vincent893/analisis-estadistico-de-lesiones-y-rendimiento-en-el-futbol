@@ -37,22 +37,17 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "main analytics_club_seasons"
-                        }
-                      },
-                      "Property": "high_performance_players_count"
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
                     }
                   },
-                  "Function": 0
+                  "Property": "Variación Jugadores Top"
                 }
               },
-              "queryRef": "Sum(main analytics_club_seasons.high_performance_players_count)",
-              "nativeQueryRef": "Suma de high_performance_players_count"
+              "queryRef": "main analytics_club_seasons.Variación Jugadores Top",
+              "nativeQueryRef": "Variación Jugadores Top1"
             }
           ]
         }
@@ -61,24 +56,18 @@
         "sort": [
           {
             "field": {
-              "Aggregation": {
+              "Measure": {
                 "Expression": {
-                  "Column": {
-                    "Expression": {
-                      "SourceRef": {
-                        "Entity": "main analytics_club_seasons"
-                      }
-                    },
-                    "Property": "high_performance_players_count"
+                  "SourceRef": {
+                    "Entity": "main analytics_club_seasons"
                   }
                 },
-                "Function": 0
+                "Property": "Variación Jugadores Top"
               }
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": true
+        ]
       }
     },
     "visualContainerObjects": {
@@ -110,5 +99,37 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "35295d94e7e029d3a47c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "season_label"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "121d29697bdb84606321",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "Variación Jugadores Top"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

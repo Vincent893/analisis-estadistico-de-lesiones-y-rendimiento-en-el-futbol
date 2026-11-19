@@ -52,7 +52,7 @@
                 }
               },
               "queryRef": "Sum(main analytics_club_seasons.total_goals_scored)",
-              "nativeQueryRef": "Goles Anotados",
+              "nativeQueryRef": "Suma de total_goals_scored",
               "displayName": "Goles Anotados"
             }
           ]
@@ -72,11 +72,11 @@
                       "Property": "avg_ppg"
                     }
                   },
-                  "Function": 0
+                  "Function": 1
                 }
               },
               "queryRef": "Sum(main analytics_club_seasons.avg_ppg)",
-              "nativeQueryRef": "Puntos por Partido (PPG)",
+              "nativeQueryRef": "Promedio de avg_ppg",
               "displayName": "Puntos por Partido (PPG)"
             }
           ]
@@ -132,44 +132,6 @@
           }
         },
         "type": "Categorical"
-      },
-      {
-        "name": "422bba3c82ab1e94882e",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "main analytics_club_seasons"
-                  }
-                },
-                "Property": "total_goals_scored"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "1cc2d6cb93537a4b04ec",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "main analytics_club_seasons"
-                  }
-                },
-                "Property": "avg_ppg"
-              }
-            },
-            "Function": 0
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }
