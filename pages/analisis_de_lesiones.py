@@ -1,10 +1,9 @@
-import os
-import duckdb
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
-from dotenv import load_dotenv, find_dotenv
+from database.DB import DB
 from models.UI import UI
 from utils.estilos import cargar_estilos
 from utils.graficos import apply_theme
@@ -13,20 +12,42 @@ from utils.graficos import apply_theme
 UI.setup_page()
 UI.render_sidebar()
 cargar_estilos()
-load_dotenv(find_dotenv(), override=True)
 
-MOTHERDUCK_TOKEN = os.getenv("DB_CONNECTION_URL", "").strip()
+conn = DB.get_connection()
+if conn is None:
+    st.error("No se pudo conectar a la base de datos. Revisa las variables de entorno.")
+    st.stop()
 
-def run_query(query):
-    with duckdb.connect(MOTHERDUCK_TOKEN) as conn:
-        return conn.execute(query).df()
+@st.cache_data
+def run_query(query, params=None):
+    # cursor propio: la conexión se comparte entre sesiones de Streamlit
+    return conn.cursor().execute(query, params).df()
 
 
 def mostrar(fig, alto=360):
     res = apply_theme(fig)
     fig = res if res is not None else fig
     fig.update_layout(height=alto, legend_title_text="")
-    st.plotly_chart(fig, width="stretch", config={"staticPlot": True})
+    st.plotly_chart(fig, width="stretch")
+
+
+def interpretacion(texto):
+    st.markdown(f"""
+<div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+    <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">{texto}</p>
+</div>
+""", unsafe_allow_html=True)
+
+
+TIPOS_ES = {
+    "ACL tear": "Rotura de LCA", "Fracture": "Fractura",
+    "Knee ligament sprain": "Esguince de ligamento de rodilla",
+    "Ankle sprain": "Esguince de tobillo", "Groin strain": "Distensión de ingle",
+    "Calf strain": "Distensión de gemelo", "Hamstring strain": "Distensión de isquiotibiales",
+    "Back spasm": "Espasmo de espalda", "Concussion": "Conmoción cerebral",
+    "Muscle fatigue": "Fatiga muscular", "Illness": "Enfermedad"
+}
 
 
 # El categorizador de tiempo en la sidebar
@@ -81,48 +102,18 @@ ps AS (
     FROM ps_base
 )
 """
-# El mismo cte, pero sin el filtro del sidebar, es aplicado para los gráficos que necesariamente son independientes
-P_CTE_2 = """
-WITH temp AS (
-    SELECT season_id, season_label, season_order,
-           CASE WHEN is_fabricated = 0 THEN 1 ELSE 0 END AS es_real
-    FROM seasons
-),
-les AS (
-    SELECT i.injury_id, i.player_id, i.season_id, i.injury_type,
-           TRY_CAST(i.start_date AS DATE) AS f_ini,
-           TRY_CAST(i.end_date   AS DATE) AS f_fin,
-           date_diff('day', TRY_CAST(i.start_date AS DATE), TRY_CAST(i.end_date AS DATE)) AS dias
-    FROM injuries i
-    JOIN temp t ON t.season_id = i.season_id
-),
-les_ps AS (
-    SELECT player_id, season_id, COUNT(*) AS n_les, SUM(dias) AS dias_perdidos
-    FROM les
-    GROUP BY player_id, season_id
-),
-ps_base AS (
-    SELECT a.player_id, a.season_id, t.season_label, t.season_order, t.es_real,
-           a.age, a.mins, p.primary_category, a.height_cm, a.weight_kg,
-           COALESCE(l.n_les, 0) AS n_les,
-           COALESCE(l.dias_perdidos, 0) AS dias_perdidos
-    FROM analytics_player_seasons a
-    JOIN temp t ON t.season_id = a.season_id
-    JOIN players p ON p.player_id = a.player_id
-    LEFT JOIN les_ps l ON l.player_id = a.player_id AND l.season_id = a.season_id
-    WHERE a.height_cm > 0 AND a.weight_kg > 0
-),
-ps AS (
-    SELECT *,
-        CEIL(4 * CUME_DIST() OVER (ORDER BY height_cm))::INT AS q_altura,
-        CEIL(4 * CUME_DIST() OVER (ORDER BY weight_kg))::INT AS q_peso
-    FROM ps_base
-)
-"""
+st.markdown("""
+    <div class="hero-header">
+        <span class="hero-badge">Objetivo 1 · Temporadas 2022 – 2026</span>
+        <div class="hero-title">Análisis de Lesiones</div>
+        <p style="color:#94A3B8; margin:0; font-size:1.05rem; line-height:1.5;">
+            Describir la frecuencia, duración y distribución de las lesiones en los jugadores entre las temporadas
+            comprendidas entre los años 2022 y 2026, relacionándolas con sus características antropométricas
+            (altura y peso) y su carga de minutos jugados.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
-# Título y presentación
-st.title("Estudio Descriptivo de Frecuencia, Duración y Distribución de Lesiones en el Fútbol Profesional (2022-2026)")
-st.markdown("##### *Objetivo: Describir la frecuencia, duración y distribución de las lesiones en los jugadores entre las temporadas comprendidas entre los años 2022 y 2026, relacionándolas con sus características antropométricas (altura y peso) y su carga de minutos jugados.*")
 st.markdown("""
 La presente aplicación tiene como propósito fundamental examinar la incidencia, la distribución temporal y la duración de las lesiones deportivas registradas en el periodo comprendido entre las campañas 2022/23 y 2025/26. A través de un enfoque cuantitativo y riguroso, se busca determinar si factores antropométricos o variables asociadas a la carga competitiva en tiempo tienen relación directa con la ocurrencia de episodios lesivos en los jugadores de campo y porteros.
 """)
@@ -161,9 +152,7 @@ f2[1].metric("Duración promedio", f"{int(k['dias_promedio'])} días")
 f2[2].metric("Duración mediana", f"{int(k['dias_mediana'])} días")
 f2[3].metric("Duración máxima", f"{int(k['dias_max']):,}")
 
-st.markdown(f"""
-Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38 días) es considerablemente mayor que la mediana (15 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.
-""")
+interpretacion("Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38 días) es considerablemente mayor que la mediana (15 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.")
 st.divider()
 
 # Parte 2 Frecuencias
@@ -197,38 +186,10 @@ fig_q2.update_traces(textposition="outside", cliponaxis=False, width=0.40)
 fig_q2.update_xaxes(title_text="")
 mostrar(fig_q2, 400)
 
-st.markdown("""
-Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24.4% y el 25.0% anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada.
-""")
+interpretacion("Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24.4% y el 25.0% anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada. Ningún jugador registra más de una lesión en una misma temporada, por lo que ese porcentaje de afectados corresponde siempre a un único episodio por jugador y campaña.")
 
 
-st.subheader("2.2 Distribución de lesiones por jugador en el ciclo anual")
-st.markdown("""
-Es relevante analizar si los jugadores acumulan múltiples lesiones dentro de un mismo periodo competitivo o si el total de afectados corresponde a eventos únicos por individuo.
-""")
-
-sql_q3 = P_CTE + """
-SELECT LEAST(n_les, 4) AS n_lesiones,
-       COUNT(*) AS jugadores_temporada,
-       ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) AS pct
-FROM ps GROUP BY 1 ORDER BY 1;
-"""
-q3 = run_query(sql_q3)
-q3["grupo"] = q3["n_lesiones"].apply(lambda n: "Sin lesión" if n == 0 else f"{n} lesión registrada")
-
-c1, c2 = st.columns([1, 1])
-with c1:
-    fig_q3 = px.pie(q3, names="grupo", values="jugadores_temporada", hole=0.5,
-                     title="Proporción de afectación por jugador-temporada")
-    mostrar(fig_q3, 340)
-with c2:
-    st.markdown("""
-    La distribución porcentual muestra que el 75.2% de las observaciones individuales por temporada transcurren sin registrar lesiones, mientras que el 24.8% restante corresponde exactamente a un único evento por individuo. Ningún perfil supera una lesión contabilizada por temporada en la base datos.
-    """)
-
-
-# 2.3 Distribución mensual de las lesiones
-st.subheader("2.3 Distribución mensual de las lesiones")
+st.subheader("2.2 Distribución mensual de las lesiones")
 st.markdown("""
 La distribución mensual de los inicios de lesiones permite identificar posibles patrones calendario asociados a períodos de alta exigencia competitiva, pretemporadas o fases de descanso reglamentario.
 """)
@@ -240,8 +201,6 @@ FROM les WHERE f_ini IS NOT NULL GROUP BY 1 ORDER BY 1;
 q6 = run_query(sql_q6)
 meses_nombres = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 q6["mes_txt"] = q6["mes"].apply(lambda m: meses_nombres[int(m) - 1])
-
-import plotly.graph_objects as go
 
 fig_q6 = go.Figure()
 
@@ -273,9 +232,7 @@ fig_q6.update_layout(
 fig_q6.update_xaxes(title_text="")
 mostrar(fig_q6, 380)
 
-st.markdown("""
-Se advierte una distribución bastante homogénea a lo largo de los meses activos del año, con una ausencia lógica de registros durante los meses de receso estival. Los valores se mantienen estables sin picos extremos que sugieran un riesgo asociado a un mes en particular, reflejando una carga de stress físico sostenida.
-""")
+interpretacion("Se advierte una distribución bastante homogénea a lo largo de los meses activos del año, con una ausencia lógica de registros durante los meses de receso estival. Los valores se mantienen estables sin picos extremos que sugieran un riesgo asociado a un mes en particular, reflejando una carga de estrés físico sostenida.")
 
 st.divider()
 
@@ -323,9 +280,7 @@ fig_q4.update_traces(textposition="outside", cliponaxis=False, width=0.55)
 fig_q4.update_yaxes(title_text="Porcentaje Respecto al Total")
 mostrar(fig_q4, 360)
 
-st.markdown("""
-El análisis por rangos revela que cerca de la mitad de las incidencias médicas se resuelven en un plazo inferior o igual a 14 días, mientras que un segmento minoritario pero crítico concentra las bajas prolongadas. El intervalo intermedio de 91 a 180 días registra una presencia prácticamente nula.
-""")
+interpretacion("El análisis por rangos revela que cerca de la mitad de las incidencias médicas se resuelven en un plazo inferior o igual a 14 días, mientras que un segmento minoritario pero crítico concentra las bajas prolongadas. El intervalo intermedio de 91 a 180 días registra una presencia prácticamente nula.")
 
 
 st.subheader("3.2 Clasificación de lesiones: Frecuencia frente al impacto en días de baja")
@@ -344,15 +299,7 @@ SELECT injury_type,
 FROM les GROUP BY injury_type ORDER BY lesiones DESC LIMIT 20;
 """
 q5 = run_query(sql_q5)
-tipos_es = {
-    "ACL tear": "Rotura de LCA", "Fracture": "Fractura",
-    "Knee ligament sprain": "Esguince de ligamento de rodilla",
-    "Ankle sprain": "Esguince de tobillo", "Groin strain": "Distensión de ingle",
-    "Calf strain": "Distensión de gemelo", "Hamstring strain": "Distensión de isquiotibiales",
-    "Back spasm": "Espasmo de espalda", "Concussion": "Conmoción cerebral",
-    "Muscle fatigue": "Fatiga muscular", "Illness": "Enfermedad"
-}
-q5["tipo"] = q5["injury_type"].map(tipos_es).fillna(q5["injury_type"])
+q5["tipo"] = q5["injury_type"].map(TIPOS_ES).fillna(q5["injury_type"])
 q5["pct_dias"] = (100 * q5["dias_totales"] / q5["dias_totales"].sum()).round(1)
 q5o = q5.sort_values("dias_promedio")
 
@@ -360,7 +307,7 @@ c1, c2 = st.columns(2)
 with c1:
     fig_dur = px.bar(
         q5o, x="dias_promedio", y="tipo", orientation="h", text_auto=".1f",
-        title="Duración promedio en días por lesíon",
+        title="Duración promedio en días por lesión",
         labels={"dias_promedio": "Días de Baja Promedio por Lesión", "tipo": "Tipo de Lesión"}
     )
     fig_dur.update_layout(yaxis={"categoryorder": "total ascending"})
@@ -380,13 +327,18 @@ with c2:
     mostrar(fig_comp, 420)
 
 st.markdown("""
-**Lectura clave para la toma de decisiones:**
-* **Duración promedio por lesión:** Mide el costo temporal individual de cada patología. Se observa con claridad que lesiones críticas como la **Rotura de LCA** promedian más de 230 días de baja por cada evento, superando drásticamente a molestias menores como la fatiga muscular o enfermedades comunes, que apenas rondan los 5 o 6 días.
-* **Frecuencia de casos (%):** Mide qué porcentaje de los eventos totales representa cada tipo de lesión. Muchos diagnósticos comunes se distribuyen de forma similar en cuanto al número de veces que ocurren.
-* **Días perdidos acumulados (%):** Mide el impacto real en tiempo de baja global para el equipo. Aquí se evidencia el contraste absoluto: lesiones graves como la **Rotura de LCA** disparan drásticamente el porcentaje de tiempo acumulado fuera de las canchas a pesar de no ser las más numerosas en cantidad de eventos.
-
-La gravedad clínica de la lesión es el factor crítico que determina la indisponibilidad del plantel, superando con creces a la simple cantidad de veces que se repite una dolencia leve.
-""")
+<div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+    <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
+        <li><b>Duración promedio por lesión:</b> Mide el costo temporal individual de cada patología. Se observa con claridad que lesiones críticas como la <b>Rotura de LCA</b> promedian más de 230 días de baja por cada evento, superando drásticamente a molestias menores como la fatiga muscular o enfermedades comunes, que apenas rondan los 5 o 6 días.</li>
+        <li><b>Frecuencia de casos (%):</b> Mide qué porcentaje de los eventos totales representa cada tipo de lesión. Muchos diagnósticos comunes se distribuyen de forma similar en cuanto al número de veces que ocurren.</li>
+        <li><b>Días perdidos acumulados (%):</b> Mide el impacto real en tiempo de baja global para el equipo. Aquí se evidencia el contraste absoluto: lesiones graves como la <b>Rotura de LCA</b> disparan drásticamente el porcentaje de tiempo acumulado fuera de las canchas a pesar de no ser las más numerosas en cantidad de eventos.</li>
+    </ul>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
+        La gravedad clínica de la lesión es el factor crítico que determina la indisponibilidad del plantel, superando con creces a la simple cantidad de veces que se repite una dolencia leve.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 st.divider()
 
@@ -394,7 +346,7 @@ st.divider()
 st.header("4. Características Antropométricas")
 
 st.markdown("""
-En este apartado tomaremos los valores antropométricos de altura y peso para comprobar si el riesgo a sufrir lesiones, se segmenta a la población de jugadores. La segmentación se dividirá en cuartiles. Si existiera un riesgo antropométrico vinculado a la estatura o al peso, se observaría una progresión evidente en las tasas de lesionados.
+En este apartado se segmenta a la población de jugadores en cuartiles según su altura y su peso, para comprobar si el riesgo de sufrir lesiones varía con estas características antropométricas. Si existiera un riesgo vinculado a la estatura o al peso, se observaría una progresión evidente en las tasas de lesionados de un cuartil al siguiente.
 """)
 
 col_alt, col_pes = st.columns(2)
@@ -435,9 +387,7 @@ with col_pes:
     fig_pes.update_xaxes(title_text="")
     mostrar(fig_pes, 360)
 
-st.markdown("""
-Los gráficos anteriores evidencian la gran independencia entre las características antropométricas y la probabilidad de lesión. Las variaciones porcentuales entre el cuartil inferior y el superior son pequeñas, dándonos como resultado que un jugador más alto o más pesado no incrementa ni reduce por sí solo el riesgo de sufrir una lesión.
-""")
+interpretacion("Los gráficos anteriores evidencian la gran independencia entre las características antropométricas y la probabilidad de lesión. Las variaciones porcentuales entre el cuartil inferior y el superior son pequeñas, dándonos como resultado que un jugador más alto o más pesado no incrementa ni reduce por sí solo el riesgo de sufrir una lesión.")
 
 
 # 4.3 Relación entre el IMC y la probabilidad de lesión
@@ -447,44 +397,25 @@ col_texto, col_grafico = st.columns(2, vertical_alignment="center")
 
 with col_texto:
     st.markdown("""
-    Al segmentar el **Índice de Masa Corporal (IMC)** en cuartiles poblacionales para evaluar su relación con la inactividad médica, los resultados empíricos muestran una notable uniformidad en la tasa de incidencia de lesiones:
+    Al segmentar el **Índice de Masa Corporal (IMC)** en cuartiles poblacionales para evaluar su relación con la inactividad médica, los resultados empíricos muestran una notable uniformidad en la tasa de incidencia de lesiones entre los cuatro cuartiles.
 
-    
     La estabilidad de estas proporciones indica que la complexión corporal medida por el IMC no constituye un factor determinante ni condiciona el riesgo de sufrir lesiones en la población de futbolistas analizada.
     """)
 
 with col_grafico:
     sql_imc = P_CTE + """ ,
-    imc_calculado AS (
-        SELECT 
-            *,
-            (weight_kg / POWER(height_cm / 100.0, 2)) AS imc_val,
-            CASE WHEN n_les > 0 THEN 1 ELSE 0 END AS lesionado
-        FROM ps
-        WHERE height_cm > 0 AND weight_kg > 0
+    imc AS (
+        SELECT n_les, weight_kg / POWER(height_cm / 100.0, 2) AS imc_val FROM ps
     ),
-    imc_cuartiles AS (
-        SELECT 
-            *,
-            NTILE(4) OVER (ORDER BY imc_val) AS cuartil
-        FROM imc_calculado
+    imc_q AS (
+        SELECT *, CEIL(4 * CUME_DIST() OVER (ORDER BY imc_val))::INT AS cuartil FROM imc
     )
-    SELECT 
-        CASE cuartil
-            WHEN 1 THEN 'Cuartil 1'
-            WHEN 2 THEN 'Cuartil 2'
-            WHEN 3 THEN 'Cuartil 3'
-            WHEN 4 THEN 'Cuartil 4'
-        END AS categoria,
-        ROUND(AVG(lesionado) * 100.0, 1) AS pct_lesionados,
-        MIN(imc_val) AS min_imc,
-        MAX(imc_val) AS max_imc
-    FROM imc_cuartiles
-    GROUP BY 1, cuartil
-    ORDER BY cuartil;
+    SELECT cuartil, MIN(imc_val) AS min_imc, MAX(imc_val) AS max_imc,
+           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados
+    FROM imc_q GROUP BY 1 ORDER BY 1;
     """
-    
     df_imc = run_query(sql_imc)
+    df_imc["categoria"] = [f"C{c}: {a:.1f}–{b:.1f}" for c, a, b in zip(df_imc["cuartil"], df_imc["min_imc"], df_imc["max_imc"])]
 
     fig_imc = px.bar(
         df_imc,
@@ -573,9 +504,7 @@ etiq = {"jugadores": "Jugador-temporadas", "altura_prom": "Altura promedio (cm)"
 perfil.index = [etiq.get(i, i) for i in perfil.index]
 st.dataframe(perfil.round(2).reset_index().rename(columns={"index": "Variable Biométrica / Operativa"}), hide_index=True)
 
-st.markdown("""
-Los promedios de altura, peso, volumen de minutos y edad son muy idénticos entre los jugadores que completaron la temporada sin lesiones y aquellos que registraron bajas médicas.
-""")
+interpretacion("Los promedios de altura, peso, volumen de minutos y edad son prácticamente idénticos entre los jugadores que completaron la temporada sin lesiones y aquellos que registraron bajas médicas.")
 
 st.divider()
 
@@ -633,9 +562,7 @@ with c2:
     fig_top.update_traces(textposition="outside", cliponaxis=False)
     mostrar(fig_top, 460)
 
-st.markdown("""
-Los futbolistas que encabezan el registro de días perdidos acumulan cifras muy elevadas de inactividad debido a lesiones de larga duración (como roturas de ligamentro cruzado), y no a una alta frecuencia de pequeños incidentes. Sus características físicas se encuentran dentro de la media general de la competición.
-""")
+interpretacion("Los futbolistas que encabezan el registro de días perdidos acumulan cifras muy elevadas de inactividad debido a lesiones de larga duración (como roturas de ligamento cruzado), y no a una alta frecuencia de pequeños incidentes. Sus características físicas se encuentran dentro de la media general de la competición.")
 st.divider()
 
 # 8. Análisis Comparativo por Club
@@ -646,71 +573,50 @@ Este apartado permite realizar una comparativa numérica directa entre dos clube
 
 col_comp1, col_comp2 = st.columns(2)
 
-try:
-    seasons_opt = ["Todas las temporadas"] + run_query("SELECT season_label FROM seasons ORDER BY season_order")["season_label"].tolist()
-    df_clubs = run_query("SELECT DISTINCT club_name FROM analytics_club_seasons WHERE club_name IS NOT NULL ORDER BY 1")
-    clubs_opt = df_clubs["club_name"].tolist() if not df_clubs.empty else ["Real Madrid"]
-except Exception:
-    seasons_opt = ["Todas las temporadas", "2022/23", "2023/24", "2024/25", "2025/26"]
-    clubs_opt = ["Real Madrid", "Barcelona", "Manchester City", "Bayern Munich"]
+seasons_opt = seasons_opt_sb
+df_clubs = run_query("""
+    SELECT DISTINCT club_id, club_name, COALESCE(division_name, 'Sin división') AS division_name
+    FROM analytics_club_seasons
+    ORDER BY club_name, division_name
+""")
+club_labels = {cid: f"{nombre} ({division})" for cid, nombre, division in df_clubs.itertuples(index=False)}
+clubs_opt = df_clubs["club_id"].tolist()
 
 with col_comp1:
     st.subheader("Selección Club A")
     season_a = st.selectbox("Temporada (A)", seasons_opt, key="season_a_c")
-    club_a = st.selectbox("Club (A)", clubs_opt, key="club_a_c")
+    club_a = st.selectbox("Club (A)", clubs_opt, format_func=club_labels.get, key="club_a_c")
 
 with col_comp2:
     st.subheader("Selección Club B")
     season_b = st.selectbox("Temporada (B)", seasons_opt, key="season_b_c")
-    club_b = st.selectbox("Club (B)", clubs_opt, key="club_b_c")
+    club_b = st.selectbox("Club (B)", clubs_opt, format_func=club_labels.get, key="club_b_c")
 
-def get_club_comparison_data(season_sel, club_sel):
-    where_clauses = ["i.start_date IS NOT NULL", "i.end_date IS NOT NULL"]
+def get_club_comparison_data(season_sel, club_id):
+    where, params = "ps.club_id = ?", [club_id]
     if season_sel != "Todas las temporadas":
-        where_clauses.append(f"t.season_label = '{season_sel}'")
-    if club_sel:
-        where_clauses.append(f"acs.club_name = '{club_sel}'")
-    
-    where_str = " AND ".join(where_clauses)
-    query = f"""
-    SELECT p.name AS Jugador, 
-           i.injury_type AS Lesión, 
-           date_diff('day', TRY_CAST(i.start_date AS DATE), TRY_CAST(i.end_date AS DATE)) AS "Días de baja", 
-           t.season_label AS Temporada,
-           acs.club_name AS Club
+        where += " AND t.season_label = ?"
+        params.append(season_sel)
+    return run_query(f"""
+    SELECT p.name AS Jugador,
+           i.injury_type AS Lesión,
+           date_diff('day', TRY_CAST(i.start_date AS DATE), TRY_CAST(i.end_date AS DATE)) AS "Días de baja",
+           t.season_label AS Temporada
     FROM injuries i
     JOIN players p ON p.player_id = i.player_id
     JOIN seasons t ON t.season_id = i.season_id
     JOIN player_seasons ps ON ps.player_id = i.player_id AND ps.season_id = i.season_id
-    JOIN analytics_club_seasons acs ON acs.club_id = ps.club_id AND acs.season_id = i.season_id
-    WHERE {where_str}
+    WHERE {where}
     ORDER BY "Días de baja" DESC
-    """
-    try:
-        df_res = run_query(query)
-        if df_res.empty and club_sel:
-            query_flex = query.replace(f"acs.club_name = '{club_sel}'", f"acs.club_name ILIKE '%{club_sel}%'")
-            df_res = run_query(query_flex)
-        return df_res
-    except Exception:
-        return pd.DataFrame(columns=["Jugador", "Lesión", "Días de baja", "Temporada", "Club"])
+    """, params)
 
 df_a = get_club_comparison_data(season_a, club_a)
 df_b = get_club_comparison_data(season_b, club_b)
 
-tipos_es_comp = {
-    "ACL tear": "Rotura de LCA", "Fracture": "Fractura",
-    "Knee ligament sprain": "Esguince de ligamento de rodilla",
-    "Ankle sprain": "Esguince de tobillo", "Groin strain": "Distensión de ingle",
-    "Calf strain": "Distensión de gemelo", "Hamstring strain": "Distensión de isquiotibiales",
-    "Back spasm": "Espasmo de espalda", "Concussion": "Conmoción cerebral",
-    "Muscle fatigue": "Fatiga muscular", "Illness": "Enfermedad"
-}
-
 if not df_a.empty and "Lesión" in df_a.columns:
-    df_a["Lesión"] = df_a["Lesión"].map(tipos_es_comp).fillna(df_a["Lesión"])
+    df_a["Lesión"] = df_a["Lesión"].map(TIPOS_ES).fillna(df_a["Lesión"])
 if not df_b.empty and "Lesión" in df_b.columns:
-    df_b["Lesión"] = df_b["Lesión"].map(tipos_es_comp).fillna(df_b["Lesión"])
+    df_b["Lesión"] = df_b["Lesión"].map(TIPOS_ES).fillna(df_b["Lesión"])
 
 tot_les_a = len(df_a)
 tot_dias_a = df_a["Días de baja"].sum() if not df_a.empty else 0
@@ -731,11 +637,11 @@ st.markdown("---")
 
 col_t1, col_t2 = st.columns(2)
 with col_t1:
-    st.markdown(f"**{club_a}** ({season_a}) — Registros: {len(df_a)}")
+    st.markdown(f"**{club_labels.get(club_a)}** · {season_a} — Registros: {len(df_a)}")
     st.dataframe(df_a[["Jugador", "Lesión", "Días de baja"]], hide_index=True, width="stretch")
 
 with col_t2:
-    st.markdown(f"**{club_b}** ({season_b}) — Registros: {len(df_b)}")
+    st.markdown(f"**{club_labels.get(club_b)}** · {season_b} — Registros: {len(df_b)}")
     st.dataframe(df_b[["Jugador", "Lesión", "Días de baja"]], hide_index=True, width="stretch")
 
 st.divider()
@@ -744,21 +650,18 @@ st.divider()
 st.header("Conclusión general")
 
 st.markdown("""
-A modo de síntesis global, el análisis desarrollado a lo largo de las cuatro temporadas permite responder con total claridad al objetivo planteado:
-""")
-
-c1, c2 = st.columns(2)
-with c1:
-    st.markdown("""
-    * **Frecuencia constante:** Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (~24.8%), siendo lo habitual registrar un único episodio por campaña en cada jugador.
-    * **El físico no define el riesgo:** Características corporales como la altura y el peso no tienen relación con les lesiones; los jugadores altos, bajos, delgados o pesados se lesionan exactamente en la misma proporción.
-    """)
-with c2:
-    st.markdown("""
-    * **Lo que importa es el tipo de lesión, no el cansancio:** Acumular muchos o pocos minutos en el terreno de juego no hace que un futbolista sea más propenso a lastimarse. El tiempo total de baja depende de la gravedad de cada lesión (como una rotura de ligamentos), no del desgaste por minutos.
-    * **Resultados estables:** Los datos se comportan de forma idéntica año tras año, lo que confirma que las tendencias encontradas son sólidas en todo el período estudiado.
-    """)
-
-st.markdown("""
-Con base en los datos analizados, ni la complexión física ni la cantidad de minutos jugados determinan quién se lesiona o cuánto tiempo pasa fuera de las canchas en el fútbol profesional evaluado.
-""")
+<div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
+    <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
+        A modo de síntesis global, el análisis desarrollado a lo largo de las cuatro temporadas permite responder con total claridad al objetivo planteado:
+    </p>
+    <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
+        <li><b>Frecuencia constante:</b> Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (~24.8%), siendo lo habitual registrar un único episodio por campaña en cada jugador.</li>
+        <li><b>El físico no define el riesgo:</b> Características corporales como la altura y el peso no tienen relación con las lesiones; los jugadores altos, bajos, delgados o pesados se lesionan exactamente en la misma proporción.</li>
+        <li><b>Lo que importa es el tipo de lesión, no el cansancio:</b> Acumular muchos o pocos minutos en el terreno de juego no hace que un futbolista sea más propenso a lastimarse. El tiempo total de baja depende de la gravedad de cada lesión (como una rotura de ligamentos), no del desgaste por minutos.</li>
+        <li><b>Resultados estables:</b> Los datos se comportan de forma idéntica año tras año, lo que confirma que las tendencias encontradas son sólidas en todo el período estudiado.</li>
+    </ul>
+    <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.02rem;">
+        Con base en los datos analizados, ni la complexión física ni la cantidad de minutos jugados determinan quién se lesiona o cuánto tiempo pasa fuera de las canchas en el fútbol profesional evaluado.
+    </p>
+</div>
+""", unsafe_allow_html=True)
