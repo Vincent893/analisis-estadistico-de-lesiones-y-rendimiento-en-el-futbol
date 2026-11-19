@@ -73,7 +73,33 @@ if query_seleccionado == "Query 2: ¿La Masa Salarial Compra Resultados?":
     """)
         
     with st.expander("**Ver Query**"):
-        query = """
+        query = """  WITH club AS (
+    SELECT c.division_id, c.club_name,
+           SUM(ct.weekly_wage_eur) AS masa_salarial,
+           RANK() OVER (PARTITION BY c.division_id ORDER BY SUM(ct.weekly_wage_eur) DESC) AS r_masa,
+           RANK() OVER (PARTITION BY c.division_id ORDER BY SUM(g.game_win_ratio * ps.mins) / SUM(ps.mins) DESC) AS r_rend
+    FROM seasons s
+    JOIN player_seasons ps ON ps.season_id = s.season_id
+    JOIN contracts ct ON ct.player_id = ps.player_id AND ct.club_id = ps.club_id
+                     AND CAST(SUBSTR(s.season_label, 1, 4) || '-07-01' AS DATE) BETWEEN ct.start_date AND ct.end_date
+    JOIN player_stats_general g ON g.player_season_id = ps.player_season_id
+    JOIN clubs c ON c.club_id = ps.club_id
+    WHERE s.season_order = 0
+    GROUP BY c.club_id, c.division_id
+    HAVING COUNT(*) >= 8
+)
+SELECT d.division_name AS division,
+       d.division_strength AS fuerza,
+       COUNT(*) AS cantidad_clubes,
+       ROUND(1 - 6.0 * SUM((cl.r_masa - cl.r_rend) * (cl.r_masa - cl.r_rend)) / (COUNT(*) * (COUNT(*) * COUNT(*) - 1)), 4) AS coeficiente_spearman,
+       (ARRAY_AGG(cl.club_name ORDER BY cl.r_masa - cl.r_rend DESC, cl.r_rend))[1] AS club_que_mas_puestos_gana,
+       MAX(cl.r_masa - cl.r_rend) AS puestos_ganados,
+       ROUND(MAX(cl.masa_salarial) / MIN(cl.masa_salarial), 2) AS cociente_masa_salarial
+FROM club cl
+JOIN divisions d ON d.division_id = cl.division_id
+GROUP BY d.division_id
+HAVING COUNT(*) >= 10
+ORDER BY coeficiente_spearman DESC
         """
         st.code(query, language="sql")
 
