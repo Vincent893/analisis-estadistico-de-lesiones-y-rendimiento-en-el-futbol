@@ -42,7 +42,12 @@ SELECT COALESCE(d.division_name, 'Sin división') AS liga,
        psp.key_passes,
        ps.ability_score,
        psa.goals_per_90 + psa.assists_per_90                    AS offensive_score,
-       psd.tackles_completed_per_90 + psd.interceptions_per_90  AS defensive_score
+       psd.tackles_completed_per_90 + psd.interceptions_per_90  AS defensive_score,
+       psk.save_ratio,
+       psk.saves_per_90,
+       psk.clean_sheets_per_90,
+       psk.conceded_per_90,
+       psk.expected_goals_prevented_per_90
 FROM player_seasons ps
 JOIN players p                   USING (player_id)
 JOIN pos_principal pp            USING (player_id)
@@ -52,6 +57,7 @@ JOIN seasons s                   USING (season_id)
 JOIN player_stats_attacking psa  USING (player_season_id)
 JOIN player_stats_defending psd  USING (player_season_id)
 JOIN player_stats_passing psp    USING (player_season_id)
+LEFT JOIN player_stats_goalkeeping psk USING (player_season_id)
 """
 
 @st.cache_data
@@ -78,8 +84,10 @@ _min_ok = df["minutes_played"].where(df["minutes_played"] >= MIN_MINUTOS_90)
 for col in ["goles_asistencias", "goals", "assists"]:
     df[f"{col}_90"] = df[col] * 90 / _min_ok
 liga_col = "liga"
-LINEAS_ORDEN = ["Arquero", "Defensa", "Mediocampista", "Delantero"]
-# Un color fijo por línea en toda la página, tomado de la paleta del tema
+# Arqueros con minutos suficientes para que las métricas por 90' y los ratios sean estables
+df_arq = df[(df["linea"] == "Arquero") & (df["minutes_played"] >= MIN_MINUTOS_90)].copy()
+df_arq["pct_paradas"] = df_arq["save_ratio"] * 100
+LINEAS_ORDEN =["Arquero", "Defensa", "Mediocampista", "Delantero"]
 colores_kpi = dict(zip(LINEAS_ORDEN, PALETA_APP))
 
 st.markdown("""
@@ -113,15 +121,26 @@ for i, linea in enumerate(LINEAS_ORDEN):
     row = agg_kpi.loc[linea]
     pct = row["Jugadores"] / total_jug * 100
     color = colores_kpi[linea]
+    if linea == "Arquero":
+        # Métricas de portería
+        detalle = (
+            f"Paradas: {df_arq['pct_paradas'].mean():.1f}%<br>"
+            f"Porterías a cero/90': {df_arq['clean_sheets_per_90'].mean():.2f}<br>"
+            f"Goles concedidos/90': {df_arq['conceded_per_90'].mean():.2f}"
+        )
+    else:
+        detalle = (
+            f"Goles prom: {row['Goles_prom']:.2f}<br>"
+            f"Asist prom: {row['Asist_prom']:.2f} · Tackles prom: {row['Tackles_prom']:.1f}<br>"
+            f"Minutos prom: {row['Mins_prom']:.0f}"
+        )
     with cols_kpi[i]:
         st.markdown(f"""
         <div class="kpi-card" style="border-top-color:{color};">
             <div class="kpi-title">{linea}</div>
             <div class="kpi-value" style="font-size:1.35rem;">{row['Jugadores']:,.0f} jug.</div>
             <div class="kpi-footer" style="font-size:0.85rem; line-height:1.4;">
-                {pct:.1f}% del censo · Goles prom: {row['Goles_prom']:.2f}<br>
-                Asist prom: {row['Asist_prom']:.2f} · Tackles prom: {row['Tackles_prom']:.1f}<br>
-                Minutos prom: {row['Mins_prom']:.0f}
+                {detalle}
             </div>
         </div>""", unsafe_allow_html=True)
 
@@ -130,9 +149,8 @@ st.divider()
 st.subheader("Gráfico 1: Aporte Porcentual por Línea y Temporada")
 # Gráficos 1 y 2: sin arqueros, su aporte en goles, asistencias y tackles es prácticamente nulo
 df_campo = df[df["linea"] != "Arquero"]
-NOTA_ARQUEROS = "Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles)."
-
-st.caption("Porcentaje de goles, asistencias y tackles aportado por cada línea de campo respecto al total de la muestra. " + NOTA_ARQUEROS)
+st.caption("Porcentaje de goles, asistencias y tackles aportado por cada línea de campo respecto al total de la muestra. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles)."
+)
 
 metrica_g1 = st.radio(
     "Métrica de aporte:", ["Goles + Asistencias", "Goles", "Asistencias", "Tackles"],
@@ -181,7 +199,7 @@ st.markdown("""
 st.divider()
 
 st.subheader("Gráfico 2: Promedio por Jugador por Línea y Temporada")
-st.caption("Promedio por jugador de goles, asistencias y tackles en cada línea posicional. Contrasta con el Gráfico 1: aquel muestra cuánto aporta cada línea al total; este, cuánto aporta un jugador típico de cada línea. " + NOTA_ARQUEROS)
+st.caption("Promedio por jugador de goles, asistencias y tackles en cada línea posicional. Contrasta con el Gráfico 1: aquel muestra cuánto aporta cada línea al total; este, cuánto aporta un jugador típico de cada línea. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles).")
 
 metrica_prom = st.radio(
     "Métrica promedio:", ["Goles + Asistencias", "Goles", "Asistencias", "Tackles"],
@@ -419,11 +437,12 @@ st.divider()
 
 st.subheader("Análisis Complementario")
 
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Perfil Multidimensional",
     "Balance Ofensivo vs. Defensivo",
     "Dispersión Ofensiva vs. Defensiva",
     "Minutos y Rotación por Rol",
+    "Rendimiento de Arqueros",
 ])
 
 with tab1:
@@ -546,6 +565,49 @@ with tab4:
     fig_t4.update_layout(height=430, xaxis_tickangle=-25, showlegend=True)
     fig_t4 = apply_theme(fig_t4)
     st.plotly_chart(fig_t4, width="stretch")
+
+with tab5:
+    st.caption(
+        f"Métricas propias de la portería · Arqueros con {MIN_MINUTOS_90}+ minutos "
+        f"({len(df_arq):,} registros jugador-temporada) · Promedio por arquero"
+    )
+    k1, k2, k3, k4 = st.columns(4)
+    for col_k, titulo, valor, pie in [
+        (k1, "% de Paradas", f"{df_arq['pct_paradas'].mean():.1f}%", "Remates a puerta detenidos"),
+        (k2, "Paradas por 90'", f"{df_arq['saves_per_90'].mean():.2f}", "Volumen de trabajo"),
+        (k3, "Porterías a cero por 90'", f"{df_arq['clean_sheets_per_90'].mean():.2f}", "Partidos sin goles recibidos"),
+        (k4, "Goles evitados por 90'", f"{df_arq['expected_goals_prevented_per_90'].mean():+.3f}", "Goles esperados − recibidos"),
+    ]:
+        with col_k:
+            st.markdown(f"""
+            <div class="kpi-card" style="border-top-color:{colores_kpi['Arquero']};">
+                <div class="kpi-title">{titulo}</div>
+                <div class="kpi-value" style="font-size:1.35rem;">{valor}</div>
+                <div class="kpi-footer" style="font-size:0.85rem;">{pie}</div>
+            </div>""", unsafe_allow_html=True)
+
+    metricas_arq = {
+        "% de Paradas":               "pct_paradas",
+        "Porterías a cero por 90'":   "clean_sheets_per_90",
+        "Goles concedidos por 90'":   "conceded_per_90",
+        "Goles evitados por 90'":     "expected_goals_prevented_per_90",
+    }
+    metrica_arq = st.radio("Métrica:", list(metricas_arq), horizontal=True, key="t5_metrica")
+    col_arq = metricas_arq[metrica_arq]
+
+    agg_arq = df_arq.groupby("season")[col_arq].mean().reset_index(name="promedio")
+    fig_arq = px.bar(
+        agg_arq, x="season", y="promedio",
+        labels={"season": "Temporada", "promedio": f"{metrica_arq} (promedio)"},
+    )
+    fig_arq.update_traces(
+        marker_color=colores_kpi["Arquero"],
+        texttemplate="%{y:.1f}%" if col_arq == "pct_paradas" else "%{y:.3f}",
+        textposition="outside", cliponaxis=False,
+    )
+    fig_arq.update_layout(height=400)
+    fig_arq = apply_theme(fig_arq)
+    st.plotly_chart(fig_arq, width="stretch")
 
 st.divider()
 
