@@ -18,7 +18,7 @@ query_seleccionado = st.selectbox(
             "Query 1: Rotación de Planteles en las Ligas Principales",
             "Query 2: ¿La Masa Salarial Compra Resultados?", 
             "Query 3: Lesiones Recurrentes",
-            "Query 4",
+            "Query 4: Cartera de las Agencias de Representación",
             "Query 5",
             "Query 6"
         ]
@@ -185,6 +185,38 @@ if query_seleccionado == "Query 3: Lesiones Recurrentes":
                 try: 
                     result = supabase.table("query_3").select("*").execute()
                     # query_3 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
+                    df = pd.DataFrame(result.data)
+                    st.success("Consulta ejecutada con éxito.")
+                    st.dataframe(df, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Error al ejecutar la consulta: {str(e)}")
+
+if query_seleccionado == "Query 4: Cartera de las Agencias de Representación": 
+    st.subheader("**Cartera de las Agencias de Representación**")
+
+    with st.expander("**Ver Pregunta**"):
+        st.text("""
+Los agentes trabajan para agencias, y una agencia reúne a varios agentes cuyos nombres pueden repetirse en otras agencias. Se quiere un ranking de 
+agencias según el valor de su cartera de clientes.
+
+Valorizá a cada jugador representado con el monto total de su contrato más reciente. Para cada agencia calculá la cantidad de clientes, la cantidad 
+de agentes, la cantidad de nacionalidades distintas, la proporción de clientes extracomunitarios, el valor total de la cartera en millones, la 
+valoración media de sus clientes en la temporada más reciente y un índice de concentración de Herfindahl: la suma de los cuadrados de la participación 
+de cada cliente en el valor de la agencia.
+
+Identificá al cliente de mayor valor de cada agencia, la división en la que juega en la temporada más reciente y su peso en la cartera. Mostrá las quince 
+agencias de mayor valor con su puesto y la cuota acumulada que representan sobre el valor total de todas las agencias.
+    """)
+    with st.expander("**Ver Query**"):
+        query = """
+        """
+        st.code(query, language="sql")
+
+        if st.button("Ejecutar Query"):
+            with st.spinner("Ejecutando consulta..."):
+                try: 
+                    result = supabase.table("query_4").select("*").execute()
+                    # query_4 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
                     df = pd.DataFrame(result.data)
                     st.success("Consulta ejecutada con éxito.")
                     st.dataframe(df, use_container_width=True)
