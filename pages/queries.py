@@ -9,6 +9,19 @@ UI.setup_page()
 UI.render_sidebar()
 cargar_estilos()
 
+st.markdown("""
+    <div class="hero-header">
+        <span class="hero-badge">Queries </span>
+        <div class="hero-title">Cuestionario SQL</div>
+        <p style="color:#94A3B8; margin:0; font-size:1.05rem; line-height:1.5;">
+            Seis consultas sobre la base de datos original de Kaggle, alojada en Supabase. Cada una responde a una
+            pregunta del cuestionario combinando CTEs, funciones de ventana y agregaciones. Selecciona una consulta
+            para ver su enunciado, el código SQL y ejecutarla en vivo.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
+st.divider()
 
 supabase = DB.connect_supabase()
 
