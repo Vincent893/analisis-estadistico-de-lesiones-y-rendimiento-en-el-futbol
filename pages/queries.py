@@ -238,7 +238,60 @@ Para la temporada más reciente agregá la nacionalidad extranjera con más minu
 de los minutos de extranjeros corresponde a jugadores extracomunitarios. 
     """)
     with st.expander("**Ver Query**"):
-        query = """
+        query = """WITH top_divisiones AS (
+    SELECT division_id, division_name
+    FROM (SELECT d.*, RANK() OVER (ORDER BY division_strength DESC) AS puesto FROM divisions d) x
+    WHERE puesto <= 15
+),
+minutos AS (
+    SELECT t.division_id, t.division_name, s.season_order, n.nation_code,
+           MAX(s.season_order) OVER () AS primera,
+           SUM(ps.mins) AS mins,
+           SUM(CASE WHEN p.is_eu_national THEN 0 ELSE ps.mins END) AS mins_extracom,
+           ROW_NUMBER() OVER (PARTITION BY t.division_id, s.season_order ORDER BY SUM(ps.mins) DESC) AS pos
+    FROM player_seasons ps
+    JOIN seasons s ON s.season_id = ps.season_id
+    JOIN clubs c ON c.club_id = ps.club_id
+    JOIN top_divisiones t ON t.division_id = c.division_id
+    JOIN players p ON p.player_id = ps.player_id
+    JOIN nations n ON n.nation_id = p.nation_id
+    GROUP BY t.division_id, t.division_name, s.season_order, n.nation_code
+),
+extranjeros AS (
+    SELECT m.*,
+           CASE WHEN m.nation_code <> pais.nation_code THEN 1 ELSE 0 END AS es_ext,
+           ROW_NUMBER() OVER (PARTITION BY m.division_id, m.season_order
+                              ORDER BY CASE WHEN m.nation_code <> pais.nation_code THEN m.mins ELSE 0 END DESC) AS pos_ext
+    FROM minutos m
+    JOIN minutos pais ON pais.division_id = m.division_id AND pais.season_order = 0 AND pais.pos = 1
+),
+division AS (
+    SELECT division_name,
+           MAX(nation_code) FILTER (WHERE season_order = 0 AND es_ext = 0) AS pais,
+           SUM(es_ext * mins) FILTER (WHERE season_order = primera) * 1.0
+             / SUM(mins) FILTER (WHERE season_order = primera) AS prop_primera,
+           SUM(es_ext * mins) FILTER (WHERE season_order = 0) * 1.0
+             / SUM(mins) FILTER (WHERE season_order = 0) AS prop_ultima,
+           MAX(nation_code) FILTER (WHERE season_order = 0 AND pos_ext = 1 AND es_ext = 1) AS nacion_ext,
+           MAX(mins) FILTER (WHERE season_order = 0 AND pos_ext = 1 AND es_ext = 1) * 1.0
+             / NULLIF(SUM(es_ext * mins) FILTER (WHERE season_order = 0), 0) AS peso_nacion_ext,
+           SUM(es_ext * mins_extracom) FILTER (WHERE season_order = 0) * 1.0
+             / NULLIF(SUM(es_ext * mins) FILTER (WHERE season_order = 0), 0) AS prop_extracom
+    FROM extranjeros
+    GROUP BY division_id, division_name
+)
+SELECT division_name AS division,
+       pais AS pais_inferido,
+       ROUND(prop_primera, 4) AS proporcion_extranjeros_primera_temporada,
+       ROUND(prop_ultima, 4) AS proporcion_extranjeros_ultima_temporada,
+       ROUND(prop_ultima - prop_primera, 4) AS variacion,
+       RANK() OVER (ORDER BY prop_ultima - prop_primera DESC) AS puesto_crecimiento,
+       nacion_ext AS nacionalidad_extranjera_principal,
+       ROUND(peso_nacion_ext, 4) AS peso_nacionalidad_principal,
+       ROUND(prop_extracom, 4) AS proporcion_extracomunitarios
+FROM division
+ORDER BY puesto_crecimiento
+)
         """
         st.code(query, language="sql")
 
