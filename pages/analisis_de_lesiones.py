@@ -40,6 +40,11 @@ def interpretacion(texto):
 """, unsafe_allow_html=True)
 
 
+def etiqueta_pct_dias(df):
+    """Etiqueta de barra: % de lesionados y, debajo, días de baja promedio de los lesionados."""
+    return [f"{p:.1f}%<br>{d:.0f} d" for p, d in zip(df["pct_lesionados"], df["dias_prom"])]
+
+
 TIPOS_ES = {
     "ACL tear": "Rotura de LCA", "Fracture": "Fractura",
     "Knee ligament sprain": "Esguince de ligamento de rodilla",
@@ -346,7 +351,7 @@ st.divider()
 st.header("4. Características Antropométricas")
 
 st.markdown("""
-En este apartado se segmenta a la población de jugadores en cuartiles según su altura y su peso, para comprobar si el riesgo de sufrir lesiones varía con estas características antropométricas. Si existiera un riesgo vinculado a la estatura o al peso, se observaría una progresión evidente en las tasas de lesionados de un cuartil al siguiente.
+En este apartado se segmenta a la población de jugadores en cuartiles según su altura y su peso, para comprobar si el riesgo de sufrir lesiones varía con estas características antropométricas. Si existiera un riesgo vinculado a la estatura o al peso, se observaría una progresión evidente en las tasas de lesionados de un cuartil al siguiente. Sobre cada barra se indica el porcentaje de lesionados y, debajo, los días de baja promedio de quienes se lesionaron.
 """)
 
 col_alt, col_pes = st.columns(2)
@@ -355,13 +360,14 @@ with col_alt:
     st.subheader("4.1 Análisis por cuartiles de altura")
     sql_q7 = P_CTE + """
     SELECT q_altura AS cuartil, MIN(height_cm) AS min_cm, MAX(height_cm) AS max_cm,
-           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados
+           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados,
+           ROUND(AVG(dias_perdidos) FILTER (WHERE n_les > 0), 0) AS dias_prom
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     alt = run_query(sql_q7)
     alt["grupo"] = [f"C{c}: {a:g}–{b:g} cm" for c, a, b in zip(alt["cuartil"], alt["min_cm"], alt["max_cm"])]
 
-    fig_alt = px.bar(alt, x="grupo", y="pct_lesionados", text_auto=".1f",
+    fig_alt = px.bar(alt, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(alt),
                      title="Porcentaje de lesionados por cuartil de altura",
                      labels={"grupo": "Cuartil de Altura", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
     fig_alt.update_traces(textposition="outside", cliponaxis=False, width=0.45)
@@ -373,13 +379,14 @@ with col_pes:
     st.subheader("4.2 Análisis por cuartiles de peso")
     sql_q8 = P_CTE + """
     SELECT q_peso AS cuartil, MIN(weight_kg) AS min_kg, MAX(weight_kg) AS max_kg,
-           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados
+           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados,
+           ROUND(AVG(dias_perdidos) FILTER (WHERE n_les > 0), 0) AS dias_prom
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     pes = run_query(sql_q8)
     pes["grupo"] = [f"C{c}: {a:g}–{b:g} kg" for c, a, b in zip(pes["cuartil"], pes["min_kg"], pes["max_kg"])]
 
-    fig_pes = px.bar(pes, x="grupo", y="pct_lesionados", text_auto=".1f",
+    fig_pes = px.bar(pes, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(pes),
                      title="Porcentaje de lesionados por cuartil de peso",
                      labels={"grupo": "Cuartil de Peso", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
     fig_pes.update_traces(textposition="outside", cliponaxis=False, width=0.45)
@@ -387,7 +394,7 @@ with col_pes:
     fig_pes.update_xaxes(title_text="")
     mostrar(fig_pes, 360)
 
-interpretacion("Los gráficos anteriores evidencian la gran independencia entre las características antropométricas y la probabilidad de lesión. Las variaciones porcentuales entre el cuartil inferior y el superior son pequeñas, dándonos como resultado que un jugador más alto o más pesado no incrementa ni reduce por sí solo el riesgo de sufrir una lesión.")
+interpretacion("Los gráficos anteriores evidencian la gran independencia entre las características antropométricas y la probabilidad de lesión. Las variaciones porcentuales entre el cuartil inferior y el superior son pequeñas, dándonos como resultado que un jugador más alto o más pesado no incrementa ni reduce por sí solo el riesgo de sufrir una lesión. La duración tampoco cambia: en el ciclo completo, los lesionados de cada cuartil de altura y de peso pierden en promedio entre 37 y 39 días.")
 
 
 # 4.3 Relación entre el IMC y la probabilidad de lesión
@@ -399,19 +406,20 @@ with col_texto:
     st.markdown("""
     Al segmentar el **Índice de Masa Corporal (IMC)** en cuartiles poblacionales para evaluar su relación con la inactividad médica, los resultados empíricos muestran una notable uniformidad en la tasa de incidencia de lesiones entre los cuatro cuartiles.
 
-    La estabilidad de estas proporciones indica que la complexión corporal medida por el IMC no constituye un factor determinante ni condiciona el riesgo de sufrir lesiones en la población de futbolistas analizada.
+    La estabilidad de estas proporciones indica que la complexión corporal medida por el IMC no constituye un factor determinante ni condiciona el riesgo de sufrir lesiones en la población de futbolistas analizada. Los días de baja promedio de los lesionados son igualmente estables (38 a 39 días en el ciclo completo).
     """)
 
 with col_grafico:
     sql_imc = P_CTE + """ ,
     imc AS (
-        SELECT n_les, weight_kg / POWER(height_cm / 100.0, 2) AS imc_val FROM ps
+        SELECT n_les, dias_perdidos, weight_kg / POWER(height_cm / 100.0, 2) AS imc_val FROM ps
     ),
     imc_q AS (
         SELECT *, CEIL(4 * CUME_DIST() OVER (ORDER BY imc_val))::INT AS cuartil FROM imc
     )
     SELECT cuartil, MIN(imc_val) AS min_imc, MAX(imc_val) AS max_imc,
-           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados
+           ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados,
+           ROUND(AVG(dias_perdidos) FILTER (WHERE n_les > 0), 0) AS dias_prom
     FROM imc_q GROUP BY 1 ORDER BY 1;
     """
     df_imc = run_query(sql_imc)
@@ -421,21 +429,21 @@ with col_grafico:
         df_imc,
         x="categoria",
         y="pct_lesionados",
-        text="pct_lesionados",
+        text=etiqueta_pct_dias(df_imc),
         title="Porcentaje de lesionados por cuartil de IMC",
         labels={"categoria": "Segmentación por Cuartiles para el IMC", "pct_lesionados": "% Lesionados"}
     )
     
     fig_imc.update_traces(
-        texttemplate='%{text:.1f}%', 
         textposition='outside',
+        cliponaxis=False,
         width=0.45 
     )
     
     fig_imc.update_layout(
         yaxis_title="Porcentaje de Lesionados",
         xaxis_title="Segmentación por Cuartiles para el IMC",
-        yaxis=dict(range=[0, max(df_imc['pct_lesionados']) * 1.2] if not df_imc.empty else [0, 30]),
+        yaxis=dict(range=[0, 40]),
         coloraxis_showscale=False
     )
     
@@ -453,6 +461,8 @@ with col_txt_min:
     Una de las hipótesis recurrentes en la medicina deportiva es el desgaste acumulado por exceso de minutos competitivos. Para examinar este factor, la muestra se divide en bandas crecientes de minutos disputados por temporada.
     
     El porcentaje de futbolistas que experimentan lesiones se mantiene con una leve variación, de aproximadamente 24% a 25%, independientemente de que acumulen pocos o muchos minutos en el terreno de juego. La carga de tiempo en los jugadores no condiciona la probabilidad de lesionarse.
+
+    Lo mismo ocurre con la duración: los días de baja promedio de los lesionados, indicados bajo cada porcentaje, se mantienen entre 37 y 40 en todas las bandas de minutos del ciclo completo.
     """)
 
 with col_fig_min:
@@ -465,13 +475,14 @@ with col_fig_min:
              WHEN mins <= 2500 THEN 'e) 2001-2500'
              WHEN mins <= 3000 THEN 'f) 2501-3000'
              ELSE 'g) 3000+' END AS banda_min,
-        ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados
+        ROUND(100.0 * COUNT(*) FILTER (WHERE n_les > 0) / COUNT(*), 1) AS pct_lesionados,
+        ROUND(AVG(dias_perdidos) FILTER (WHERE n_les > 0), 0) AS dias_prom
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     q10 = run_query(sql_q10)
     q10["banda_min"] = q10["banda_min"].str[3:]
 
-    fig_mins = px.bar(q10, x="banda_min", y="pct_lesionados", text_auto=".1f",
+    fig_mins = px.bar(q10, x="banda_min", y="pct_lesionados", text=etiqueta_pct_dias(q10),
                       title="Porcentaje de lesionados según minutos jugados",
                       labels={"banda_min": "Banda de Minutos", "pct_lesionados": "% Lesionados"})
     fig_mins.update_traces(textposition="outside", cliponaxis=False, width=0.35)
