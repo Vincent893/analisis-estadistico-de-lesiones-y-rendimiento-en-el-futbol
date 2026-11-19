@@ -49,5 +49,6 @@ class UI:
             st.page_link("pages/analisis_posicional.py", label="Análisis Posicional")
             st.page_link("pages/conclusiones.py", label="Conclusiones")
             st.page_link("pages/simulador_de_plantilla.py", label="Simulador de Plantilla")
+            st.page_link("pages/queries.py", label="Cuestionario SQL")
             
             st.divider()
