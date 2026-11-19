@@ -80,6 +80,50 @@ table 'main analytics_club_position_seasons'
 		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: e71d33d0-5524-4c93-9b3b-2205e22b4b6c
 
+	measure '% Aporte Defensivo' = ```
+			
+			VAR AccionesLinea = 
+			    SUM('main analytics_club_position_seasons'[line_total_interceptions]) + 
+			    SUM('main analytics_club_position_seasons'[line_total_tackles])
+			VAR AccionesTotales = 
+			    CALCULATE(
+			        SUM('main analytics_club_position_seasons'[line_total_interceptions]) + 
+			        SUM('main analytics_club_position_seasons'[line_total_tackles]),
+			        REMOVEFILTERS('main analytics_club_position_seasons'[primary_category])
+			    )
+			RETURN
+			DIVIDE(AccionesLinea, AccionesTotales)
+			```
+		lineageTag: 7fdb4359-4a2a-4a51-99ed-fc121935be7f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rend. Promedio Línea' =
+			
+			DIVIDE(
+			    SUMX(
+			        'main analytics_club_position_seasons',
+			        'main analytics_club_position_seasons'[line_avg_rating] * 'main analytics_club_position_seasons'[avg_mins_played]
+			    ),
+			    SUM('main analytics_club_position_seasons'[avg_mins_played])
+			)
+		lineageTag: c55fd8ca-836e-4c9d-9a54-7aa9d4be2536
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Aporte Ofensivo (Goles)' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_position_seasons'[line_total_goals]),
+			    CALCULATE(
+			        SUM('main analytics_club_position_seasons'[line_total_goals]),
+			        REMOVEFILTERS('main analytics_club_position_seasons'[primary_category])
+			    )
+			)
+		lineageTag: ee870f27-6fa6-4d22-bd59-b7e71a3747d1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column club_id
 		dataType: int64
 		formatString: 0
@@ -173,13 +217,12 @@ table 'main analytics_club_position_seasons'
 
 	column line_total_tackles
 		dataType: double
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: 2ae70f03-9b48-441f-a2c4-bbc606c4ea46
 		summarizeBy: sum
 		sourceColumn: line_total_tackles
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column line_total_interceptions
 		dataType: double

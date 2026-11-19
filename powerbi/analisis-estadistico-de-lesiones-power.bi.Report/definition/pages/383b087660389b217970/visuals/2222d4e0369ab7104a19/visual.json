@@ -1,0 +1,119 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "2222d4e0369ab7104a19",
+  "position": {
+    "x": 911.90476190476193,
+    "y": 597.61904761904759,
+    "z": 6001,
+    "height": 430.90909090909088,
+    "width": 794.5454545454545,
+    "tabOrder": 6001
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main dim_club"
+                    }
+                  },
+                  "Property": "club_name"
+                }
+              },
+              "queryRef": "main dim_club.club_name",
+              "nativeQueryRef": "club_name",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "main dim_club"
+                    }
+                  },
+                  "Property": "division_name"
+                }
+              },
+              "queryRef": "main dim_club.division_name",
+              "nativeQueryRef": "division_name"
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "main analytics_club_position_seasons"
+                        }
+                      },
+                      "Property": "line_avg_rating"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(main analytics_club_position_seasons.line_avg_rating)",
+              "nativeQueryRef": "Suma de line_avg_rating",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "main analytics_club_position_seasons"
+                        }
+                      },
+                      "Property": "club_avg_ppg"
+                    }
+                  },
+                  "Function": 1
+                }
+              },
+              "queryRef": "Sum(main analytics_club_position_seasons.club_avg_ppg)",
+              "nativeQueryRef": "Promedio de club_avg_ppg"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "categoryLabels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

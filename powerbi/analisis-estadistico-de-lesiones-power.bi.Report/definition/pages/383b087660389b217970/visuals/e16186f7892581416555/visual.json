@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "e16186f7892581416555",
   "position": {
-    "x": 150.90909090909091,
-    "y": 696.36363636363626,
+    "x": 226.1904761904762,
+    "y": 664.28571428571433,
     "z": 5000,
-    "height": 352.72727272727269,
-    "width": 643.63636363636363,
+    "height": 364.28571428571428,
+    "width": 642.85714285714289,
     "tabOrder": 5000
   },
   "visual": {
@@ -86,5 +86,95 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1f35e2f2882b99c36396",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_position_seasons"
+              }
+            },
+            "Property": "primary_category"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "m",
+              "Entity": "main analytics_club_position_seasons",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "m"
+                              }
+                            },
+                            "Property": "primary_category"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "'GOALKEEPER'"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "464188506e0ee0867521",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_position_seasons"
+              }
+            },
+            "Property": "% Aporte Línea (Goles)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
