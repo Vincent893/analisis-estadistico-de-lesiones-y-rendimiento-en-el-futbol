@@ -40,6 +40,24 @@ table 'main analytics_club_seasons'
 		formatString: 0
 		lineageTag: e4f8cd46-e58b-4213-823d-cfb21e68bdb4
 
+	measure 'Variación Jugadores Top' = ```
+			
+			VAR Actual = SUM('main analytics_club_seasons'[high_performance_players_count])
+			VAR Anterior = 
+			    CALCULATE(
+			        SUM('main analytics_club_seasons'[high_performance_players_count]),
+			        OFFSET(
+			            -1,
+			            ALLSELECTED('main analytics_club_seasons'[season_label]),
+			            ORDERBY('main analytics_club_seasons'[season_label], ASC)
+			        )
+			    )
+			RETURN
+			IF(ISBLANK(Anterior), Actual, Actual - Anterior)
+			```
+		formatString: 0
+		lineageTag: 25332d4e-605f-43ca-b317-1ccd96489535
+
 	column club_id
 		dataType: int64
 		formatString: 0
