@@ -17,7 +17,7 @@ query_seleccionado = st.selectbox(
         [
             "Query 1: Rotación de Planteles en las Ligas Principales",
             "Query 2: ¿La Masa Salarial Compra Resultados?", 
-            "Query 3",
+            "Query 3: Lesiones Recurrentes",
             "Query 4",
             "Query 5",
             "Query 6"
@@ -82,6 +82,39 @@ if query_seleccionado == "Query 2: ¿La Masa Salarial Compra Resultados?":
                 try: 
                     result = supabase.table("query_2").select("*").execute()
                     # query_2 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
+                    df = pd.DataFrame(result.data)
+                    st.success("Consulta ejecutada con éxito.")
+                    st.dataframe(df, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Error al ejecutar la consulta: {str(e)}")
+
+if query_seleccionado == "Query 3: Lesiones Recurrentes": 
+    st.subheader("**Lesiones Recurrentes**")
+
+    with st.expander("**Ver Pregunta**"):
+        st.text("""
+    Un jugador es recurrente si registra al menos tres lesiones en el período. Clasificá cada lesión como muscular (distensiones, espasmos y fatiga 
+    muscular), enfermedad o traumática (el resto).
+
+    Para cada jugador recurrente calculá el intervalo en días entre el fin de una lesión y el inicio de la siguiente, en orden cronológico. Algunas 
+    lesiones empiezan antes de que termine la anterior: no las descartes, contalas como solapamientos. Marcá al jugador con patrón de acortamiento si
+    cada intervalo es estrictamente menor que el anterior.
+
+    Para cada categoría principal mostrá el total de jugadores de la categoría, la cantidad de recurrentes y la tasa de recurrencia, la proporción de 
+    recurrentes con dos o más lesiones musculares, los días de baja promedio, el intervalo medio, la proporción con patrón de acortamiento, la cantidad 
+    de recurrentes con al menos un solapamiento y el jugador recurrente con más días de baja acumulados junto con ese total. Ordená por tasa de recurrencia descendente.
+        """)
+        
+    with st.expander("**Ver Query**"):
+        query = """
+        """
+        st.code(query, language="sql")
+
+        if st.button("Ejecutar Query"):
+            with st.spinner("Ejecutando consulta..."):
+                try: 
+                    result = supabase.table("query_3").select("*").execute()
+                    # query_3 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
                     df = pd.DataFrame(result.data)
                     st.success("Consulta ejecutada con éxito.")
                     st.dataframe(df, use_container_width=True)
