@@ -19,7 +19,7 @@ query_seleccionado = st.selectbox(
             "Query 2: ¿La Masa Salarial Compra Resultados?", 
             "Query 3: Lesiones Recurrentes",
             "Query 4: Cartera de las Agencias de Representación",
-            "Query 5",
+            "Query 5: Peso de los Jugadores Extranjeros en las Ligas Principales",
             "Query 6"
         ]
     )
@@ -217,6 +217,35 @@ agencias de mayor valor con su puesto y la cuota acumulada que representan sobre
                 try: 
                     result = supabase.table("query_4").select("*").execute()
                     # query_4 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
+                    df = pd.DataFrame(result.data)
+                    st.success("Consulta ejecutada con éxito.")
+                    st.dataframe(df, use_container_width=True)
+                except Exception as e:
+                    st.error(f"Error al ejecutar la consulta: {str(e)}")
+
+if query_seleccionado == "Query 5: Peso de los Jugadores Extranjeros en las Ligas Principales": 
+    st.subheader("**Peso de los Jugadores Extranjeros en las Ligas Principales**")
+
+    with st.expander("**Ver Pregunta**"):
+        st.text("""
+La base no indica a qué país pertenece cada división, así que debe inferirse de los datos: el país de una liga es la nacionalidad que acumula más minutos 
+en ella en la temporada más reciente. Un jugador es extranjero en una liga si su nacionalidad difiere del país de la liga.
+
+Trabajá con las 15 divisiones de mayor fuerza, incluidas las que empaten en el último puesto. Para cada una calculá la proporción de minutos jugados por 
+extranjeros en la primera y en la última temporada cronológica, la variación entre ambas y el puesto de la división en el ranking de crecimiento.
+
+Para la temporada más reciente agregá la nacionalidad extranjera con más minutos en la liga, su peso dentro de los minutos de extranjeros y qué proporción 
+de los minutos de extranjeros corresponde a jugadores extracomunitarios. """)
+    with st.expander("**Ver Query**"):
+        query = """
+        """
+        st.code(query, language="sql")
+
+        if st.button("Ejecutar Query"):
+            with st.spinner("Ejecutando consulta..."):
+                try: 
+                    result = supabase.table("query_5").select("*").execute()
+                    # query_5 es una vista en la database de Supabase creada con el mismo query mostrado en "query"
                     df = pd.DataFrame(result.data)
                     st.success("Consulta ejecutada con éxito.")
                     st.dataframe(df, use_container_width=True)
