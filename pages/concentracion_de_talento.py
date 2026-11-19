@@ -29,53 +29,45 @@ def calcular_hhi(valores):
     participaciones = [v / total * 100 for v in valores]
     return sum(p ** 2 for p in participaciones)
 
+POSICIONES_ES = {"GOALKEEPER": "Arquero", "DEFENDER": "Defensa", "MIDFIELDER": "Mediocampista", "ATTACKER": "Delantero"}
+
+# Una fila por jugador-temporada, con la división del club como "liga"
+SQL_JUGADOR_TEMPORADA = """
+SELECT COALESCE(d.division_name, 'Sin división') AS liga,
+       c.club_name          AS club,
+       s.season_label       AS season,
+       p.primary_category   AS position,
+       ps.mins              AS minutes_played,
+       psa.goals,
+       psa.assists,
+       ps.ability_score,
+       psa.xg_per_90        AS xg_90
+FROM player_seasons ps
+JOIN players p                 USING (player_id)
+JOIN clubs c                   USING (club_id)
+LEFT JOIN divisions d          USING (division_id)
+JOIN seasons s                 USING (season_id)
+JOIN player_stats_attacking psa USING (player_season_id)
+"""
+
 @st.cache_data
 def cargar_datos(_conn):
-    if _conn:
-        try:
-            df = _conn.execute("SELECT * FROM players").df()
-            required = {"club", "season", "position", "goals", "assists", "minutes_played", "ability_score"}
-            if required.issubset(set(df.columns)):
-                return df, False
-        except Exception:
-            pass
+    df = _conn.execute(SQL_JUGADOR_TEMPORADA).df()
+    df["position"] = df["position"].map(POSICIONES_ES).fillna(df["position"])
+    return df
 
-    rng = np.random.default_rng(42)
-    ligas = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Ligue 1"]
-    clubs_por_liga = {
-        "Premier League": ["Man City", "Arsenal", "Liverpool", "Chelsea", "Tottenham"],
-        "La Liga":        ["Real Madrid", "Barcelona", "Atlético", "Sevilla", "Villarreal"],
-        "Serie A":        ["Inter", "Milan", "Juventus", "Napoli", "Roma"],
-        "Bundesliga":     ["Bayern", "Dortmund", "Leipzig", "Leverkusen", "Frankfurt"],
-        "Ligue 1":        ["PSG", "Marseille", "Monaco", "Lyon", "Nice"],
-    }
-    posiciones = ["POR", "DFC", "LI", "LD", "MCD", "MC", "MCO", "EI", "ED", "DC"]
-    temporadas = ["2022-23", "2023-24", "2024-25", "2025-26"]
-    rows = []
-    for liga, clubs in clubs_por_liga.items():
-        for club in clubs:
-            for temp in temporadas:
-                n_jugadores = rng.integers(22, 30)
-                for _ in range(n_jugadores):
-                    pos = rng.choice(posiciones)
-                    mins = int(rng.integers(200, 2800))
-                    goals = int(rng.poisson(2.5 if pos in ["DC", "EI", "ED"] else 0.5))
-                    assists = int(rng.poisson(1.5 if pos in ["EI", "ED", "MC", "MCO"] else 0.3))
-                    ability = round(float(rng.normal(6.5, 1.2)), 2)
-                    ability = max(3.0, min(10.0, ability))
-                    xg90 = round(float(rng.exponential(0.25 if pos in ["DC", "EI", "ED"] else 0.07)), 3)
-                    rows.append({
-                        "liga": liga, "club": club, "season": temp,
-                        "position": pos, "minutes_played": mins,
-                        "goals": goals, "assists": assists,
-                        "ability_score": ability, "xg_90": xg90,
-                    })
-    return pd.DataFrame(rows), True
+if conn is None:
+    st.error("No se pudo conectar a la base de datos. Revisa las variables de entorno.")
+    st.stop()
 
-df_raw, es_simulado = cargar_datos(conn)
+try:
+    df_raw = cargar_datos(conn)
+except Exception as e:
+    st.error(f"Error al consultar los datos del Objetivo 2: {e}")
+    st.stop()
 
-umbral_col = "ability_score" if "ability_score" in df_raw.columns else df_raw.columns[-1]
-liga_col   = "liga"         if "liga"         in df_raw.columns else "club"
+umbral_col = "ability_score"
+liga_col   = "liga"
 
 df = df_raw.copy()
 df["elite"] = df.groupby([liga_col, "season"])[umbral_col].transform(
@@ -122,7 +114,7 @@ with k1:
     <div class="kpi-card">
         <div class="kpi-title">Clubes Analizados</div>
         <div class="kpi-value">{total_clubs}</div>
-        <div class="kpi-footer">{total_ligas} ligas / divisiones</div>
+        <div class="kpi-footer">{total_ligas} ligas</div>
     </div>""", unsafe_allow_html=True)
 with k2:
     st.markdown(f"""
@@ -148,37 +140,33 @@ with k4:
 
 st.divider()
 
-st.subheader("Gráfico 1: Distribución de Jugadores de Alto Rendimiento por Club y Temporada")
+st.subheader("Gráfico 1: Distribución de Jugadores de Alto Rendimiento por Liga, Club y Temporada")
+st.caption("Con «Todas»: jugadores élite por liga, usando un umbral común (P90 del Ability Score de cada temporada sobre todas las ligas); se muestran las 20 ligas con más élite. Con una liga seleccionada: jugadores élite por club, usando el P90 de esa liga y temporada.")
 
 ligas_disponibles = sorted(df[liga_col].unique())
 liga_sel = st.selectbox("Filtrar por liga:", ["Todas"] + ligas_disponibles, key="g1_liga")
 
-df_g1 = df[df["elite"] == True]
-if liga_sel != "Todas":
-    df_g1 = df_g1[df_g1[liga_col] == liga_sel]
-
-orden_clubes = (
-    df_g1.groupby("club")
-         .size()
-         .sort_values(ascending=False)
-         .index.tolist()
-)
-
-df_g1_agg = (
-    df_g1.groupby(["club", "season"])
-         .size()
-         .reset_index(name="jugadores_elite")
-)
+if liga_sel == "Todas":
+    eje_x, etiqueta_y, modo = liga_col, "Jugadores Élite (P90 global)", "stack"
+    df_glob = df[df[umbral_col] >= df.groupby("season")[umbral_col].transform(lambda x: x.quantile(0.90))]
+    df_g1_agg = df_glob.groupby([liga_col, "season"]).size().reset_index(name="jugadores_elite")
+    orden_x = df_glob.groupby(liga_col).size().nlargest(20).index.tolist()
+    df_g1_agg = df_g1_agg[df_g1_agg[liga_col].isin(orden_x)]
+else:
+    eje_x, etiqueta_y, modo = "club", "Jugadores Élite", "stack"
+    df_g1 = df[(df["elite"] == True) & (df[liga_col] == liga_sel)]
+    orden_x = df_g1.groupby("club").size().sort_values(ascending=False).index.tolist()
+    df_g1_agg = df_g1.groupby(["club", "season"]).size().reset_index(name="jugadores_elite")
 
 fig1 = px.bar(
     df_g1_agg,
-    x="club",
+    x=eje_x,
     y="jugadores_elite",
     color="season",
-    barmode="stack",
+    barmode=modo,
     text_auto=True,
-    category_orders={"club": orden_clubes},
-    labels={"jugadores_elite": "Jugadores Élite", "club": "Club", "season": "Temporada"},
+    category_orders={eje_x: orden_x},
+    labels={"jugadores_elite": etiqueta_y, "club": "Club", liga_col: "Liga", "season": "Temporada"},
     color_discrete_sequence=["#00E5FF", "#3B82F6", "#8B5CF6", "#EC4899"],
 )
 fig1.update_layout(height=430, xaxis_tickangle=-35)
@@ -189,21 +177,21 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
-        El análisis de la distribución de jugadores de élite (P90) revela una marcada concentración estructural en la cúspide de la liga. Un grupo reducido de seis clubes (Napoli, Nice, Villarreal, Arsenal, Frankfurt y Real Madrid) acumula sistemáticamente el mayor volumen de talento diferencial, superando en todos los casos los 10 jugadores de élite en al menos una temporada.
+        Al aplicar un umbral común a todas las competiciones (percentil 90 del Ability Score de cada temporada), los 10.866 registros de élite se distribuyen de forma muy desigual entre ligas: solo 115 de las 300 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English Premier Division con 1.024, Spanish First Division con 881, Italian Serie A con 813, Sky Bet Championship con 809 y Bundesliga con 768) reúnen el 39,5 % del total; las diez primeras, el 64,2 %, y las veinte primeras, el 81,9 %.
     </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
-        Destaca el caso del Napoli, que lidera la tabla con 19 jugadores de élite en el acumulado de las cuatro temporadas (8 en 2022-23, 3 en 2023-24, 4 en 2024-25 y 4 en 2025-26), seguido por el Nice (16 en total) y el Villarreal (15). Estos clubes no solo tienen volúmenes altos, sino que mantienen una presencia constante a lo largo del ciclo, lo que sugiere una ventaja competitiva sostenida en la retención y desarrollo de talento.
+        La concentración también se observa en términos relativos: en la English Premier Division el 80,6 % de los registros jugador-temporada supera el umbral global, y en la Serie A, la Bundesliga, la Spanish First Division y la Ligue 1 la proporción se sitúa entre el 64 % y el 66 %. Destaca la Sky Bet Championship (segunda división inglesa), que en volumen absoluto supera a la Bundesliga, aunque con una proporción menor (44,8 %) por su mayor número de jugadores registrados.
     </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
-        En el extremo opuesto, la mayoría de los clubes de la liga (PSG, Atlético, Bayern, Juventus, Mónaco, Sevilla) presentan barras bajas y altamente volátiles: en varios casos no superan los 3 jugadores de élite por temporada y muestran ausencias o caídas drásticas de un año a otro. Por ejemplo, el Bayern pasa de 4 jugadores en 2022-23 a solo 2 en 2024-25 y 2025-26; el Juventus no supera los 2 en ninguna temporada.
+        En la evolución por temporada, las barras de 2025/26 prácticamente duplican a las de años anteriores en las ligas principales (por ejemplo, la English Premier Division pasa de 182, 216 y 245 élite a 381). Este salto coincide con un umbral P90 más bajo en 2025/26 (570,3 puntos frente a 604–609 en las temporadas previas) y con que es la única temporada no marcada como fabricada en la base de datos, por lo que debe leerse como un efecto del registro y no como un aumento real del talento.
     </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        Esto confirma que el talento P90 no está distribuido de manera uniforme: la élite del rendimiento se concentra en un núcleo selecto de clubes, mientras que el resto depende de apariciones puntuales. La implicación competitiva es clara: los clubes con mayor acumulación de talento de élite tienen una ventaja estructural sostenida, mientras que los demás compiten en un escenario de alta volatilidad en la disponibilidad de jugadores determinantes.
+        Al seleccionar una liga concreta, el umbral se calcula dentro de esa competición y el gráfico describe el reparto entre sus clubes. En la English Premier Division, por ejemplo, los tres clubes con más registros élite (Newcastle con 26, Crystal Palace con 20 y Wolves y Man UFC con 18) reúnen apenas el 22,5 % de los élite de la liga, lo que describe un reparto interno relativamente amplio.
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Concentración:</b> Un grupo reducido de clubes acumula más del 50% de los jugadores de élite de la liga, lo que sugiere una distribución desigual del talento de alto rendimiento.</li>
-        <li><b>Consistencia:</b> Los clubes con bloques homogéneos temporada tras temporada demuestran estabilidad deportiva y retención de talento, mientras que las apariciones aisladas reflejan plantillas coyunturales o fugas de figuras.</li>
+        <li><b>Concentración entre ligas:</b> El talento de élite se concentra en un grupo reducido de competiciones, principalmente las cinco grandes ligas europeas y la segunda división inglesa, mientras que 185 de las 300 ligas no registran ningún jugador élite.</li>
+        <li><b>Concentración entre clubes:</b> A nivel global, 1.016 de los 2.227 clubes (45,6 %) tienen al menos un registro élite y el coeficiente de Gini del número de élite por club es 0,81. Dentro de una misma liga de primer nivel, en cambio, el talento se reparte entre un número mayor de clubes.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -215,7 +203,7 @@ st.caption("Curva de Lorenz con diagonal de igualdad perfecta · X = % acumulado
 
 liga_lorenz = st.multiselect(
     "Selecciona ligas:", ligas_disponibles,
-    default=ligas_disponibles[:3], key="g2_ligas"
+    default=df[liga_col].value_counts().index[:3].tolist(), key="g2_ligas"
 )
 
 fig2 = go.Figure()
@@ -257,15 +245,18 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
-        El análisis de la Curva de Lorenz evidencia una pronunciada desviación de las trayectorias de todas las ligas respecto a la diagonal de equidistribución (igualdad perfecta). Al evaluar la distribución individual del rendimiento ofensivo (goles + asistencias), los coeficientes de Gini descriptivos superan en todas las divisiones el umbral de 0.40 (registrando valores entre 0.50 y 0.53).
+        Las Curvas de Lorenz se alejan de forma pronunciada de la diagonal de igualdad perfecta en todas las ligas. Para el conjunto de la muestra, el coeficiente de Gini de goles + asistencias es 0,618; el promedio de los Gini calculados liga por liga es 0,563, y en las ligas con mayor número de registros los valores oscilan entre 0,578 (English Premier Division) y 0,673 (Brazilian National Lower Division).
+    </p>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        La curvatura se explica en buena parte por la elevada proporción de registros sin aporte ofensivo: el 26,5 % de los jugadores-temporada no registra goles ni asistencias (entre el 19,5 % y el 35,1 % según la liga). Como resultado, el 50 % de los jugadores con menor aporte genera solo el 7,7 % de la producción ofensiva total, mientras que el 20 % superior concentra el 62,2 % y el 10 % superior, el 40,5 %.
     </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        Esta curvatura acentuada hacia el eje horizontal confirma que el 50% de los futbolistas con menor aportación genera menos del 15% del total de goles y asistencias del campeonato, mientras que el 20% superior de los jugadores concentra más de la mitad de toda la producción ofensiva.
+        Esta desigualdad es prácticamente constante en el tiempo: el Gini global por temporada se mantiene entre 0,615 y 0,619 a lo largo del ciclo 2022–2026.
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Concentración:</b> Valores descriptivos de Gini superiores a 0.40 y la marcada curvatura de las Curvas de Lorenz respecto a la diagonal de igualdad confirman que el volumen de goles y asistencias está fuertemente centralizado en un grupo selecto de futbolistas.</li>
-        <li><b>Equidistribución:</b> La distancia entre la curva observada y la diagonal de 45° refleja la magnitud de la asimetría en la generación del gol, demostrando que la producción ofensiva no se distribuye de manera uniforme dentro de las plantillas.</li>
+        <li><b>Concentración:</b> Con coeficientes de Gini cercanos a 0,6, la producción ofensiva está fuertemente centralizada en una minoría de futbolistas: uno de cada cinco jugadores genera más de seis de cada diez goles + asistencias.</li>
+        <li><b>Comparación entre ligas:</b> Las diferencias entre ligas son moderadas (Gini entre 0,58 y 0,67 en las ligas de mayor tamaño) y no siguen un patrón claro según el nivel competitivo; la desigualdad en el aporte ofensivo es un rasgo común a todas las competiciones.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -273,7 +264,7 @@ st.markdown("""
 st.divider()
 
 st.subheader("Gráfico 3: Relación entre Minutos Jugados y Rendimiento Ofensivo")
-st.caption("Cada punto representa un jugador. Las estrellas indican el umbral de élite (P90)")
+st.caption("Cada punto representa un jugador en una temporada (muestra aleatoria de hasta 800 registros). Las estrellas indican jugadores élite (P90 del Ability Score de su liga y temporada).")
 
 col_g3a, col_g3b = st.columns([2, 1])
 with col_g3a:
@@ -319,13 +310,19 @@ st.plotly_chart(fig3, width="stretch")
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        La nube de puntos describe una relación positiva y moderada entre los minutos jugados y la producción ofensiva (correlación de Spearman de 0,53; Pearson de 0,49). El aporte medio crece con la exposición: 0,85 goles + asistencias con 500 minutos o menos, 3,36 entre 1.001 y 1.500 minutos y 7,09 entre 2.501 y 3.000 minutos. Por encima de los 3.000 minutos el crecimiento se estanca (media de 7,51 y mediana de 5), ya que en ese tramo aumenta el peso de defensas y arqueros, con mucha continuidad pero poco aporte ofensivo (59,3 % de los registros, frente al 48,5 % en el total de la muestra). La densa nube de la zona inferior izquierda corresponde a futbolistas de rotación: el 23 % de los registros no supera los 500 minutos.
+    </p>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        Los jugadores élite (estrellas) juegan más y producen más que el resto: su mediana es de 1.978 minutos frente a 1.299, y de 4 goles + asistencias frente a 2. También son más eficientes, con una mediana de 0,26 goles + asistencias por cada 90 minutos frente a 0,15. Sin embargo, la élite se define por el Ability Score, que está muy débilmente asociado a la producción ofensiva (Spearman de 0,10): el 14,3 % de los élite no registra goles ni asistencias, porque la categoría incluye defensas y arqueros, y el 25,7 % disputa menos de 800 minutos.
+    </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        El análisis de dispersión evidencia que la élite ofensiva (identificada con estrellas) se concentra mayoritariamente en el cuadrante de alta exposición y alta producción (más de 1.000 minutos y entre 4 y 10 goles+asistencias). Esto confirma que, en términos generales, el volumen de minutos es un predictor sólido del rendimiento ofensivo para los jugadores de élite. Sin embargo, el gráfico también revela la existencia de valores atípicos de alta eficiencia: jugadores situados en la zona superior izquierda (por debajo de los 800 minutos) que logran una producción ofensiva destacada (4-5 goles) con un rodaje reducido. Asimismo, se observa una densa nube de jugadores en la zona inferior izquierda (baja exposición, baja producción), lo que refleja la realidad de los futbolistas de rotación o suplentes.
+        Se identifican además valores atípicos de alta eficiencia en la zona superior izquierda: 1.523 registros (1,4 % del total) alcanzan 5 o más goles + asistencias con menos de 800 minutos jugados.
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Concentración:</b> La producción ofensiva de élite no está exclusivamente ligada a la acumulación masiva de minutos; aunque la mayoría de los jugadores destacados superan los 1.000 minutos, existen perfiles de alta eficiencia (outliers) capaces de generar un retorno ofensivo desproporcionado en períodos reducidos de rodaje.</li>
-        <li><b>Consistencia:</b> Los jugadores de élite (estrellas) mantienen una relación positiva y estable entre minutos y producción a lo largo de las temporadas analizadas, mientras que los jugadores con menos minutos muestran una alta volatilidad en su aportación ofensiva, dependiendo de apariciones puntuales o contextos específicos de partido.</li>
+        <li><b>Exposición y producción:</b> El volumen de minutos está asociado de forma moderada con el aporte ofensivo, aunque con rendimientos decrecientes a partir de los 3.000 minutos; no es el único factor que lo explica.</li>
+        <li><b>Élite y aporte ofensivo:</b> Ser élite según el Ability Score implica más minutos y mayor producción por partido, pero no garantiza aporte ofensivo, ya que el puntaje refleja una habilidad general que incluye funciones defensivas.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -333,22 +330,12 @@ st.markdown("""
 st.divider()
 
 st.subheader("Gráfico 4: Volatilidad del Rendimiento por Posición")
-st.caption("El Coeficiente de Variación (CV) mide la dispersión del rendimiento de cada demarcación a lo largo de las cuatro temporadas. Un CV más alto indica mayor dispersión de los datos.")
+st.caption("El Coeficiente de Variación (CV = desviación estándar / media) mide la dispersión relativa de goles + asistencias entre los jugadores de cada línea posicional, considerando las cuatro temporadas. Un CV más alto indica mayor dispersión.")
 
-datos_cv_pos = [
-    {"position": "POR", "nombre": "Portero", "cv": 0.082, "estabilidad": "Alta Homogeneidad"},
-    {"position": "DFC", "nombre": "Defensa Central", "cv": 0.095, "estabilidad": "Alta Homogeneidad"},
-    {"position": "MCD", "nombre": "Mediocentro Defensivo", "cv": 0.114, "estabilidad": "Alta Homogeneidad"},
-    {"position": "LI",  "nombre": "Lateral Izquierdo", "cv": 0.138, "estabilidad": "Homogéneo"},
-    {"position": "LD",  "nombre": "Lateral Derecho", "cv": 0.145, "estabilidad": "Homogéneo"},
-    {"position": "MC",  "nombre": "Mediocentro", "cv": 0.168, "estabilidad": "Moderado"},
-    {"position": "MCO", "nombre": "Mediapunta", "cv": 0.245, "estabilidad": "Heterogéneo"},
-    {"position": "ED",  "nombre": "Extremo Derecho", "cv": 0.312, "estabilidad": "Alta Dispersión"},
-    {"position": "EI",  "nombre": "Extremo Izquierdo", "cv": 0.328, "estabilidad": "Alta Dispersión"},
-    {"position": "DC",  "nombre": "Delantero Centro", "cv": 0.385, "estabilidad": "Máxima Dispersión"},
-]
-
-df_cv = pd.DataFrame(datos_cv_pos).sort_values("cv", ascending=True)
+# CV = desviación estándar / media de goles + asistencias por línea posicional
+df_cv = df.groupby("position")["goles_asistencias"].agg(["std", "mean", "count"]).reset_index()
+df_cv["cv"] = df_cv["std"] / df_cv["mean"]
+df_cv = df_cv.sort_values("cv", ascending=True)
 
 fig4 = px.bar(
     df_cv,
@@ -357,7 +344,6 @@ fig4 = px.bar(
     orientation="h",
     text=df_cv["cv"].apply(lambda v: f"{v:.3f} ({v*100:.1f}%)"),
     color="cv",
-    color_continuous_scale=[[0.0, "#0284C7"], [0.45, "#0EA5E9"], [1.0, "#F59E0B"]],
     labels={"cv": "Coeficiente de Variación (CV)", "position": "Posición / Demarcación"},
 )
 fig4.update_layout(
@@ -373,20 +359,27 @@ st.plotly_chart(fig4, width="stretch")
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        Entre las líneas de campo, los delanteros presentan la menor dispersión relativa (CV de 0,88), seguidos por los mediocampistas (1,00) y los defensas (1,27). Aunque los delanteros tienen la mayor desviación estándar en términos absolutos (7,24), también tienen la media más alta (8,21 goles + asistencias), y solo el 7,1 % de ellos no registra aporte ofensivo. En los defensas, la media es baja (2,27) y el 31,1 % no registra goles ni asistencias, lo que eleva su dispersión relativa: unos pocos defensas con aporte ofensivo se alejan mucho de una mayoría con aporte nulo o mínimo.
+    </p>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        El CV de los arqueros (29,27) no es interpretable en la práctica: su media es de 0,003 goles + asistencias y el 99,8 % no registra aporte ofensivo, de modo que cualquier caso aislado dispara el cociente.
+    </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        El análisis del Coeficiente de Variación (CV) inter-temporada evidencia claras diferencias de estabilidad según la demarcación táctica. Las posiciones defensivas y de mediocampo central (POR, DFC, MCD, LI, LD, MC) presentan los coeficientes de variación más bajos (barras cortas, CV &lt; 0.17), lo que describe una notable homogeneidad y consistencia en sus registros a lo largo de los cuatro años analizados. En contraste, las posiciones de ataque exterior y delanteros (MCO, ED, EI, DC) registran los CV más altos (barras extensas, CV entre 0.24 y 0.38), describiendo una mayor dispersión y heterogeneidad interanual en sus registros derivada de la dependencia de rachas anotadoras y variabilidad táctica.
+        Al calcular el CV por separado en cada temporada, los valores son casi idénticos (delanteros entre 0,87 y 0,89; mediocampistas entre 0,99 y 1,01; defensas entre 1,26 y 1,27), y la media de cada línea varía menos de un 1 % entre temporadas. La estructura de dispersión por línea es, por tanto, estable a lo largo del ciclo.
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Homogeneidad (CV Bajo):</b> Las demarcaciones de retaguardia y contención mantienen registros consistentes temporada tras temporada, reflejando funciones estructuradas de menor dispersión relativa.</li>
-        <li><b>Heterogeneidad (CV Alto):</b> Las posiciones ofensivas y de banda experimentan fluctuaciones inter-temporada significativas, lo que exige a los clubes gestionar la volatilidad inherente al rendimiento de sus atacantes.</li>
+        <li><b>Homogeneidad relativa (CV bajo):</b> Los delanteros, cuya función principal es la producción ofensiva, muestran el aporte más homogéneo en relación con su media.</li>
+        <li><b>Heterogeneidad relativa (CV alto):</b> En defensas, y sobre todo en arqueros, el aporte ofensivo es ocasional, por lo que su dispersión relativa es mayor. Un CV alto refleja aquí diferencias entre jugadores dentro de la línea, no inestabilidad entre temporadas.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
 
 st.markdown("<p style='color:#94A3B8; font-weight:600; margin-bottom:8px;'>Tabla Descriptiva de Dispersión Relativa (CV por Posición)</p>", unsafe_allow_html=True)
-tabla_cv_resumen = df_cv[["position", "nombre", "cv", "estabilidad"]].copy()
-tabla_cv_resumen.columns = ["Posición", "Demarcación", "Coeficiente de Variación (CV)", "Estabilidad Competitiva"]
+tabla_cv_resumen = df_cv[["position", "count", "mean", "std", "cv"]].copy()
+tabla_cv_resumen.columns = ["Línea", "N", "Media G+A", "Desv. estándar", "Coeficiente de Variación (CV)"]
+tabla_cv_resumen[["Media G+A", "Desv. estándar"]] = tabla_cv_resumen[["Media G+A", "Desv. estándar"]].round(3)
 tabla_cv_resumen["Coeficiente de Variación (CV)"] = tabla_cv_resumen["Coeficiente de Variación (CV)"].apply(lambda x: f"{x:.3f} ({x*100:.1f}%)")
 st.dataframe(tabla_cv_resumen, width="stretch", hide_index=True)
 
@@ -398,6 +391,9 @@ st.caption("Porcentaje del rendimiento ofensivo del club generado por su 20% má
 liga_hm = st.selectbox("Liga para el mapa de calor:", ligas_disponibles, key="g5_liga")
 
 df_hm = df[df[liga_col] == liga_hm].copy()
+# shortcut: solo los 20 clubes con más G+A (hay divisiones con 189 clubes), subir si se necesita la división completa
+top_clubes_hm = df_hm.groupby("club")["goles_asistencias"].sum().nlargest(20).index
+df_hm = df_hm[df_hm["club"].isin(top_clubes_hm)]
 pct_top20_rows = []
 for (club_h, season_h), grp in df_hm.groupby(["club", "season"]):
     total_ren = grp["goles_asistencias"].sum()
@@ -416,6 +412,9 @@ textos_heatmap = []
 for row in pivot_hm.values:
     fila_t = []
     for v in row:
+        if pd.isna(v):  
+            fila_t.append("")
+            continue
         color_texto = "#FFFFFF" if v >= 62.0 else "#082F49"
         fila_t.append(f"<b style='color:{color_texto}; font-size:13px;'>{v:.1f}%</b>")
     textos_heatmap.append(fila_t)
@@ -450,13 +449,19 @@ st.plotly_chart(fig5, width="stretch")
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        En el conjunto de las 11.053 combinaciones club-temporada, el 20 % más productivo de cada plantilla genera en promedio el 68,2 % de sus goles + asistencias (mediana del 66,7 %). En el 54,0 % de los casos esa cuota supera el 65 %, y solo en el 10,3 % queda por debajo del 50 %. El promedio es estable entre temporadas (entre el 67,9 % y el 68,7 %).
+    </p>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
+        Hay diferencias entre ligas: en la English Premier Division la dependencia media es del 57,5 %, frente al 65,2 % de la Spanish First Division y el 65,6 % de la 3. Liga, lo que describe una producción ofensiva algo más repartida en los clubes de la liga inglesa.
+    </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        El mapa de calor revela diferencias significativas en la dependencia del rendimiento ofensivo entre los clubes analizados. Se identifican varios clubes con índices de concentración superiores al 65% en su top 20% de la plantilla más productiva, lo que describe una alta dependencia de un grupo reducido de jugadores para generar goles y asistencias. En el extremo opuesto, otros clubes presentan porcentajes inferiores al 50%, reflejando una distribución más equitativa de la producción ofensiva entre su plantilla. Se observa también una variación inter-temporada: algunos clubes mantienen niveles de concentración estables a lo largo de las cuatro temporadas, mientras que otros muestran fluctuaciones significativas en su dependencia ofensiva de un año a otro.
+        Estos valores deben leerse con cautela, porque la base de datos no contiene plantillas completas: la mediana es de 10 jugadores registrados por club y temporada, y el 25,8 % de los casos tiene 5 o menos. Además, en el 35,4 % de los casos los empates en el percentil 80 hacen que el «top 20 %» incluya a más del 30 % de la plantilla. Las celdas con 100 % corresponden sobre todo a plantillas muy pequeñas (mediana de 3 jugadores registrados) o con un único jugador con aporte (61,1 % de esos casos), y las celdas con 0 % a clubes sin goles ni asistencias registrados en esa temporada (2,7 % de los casos).
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Concentración:</b> Los clubes con índices superiores al 65% en su Top 20% presentan una alta concentración de su rendimiento ofensivo en un grupo muy reducido de jugadores. Esto describe una mayor dependencia de esos perfiles para la producción de goles y asistencias.</li>
-        <li><b>Distribución:</b> Los clubes con índices inferiores al 50% muestran una distribución más equilibrada de su rendimiento ofensivo, con una menor dependencia de un grupo reducido de futbolistas y una mayor participación del resto de la plantilla en la producción ofensiva.</li>
+        <li><b>Dependencia:</b> En la mayoría de los clubes, la producción ofensiva depende de un grupo reducido de jugadores: más de la mitad de los casos supera el 65 % de concentración en su quintil más productivo.</li>
+        <li><b>Distribución:</b> Los clubes con cuotas inferiores al 50 % son minoría (10,3 %) y describen un aporte ofensivo más repartido entre la plantilla.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -468,16 +473,16 @@ st.subheader("Conclusiones del Análisis")
 st.markdown("""
 <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        El ciclo 2022–2026 revela una marcada desigualdad en la distribución del talento y el rendimiento dentro de la liga. La concentración de jugadores de élite (aquellos que superan el percentil 90 de rendimiento) no es homogénea: un grupo reducido de clubes (Napoli, Nice, Villarreal, Arsenal, Frankfurt y Real Madrid) acumula sistemáticamente más del 50% de estos perfiles a lo largo de las cuatro temporadas analizadas. Esta distribución desigual se refleja también en el rendimiento ofensivo, donde las Curvas de Lorenz muestran una desviación significativa respecto a la diagonal de equidistribución, confirmando que el volumen de goles y asistencias está centralizado en un grupo selecto de instituciones.
+        El análisis de las 108.639 observaciones jugador-temporada, que abarcan 2.227 clubes y 300 ligas, describe una distribución marcadamente desigual del talento de alto rendimiento. Con un umbral común para todas las competiciones, solo 115 ligas tienen jugadores élite, y las cinco con mayor volumen (English Premier Division, Spanish First Division, Italian Serie A, Sky Bet Championship y Bundesliga) reúnen el 39,5 % del total, mientras que las veinte primeras alcanzan el 81,9 %. Entre clubes, menos de la mitad (45,6 %) cuenta con algún jugador élite. Dentro de una misma liga de primer nivel, en cambio, el talento se reparte entre más clubes: en la English Premier Division los tres clubes con más élite reúnen solo el 22,5 %.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        Sin embargo, la relación entre minutos jugados y producción ofensiva demuestra que la élite no depende exclusivamente de la acumulación masiva de minutos. Si bien la mayoría de los jugadores destacados se concentran en la zona de alta exposición (más de 1.000 minutos) y alta producción, se identifican valores atípicos de alta eficiencia: futbolistas con menos de 800 minutos que logran una producción ofensiva destacada, lo que indica que el volumen de minutos no es el único factor asociado al rendimiento ofensivo.
+        La producción ofensiva también está muy concentrada en pocos jugadores. El coeficiente de Gini de goles + asistencias es 0,618 para el conjunto de la muestra y se mantiene entre 0,615 y 0,619 en todas las temporadas: el 20 % más productivo genera el 62,2 % del aporte ofensivo y el 50 % menos productivo, solo el 7,7 %. Esa misma concentración aparece dentro de cada club, donde el quintil más productivo de la plantilla aporta en promedio el 68,2 % de los goles y asistencias.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        En cuanto a la estabilidad del rendimiento por demarcación, el Coeficiente de Variación (CV) inter-temporada muestra diferencias claras. Las posiciones defensivas y de mediocampo central presentan los CV más bajos, lo que indica una mayor homogeneidad en sus registros a lo largo de los años. En contraste, las posiciones de ataque exterior y delanteros registran los CV más altos, describiendo una mayor dispersión y heterogeneidad en sus datos temporada tras temporada.
+        La exposición en minutos se asocia de forma moderada con el aporte ofensivo (Spearman de 0,53), con rendimientos decrecientes por encima de los 3.000 minutos. Los jugadores élite juegan más y producen más por partido que el resto, pero el Ability Score que los define está muy débilmente relacionado con la producción ofensiva (Spearman de 0,10), por lo que la élite incluye perfiles defensivos sin aporte goleador.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.02rem;">
-        Finalmente, el mapa de calor de dependencia del Top 20% de la plantilla revela que varios clubes presentan índices de concentración superiores al 65%, lo que describe una alta dependencia de un grupo muy reducido de futbolistas para generar goles y asistencias. En el extremo opuesto, otros clubes muestran porcentajes inferiores al 50%, reflejando una distribución más equilibrada de su producción ofensiva. En conjunto, estos resultados describen una liga donde el talento de élite y el rendimiento ofensivo están concentrados en un núcleo reducido de clubes y jugadores, mientras que la consistencia del rendimiento varía significativamente según la demarcación y el nivel de dependencia de cada plantilla.
+        En cuanto a la consistencia por línea, los delanteros presentan el aporte ofensivo más homogéneo en relación con su media (CV de 0,88), seguidos por mediocampistas (1,00) y defensas (1,27), mientras que en los arqueros el aporte ofensivo es prácticamente nulo. Estas estructuras se mantienen casi idénticas a lo largo de las cuatro temporadas. En conjunto, el ciclo 2022–2026 describe un talento de élite concentrado en pocas ligas y una producción ofensiva dependiente de una minoría de jugadores, con patrones muy estables en el tiempo.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -489,7 +494,7 @@ st.subheader("Nota Metodológica")
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid rgba(255, 255, 255, 0.25); padding: 20px 25px; margin-top: 15px;">
     <p style="color: #94A3B8; line-height: 1.7; margin-bottom: 0; font-size: 0.98rem;">
-        El análisis se abordó desde una perspectiva estrictamente descriptiva. Se definió como jugador de élite a aquellos que superan el percentil 90 (P90) de rendimiento. Se utilizaron medidas de tendencia central, dispersión (Coeficiente de Variación), análisis de concentración (Curvas de Lorenz e índices de Gini) y mapas de calor para describir la distribución del talento y el rendimiento.
+        El análisis se abordó desde una perspectiva estrictamente descriptiva, sobre 108.639 registros jugador-temporada de las temporadas 2022/23 a 2025/26, tomando como «liga» la división del club. Se definió como jugador élite a quien alcanza o supera el percentil 90 (P90) del Ability Score: dentro de su liga y temporada para los indicadores, el detalle por club y la dispersión, y sobre todas las ligas de cada temporada para la comparación entre ligas del Gráfico 1. El rendimiento ofensivo se midió como la suma de goles y asistencias. Se utilizaron medidas de tendencia central, de dispersión (Coeficiente de Variación) y de concentración (Curvas de Lorenz, coeficiente de Gini e índice HHI), además de mapas de calor. Por legibilidad, el Gráfico 1 muestra las 20 ligas con más élite y el Gráfico 5, los 20 clubes con mayor aporte de la liga seleccionada. En la base de datos, las temporadas 2022/23 a 2024/25 están marcadas como fabricadas; solo 2025/26 corresponde a registros originales.
     </p>
 </div>
 """, unsafe_allow_html=True)

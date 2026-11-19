@@ -112,7 +112,7 @@ def renderizar_panel_seleccion_jugadores(formacion_tactica, lista_arqueros, list
             delanteros_seleccionados = [del_c]
 
         st.markdown("<br>", unsafe_allow_html=True)
-        boton_aplicar = st.form_submit_button(label="⚡ Aplicar Alineación", use_container_width=True)
+        boton_aplicar = st.form_submit_button(label="⚡ Aplicar Alineación", width="stretch")
 
     jugadores_seleccionados = [arquero, def_1, def_2, lat_izq, lat_der] + mediocampistas_seleccionados + delanteros_seleccionados
     return jugadores_seleccionados, boton_aplicar

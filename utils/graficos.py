@@ -28,7 +28,7 @@ def registrar_tema():
         layout=go.Layout(
             # Paleta: Plotly toma el color de cada categoría aquí por orden
             colorway=PALETA_APP,
-            # Fondos transparentes para integrarse al fondo de la app
+            colorscale=dict(sequential=["#3B82F6", "#00A8CC", "#00E5FF"]),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
             # Tipografía general
@@ -40,7 +40,6 @@ def registrar_tema():
                 bordercolor="rgba(0, 229, 255, 0.2)",
                 borderwidth=1,
             ),
-            # Estilos de ejes (también aplica a eje secundario via bootstrap)
             xaxis=dict(
                 gridcolor=COLOR_GRID,
                 linecolor=COLOR_LINEA_EJE,
@@ -53,11 +52,16 @@ def registrar_tema():
                 tickfont=dict(color=COLOR_TEXTO_SUAVE),
                 title_font=dict(color="#E2E8F0"),
             ),
+            # Gráficos de radar (coordenadas polares)
+            polar=dict(
+                bgcolor="rgba(0,0,0,0)",
+                radialaxis=dict(gridcolor=COLOR_GRID, linecolor=COLOR_LINEA_EJE, tickfont=dict(color=COLOR_TEXTO_SUAVE)),
+                angularaxis=dict(gridcolor=COLOR_GRID, linecolor=COLOR_LINEA_EJE, tickfont=dict(color="#E2E8F0")),
+            ),
             margin=dict(l=20, r=20, t=50, b=20),
         )
     )
     # Confirmamos que px y todas las figuras nuevas usen el template,
-    # ANTES de que se creen las figuras (por eso es a nivel de módulo).
     px.defaults.template = NOMBRE_TEMA
     pio.templates.default = NOMBRE_TEMA
 

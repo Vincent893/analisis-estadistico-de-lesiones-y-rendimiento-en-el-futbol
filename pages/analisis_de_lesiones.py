@@ -26,7 +26,7 @@ def mostrar(fig, alto=360):
     res = apply_theme(fig)
     fig = res if res is not None else fig
     fig.update_layout(height=alto, legend_title_text="")
-    st.plotly_chart(fig, use_container_width=True, config={"staticPlot": True})
+    st.plotly_chart(fig, width="stretch", config={"staticPlot": True})
 
 
 # El categorizador de tiempo en la sidebar
@@ -732,11 +732,11 @@ st.markdown("---")
 col_t1, col_t2 = st.columns(2)
 with col_t1:
     st.markdown(f"**{club_a}** ({season_a}) — Registros: {len(df_a)}")
-    st.dataframe(df_a[["Jugador", "Lesión", "Días de baja"]], hide_index=True, use_container_width=True)
+    st.dataframe(df_a[["Jugador", "Lesión", "Días de baja"]], hide_index=True, width="stretch")
 
 with col_t2:
     st.markdown(f"**{club_b}** ({season_b}) — Registros: {len(df_b)}")
-    st.dataframe(df_b[["Jugador", "Lesión", "Días de baja"]], hide_index=True, use_container_width=True)
+    st.dataframe(df_b[["Jugador", "Lesión", "Días de baja"]], hide_index=True, width="stretch")
 
 st.divider()
 
