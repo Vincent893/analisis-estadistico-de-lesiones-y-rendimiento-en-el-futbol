@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "132099d21767d4c67339",
   "position": {
     "x": 1335.2941176470588,
@@ -32,7 +32,8 @@
                 }
               },
               "queryRef": "Sum(main analytics_club_position_seasons.players_in_position_count)",
-              "nativeQueryRef": "Suma de Total de Jugadores"
+              "nativeQueryRef": "Total de Jugadores",
+              "displayName": "Total de Jugadores"
             }
           ]
         }

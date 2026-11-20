@@ -2606,7 +2606,7 @@ cultureInfo es-ES
 			        }
 			      ]
 			    },
-			    "main_analytics_club_position_season.player_in_position_count": {
+			    "main_analytics_club_position_season.total_de_jugadore": {
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "main analytics_club_position_seasons",
@@ -2616,127 +2616,28 @@ cultureInfo es-ES
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "player in position count": {
+			          "total de jugadore": {
 			            "State": "Generated"
 			          }
 			        },
 			        {
-			          "players_in_position_count": {
-			            "Type": "Noun",
-			            "State": "Generated",
-			            "Weight": 0.99
-			          }
-			        },
-			        {
-			          "position count": {
-			            "State": "Generated",
-			            "Weight": 0.97
-			          }
-			        },
-			        {
-			          "in position count": {
-			            "State": "Generated",
-			            "Weight": 0.97
-			          }
-			        },
-			        {
-			          "in position amount": {
+			          "aggregate de jugadore": {
 			            "Type": "Noun",
 			            "State": "Suggested",
 			            "Source": {
 			              "Agent": "Thesaurus"
 			            },
-			            "Weight": 0.739
+			            "Weight": 0.591
 			          }
 			        },
 			        {
-			          "position amount": {
+			          "overall de jugadore": {
 			            "Type": "Noun",
 			            "State": "Suggested",
 			            "Source": {
 			              "Agent": "Thesaurus"
 			            },
-			            "Weight": 0.727
-			          }
-			        },
-			        {
-			          "player in position amount": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.599
-			          }
-			        },
-			        {
-			          "actor in position count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.514
-			          }
-			        },
-			        {
-			          "performer in position count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.514
-			          }
-			        },
-			        {
-			          "entertainer in position count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.514
-			          }
-			        },
-			        {
-			          "trouper in position count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.514
-			          }
-			        },
-			        {
-			          "in location count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.508
-			          }
-			        },
-			        {
-			          "in situation count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.508
-			          }
-			        },
-			        {
-			          "thespian in position count": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.499
+			            "Weight": 0.591
 			          }
 			        }
 			      ]
@@ -6558,16 +6459,6 @@ cultureInfo es-ES
 			            },
 			            "Weight": 0.599
 			          }
-			        },
-			        {
-			          "Concentración Jugadores Top": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -6863,6 +6754,623 @@ cultureInfo es-ES
 			          }
 			        }
 			      ]
+			    },
+			    "main_analytics_club_season.variación_jugadores_top": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Variación Jugadores Top"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "variación jugadores top": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "variación jugadore best": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "variación jugadore first": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "variación jugadore leading": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "variación jugadore maximum": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "variación jugadore peak": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "variación jugadore upper": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season.elite_total": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Elite Total"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "elite total": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "elite aggregate": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "elite overall": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.727
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season.días_perdidos_por_lesión_de_los_jugadores_top": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Días Perdidos por lesión de los Jugadores top"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "días perdidos por lesión de los jugadores top": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season.top_9_clubes_con_mayor_talento_élite": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_seasons",
+			          "ConceptualProperty": "Top 9 Clubes con Mayor Talento Élite"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "top 9 clubes con mayor talento élite": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.total_goles_línea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Total Goles Línea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total goles línea": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "aggregate gole línea": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "overall gole línea": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.total_goles_club": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Total Goles Club"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total goles club": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "total gole association": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.762
+			          }
+			        },
+			        {
+			          "total gole nightclub": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.762
+			          }
+			        },
+			        {
+			          "total gole alliance": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.762
+			          }
+			        },
+			        {
+			          "total gole guild": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.762
+			          }
+			        },
+			        {
+			          "total gole organization": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.762
+			          }
+			        },
+			        {
+			          "total gole team": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total gole group": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "total gole union": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.739
+			          }
+			        },
+			        {
+			          "aggregate gole club": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        },
+			        {
+			          "overall gole club": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.aporte_goles": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "% Aporte Goles"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% aporte goles": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "percentage aporte gole": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.609
+			          }
+			        },
+			        {
+			          "pct aporte gole": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.promedio_rating_línea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Promedio Rating Línea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "promedio rating línea": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.aporte_línea_intercepciones": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Aporte Línea (intercepciones)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "aporte línea (intercepciones)": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "aporte línea": {
+			            "State": "Generated",
+			            "Weight": 0.75
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.aporte_línea_goles": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "% Aporte Línea (Goles)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% aporte línea (goles)": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "% aporte línea": {
+			            "State": "Generated",
+			            "Weight": 0.75
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.rend__promedio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Rend. Promedio"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "rend. promedio": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.rend__ponderado": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Rend. Ponderado"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "rend. ponderado": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Rend. Promedio": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.minutos_línea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "% Minutos Línea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% minutos línea": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "percentage minuto línea": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.609
+			          }
+			        },
+			        {
+			          "pct minuto línea": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.aporte_defensivo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "% Aporte Defensivo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% aporte defensivo": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "percentage aporte defensivo": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.609
+			          }
+			        },
+			        {
+			          "pct aporte defensivo": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.rend__promedio_línea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Rend. Promedio Línea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "rend. promedio línea": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.aporte_ofensivo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "% Aporte Ofensivo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% aporte ofensivo": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "percentage aporte ofensivo": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.609
+			          }
+			        },
+			        {
+			          "pct aporte ofensivo": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.591
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.rendimiento_linea": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Rendimiento_Linea"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "rendimiento linea": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Rendimiento_Linea": {
+			            "Type": "Noun",
+			            "State": "Generated",
+			            "Weight": 0.99
+			          }
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season.total_goles": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "main analytics_club_position_seasons",
+			          "ConceptualProperty": "Total Goles"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "total goles": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "aggregate gole": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.582
+			          }
+			        },
+			        {
+			          "overall gole": {
+			            "Type": "Noun",
+			            "State": "Suggested",
+			            "Source": {
+			              "Agent": "Thesaurus"
+			            },
+			            "Weight": 0.582
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
@@ -7001,6 +7509,600 @@ cultureInfo es-ES
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "main_dim_clubs_have_main_analytics_club_seasons"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_total_goles": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.total_goles": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.total_goles"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.total_goles"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_total_goles"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_rendimiento_linea": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.rendimiento_linea": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.rendimiento_linea"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.rendimiento_linea"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_rendimiento_linea"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_aporte_ofensivo": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.aporte_ofensivo": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.aporte_ofensivo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.aporte_ofensivo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have__aporte_ofensivo"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_rend__promedio_línea": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.rend__promedio_línea": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.rend__promedio_línea"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.rend__promedio_línea"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_rend__promedio_línea"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_aporte_defensivo": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.aporte_defensivo": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.aporte_defensivo"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.aporte_defensivo"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have__aporte_defensivo"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_minutos_línea": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.minutos_línea": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.minutos_línea"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.minutos_línea"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have__minutos_línea"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_rend__ponderado": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.rend__ponderado": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.rend__ponderado"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.rend__ponderado"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_rend__ponderado"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_rend__promedio": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.rend__promedio": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.rend__promedio"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.rend__promedio"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_rend__promedio"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_aporte_línea_goles": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.aporte_línea_goles": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.aporte_línea_goles"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.aporte_línea_goles"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have__aporte_línea_goles"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_aporte_línea_intercepciones": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.aporte_línea_intercepciones": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.aporte_línea_intercepciones"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.aporte_línea_intercepciones"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_aporte_línea_intercepciones"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_promedio_rating_línea": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.promedio_rating_línea": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.promedio_rating_línea"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.promedio_rating_línea"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_promedio_rating_línea"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_aporte_goles": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.aporte_goles": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.aporte_goles"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.aporte_goles"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have__aporte_goles"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_total_goles_club": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.total_goles_club": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.total_goles_club"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.total_goles_club"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_total_goles_club"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_position_season_has_total_goles_línea": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_position_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_position_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season"
+			          }
+			        },
+			        "main_analytics_club_position_season.total_goles_línea": {
+			          "Target": {
+			            "Entity": "main_analytics_club_position_season.total_goles_línea"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_position_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_position_season.total_goles_línea"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_position_seasons_have_total_goles_línea"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_top_9_clubes_con_mayor_talento_élite": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.top_9_clubes_con_mayor_talento_élite": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.top_9_clubes_con_mayor_talento_élite"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.top_9_clubes_con_mayor_talento_élite"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_top_9_clubes_con_mayor_talento_élite"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_días_perdidos_por_lesión_de_los_jugadores_top": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.días_perdidos_por_lesión_de_los_jugadores_top": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.días_perdidos_por_lesión_de_los_jugadores_top"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.días_perdidos_por_lesión_de_los_jugadores_top"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_días_perdidos_por_lesión_de_los_jugadores_top"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_elite_total": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.elite_total": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.elite_total"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.elite_total"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_elite_total"
+			        }
+			      ]
+			    },
+			    "main_analytics_club_season_has_variación_jugadores_top": {
+			      "Binding": {
+			        "ConceptualEntity": "main analytics_club_seasons"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "main_analytics_club_season": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season"
+			          }
+			        },
+			        "main_analytics_club_season.variación_jugadores_top": {
+			          "Target": {
+			            "Entity": "main_analytics_club_season.variación_jugadores_top"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "main_analytics_club_season"
+			            },
+			            "Object": {
+			              "Role": "main_analytics_club_season.variación_jugadores_top"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "main_analytics_club_seasons_have_variación_jugadores_top"
 			        }
 			      ]
 			    },
@@ -8628,7 +9730,7 @@ cultureInfo es-ES
 			        }
 			      ]
 			    },
-			    "main_analytics_club_position_season_has_player_in_position_count": {
+			    "main_analytics_club_position_season_has_total_de_jugadore": {
 			      "Binding": {
 			        "ConceptualEntity": "main analytics_club_position_seasons"
 			      },
@@ -8639,9 +9741,9 @@ cultureInfo es-ES
 			            "Entity": "main_analytics_club_position_season"
 			          }
 			        },
-			        "main_analytics_club_position_season.player_in_position_count": {
+			        "main_analytics_club_position_season.total_de_jugadore": {
 			          "Target": {
-			            "Entity": "main_analytics_club_position_season.player_in_position_count"
+			            "Entity": "main_analytics_club_position_season.total_de_jugadore"
 			          }
 			        }
 			      },
@@ -8652,12 +9754,12 @@ cultureInfo es-ES
 			              "Role": "main_analytics_club_position_season"
 			            },
 			            "Object": {
-			              "Role": "main_analytics_club_position_season.player_in_position_count"
+			              "Role": "main_analytics_club_position_season.total_de_jugadore"
 			            }
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "main_analytics_club_position_seasons_have_player_in_position_count"
+			          "ID": "main_analytics_club_position_seasons_have_total_de_jugadores"
 			        }
 			      ]
 			    },

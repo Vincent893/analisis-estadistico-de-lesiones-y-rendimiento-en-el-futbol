@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "1e1de1c70baeec276de9",
   "position": {
     "x": 168.62745098039215,
@@ -64,7 +64,8 @@
                 }
               },
               "queryRef": "main analytics_club_position_seasons.Rend. Ponderado",
-              "nativeQueryRef": "Rend. Ponderado"
+              "nativeQueryRef": "Rend. Promedio",
+              "displayName": "Rend. Promedio"
             }
           ]
         }
@@ -340,7 +341,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Rendimineto Ponderado'"
+                  "Value": "'Rendimineto Promedio'"
                 }
               }
             }
@@ -403,7 +404,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Rendimiento  Ponderado por Temporada y  Posición de Jugador'"
+                  "Value": "'Rendimiento  Promedio por Temporada y  Posición de Jugador'"
                 }
               }
             }
