@@ -17,17 +17,22 @@
           "projections": [
             {
               "field": {
-                "Measure": {
+                "Aggregation": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "main analytics_club_position_seasons"
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "main analytics_club_position_seasons"
+                        }
+                      },
+                      "Property": "Total de Jugadores"
                     }
                   },
-                  "Property": "% Aporte Ofensivo"
+                  "Function": 0
                 }
               },
-              "queryRef": "main analytics_club_position_seasons.% Aporte Ofensivo (Goles)",
-              "nativeQueryRef": "% Aporte Ofensivo"
+              "queryRef": "Sum(main analytics_club_position_seasons.players_in_position_count)",
+              "nativeQueryRef": "Suma de Total de Jugadores"
             }
           ]
         }
@@ -36,13 +41,18 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Aggregation": {
                 "Expression": {
-                  "SourceRef": {
-                    "Entity": "main analytics_club_position_seasons"
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "main analytics_club_position_seasons"
+                      }
+                    },
+                    "Property": "Total de Jugadores"
                   }
                 },
-                "Property": "% Aporte Ofensivo"
+                "Function": 0
               }
             },
             "direction": "Descending"
@@ -106,6 +116,20 @@
                   "Value": "true"
                 }
               }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "heading": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Heading4'"
+                }
+              }
             }
           },
           "selector": {
@@ -139,6 +163,13 @@
               "expr": {
                 "Literal": {
                   "Value": "29D"
+                }
+              }
+            },
+            "showBlankAs": {
+              "expr": {
+                "Literal": {
+                  "Value": "'--'"
                 }
               }
             }
@@ -202,11 +233,41 @@
                   "Value": "false"
                 }
               }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "''"
+                }
+              }
             }
           }
         }
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "fa2d787d6723722528b2",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "main analytics_club_position_seasons"
+                  }
+                },
+                "Property": "Total de Jugadores"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

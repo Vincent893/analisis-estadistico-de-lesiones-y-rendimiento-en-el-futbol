@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "2e1615dd99b8339a4ed6",
   "position": {
-    "x": 1554.5454545454545,
-    "y": 410.90909090909088,
+    "x": 1553.5714285714284,
+    "y": 539.28571428571422,
     "z": 3000,
-    "height": 196.36363636363635,
-    "width": 347.27272727272725,
+    "height": 224.99999999999997,
+    "width": 346.42857142857139,
     "tabOrder": 3000
   },
   "visual": {
@@ -220,6 +220,20 @@
           },
           "selector": {
             "id": "default"
+          }
+        },
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "main analytics_club_seasons.Días Perdidos por lesión de los Jugadores top"
           }
         }
       ]

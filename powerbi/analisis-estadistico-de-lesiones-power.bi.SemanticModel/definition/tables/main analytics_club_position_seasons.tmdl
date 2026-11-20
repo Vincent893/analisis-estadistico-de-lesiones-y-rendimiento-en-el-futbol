@@ -176,12 +176,12 @@ table 'main analytics_club_position_seasons'
 
 		annotation SummarizationSetBy = Automatic
 
-	column players_in_position_count
+	column 'Total de Jugadores'
 		dataType: int64
 		formatString: 0
 		lineageTag: ef3bfe72-2f03-4566-aa13-b0a3c250c2f0
 		summarizeBy: sum
-		sourceColumn: players_in_position_count
+		sourceColumn: Total de Jugadores
 
 		annotation SummarizationSetBy = Automatic
 
@@ -272,7 +272,8 @@ table 'main analytics_club_position_seasons'
 		source =
 				let
 				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "database"),
-				    main_analytics_club_position_seasons = Origen{[Schema="main",Item="analytics_club_position_seasons"]}[Data]
+				    main_analytics_club_position_seasons = Origen{[Schema="main",Item="analytics_club_position_seasons"]}[Data],
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(main_analytics_club_position_seasons,{{"players_in_position_count", "Total de Jugadores"}})
 				in
-				    main_analytics_club_position_seasons
+				    #"Columnas con nombre cambiado"
 

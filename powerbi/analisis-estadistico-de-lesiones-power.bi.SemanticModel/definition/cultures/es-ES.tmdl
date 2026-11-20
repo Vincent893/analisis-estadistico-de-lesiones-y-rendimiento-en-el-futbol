@@ -2610,7 +2610,7 @@ cultureInfo es-ES
 			      "Definition": {
 			        "Binding": {
 			          "ConceptualEntity": "main analytics_club_position_seasons",
-			          "ConceptualProperty": "players_in_position_count"
+			          "ConceptualProperty": "Total de Jugadores"
 			        }
 			      },
 			      "State": "Generated",

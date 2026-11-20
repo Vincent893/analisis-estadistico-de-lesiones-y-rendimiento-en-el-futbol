@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "b4966c47660038b60eae",
   "position": {
-    "x": 796.06605278840425,
-    "y": 694.49085910917165,
+    "x": 796.42857142857133,
+    "y": 694.64285714285711,
     "z": 7000,
-    "height": 352,
-    "width": 734,
+    "height": 351.78571428571428,
+    "width": 735.71428571428567,
     "tabOrder": 7000
   },
   "visual": {
@@ -426,7 +426,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Top 9 Clubes con Mayor Concentración de Talento Élite'"
+                  "Value": "'Top 5 Clubes con Mayor Concentración de Talento Élite'"
                 }
               }
             },
@@ -623,7 +623,7 @@
                         }
                       }
                     ],
-                    "Top": 9
+                    "Top": 5
                   }
                 }
               },
