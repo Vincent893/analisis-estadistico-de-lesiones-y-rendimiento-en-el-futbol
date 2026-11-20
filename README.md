@@ -1,6 +1,10 @@
 # Análisis Estadístico de Lesiones y Rendimiento Individual y Colectivo en Clubes de Fútbol Profesional en las Temporadas Comprendidas Entre los Años 2022 y 2026
 
-**Aplicación desplegada:** https://proyectogrupo12.streamlit.app/
+## Enlaces
+
+- **Dashboard en Streamlit:** https://proyectogrupo12.streamlit.app/
+
+- **Dashboard en Power BI:** https://app.powerbi.com/view?r=eyJrIjoiYzRjZTFiZWMtOGFhMi00M2FkLWJjZDItNjEwMmZjMGI5MDAzIiwidCI6IjRjODE4Zjc5LWFiODQtNDU1Mi05YjdjLTJmZTcxNWIwZDBkNSIsImMiOjR9&pageName=caa027ca54b9416266ca
 
 ## Planteamiento del problema
 El fútbol profesional contemporáneo es un deporte donde la exigencia es máxima, por lo que la intuición ya no puede ser la única medida para la toma de decisiones en el campo. Sin embargo, a pesar de la gran cantidad de registros sobre los partidos los directores técnicos y analistas luchan para unificar en una misma herramienta dimensiones como la salud y disponibilidad de los jugadores, la eficiencia del rendimiento individual frente a la concentración de talento en plantillas colectivas y el aporte real de cada línea posicional. No tener esta información entorpece la optimización y la rotación de plantillas, la prevención de lesiones y el rendimiento colectivo. 
