@@ -251,9 +251,10 @@ def render_marco_metodologico():
     """, unsafe_allow_html=True)
 
     # Tabas para los fórmulas usadas
-    tab_media, tab_cv, tab_gini, tab_hhi, tab_spearman, tab_aporte = st.tabs([
+    tab_media, tab_cv, tab_imc, tab_gini, tab_hhi, tab_spearman, tab_aporte = st.tabs([
         "Media y Mediana",
         "Desviación y CV",
+        "Índice de Masa Corporal (IMC)",
         "Coeficiente de Gini",
         "Índice HHI",
         "Correlación de Spearman",
