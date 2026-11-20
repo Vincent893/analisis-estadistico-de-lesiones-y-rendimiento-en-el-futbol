@@ -53,7 +53,37 @@ if query_seleccionado == "Query 1: Rotación de Planteles en las Ligas Principal
     de esa división y el puesto de la división dentro de la temporada, de mayor a menor rotación.
     """)
     with st.expander("**Ver Query**"):
-        query = """
+        query = """WITH club AS (
+    SELECT c.division_id, c.club_name,
+           SUM(ct.weekly_wage_eur) AS masa_salarial,
+           RANK() OVER (PARTITION BY c.division_id ORDER BY SUM(ct.weekly_wage_eur) DESC) AS r_masa,
+           RANK() OVER (PARTITION BY c.division_id ORDER BY SUM(g.game_win_ratio * ps.mins) / SUM(ps.mins) DESC) AS r_rend
+    FROM seasons s
+    JOIN player_seasons ps ON ps.season_id = s.season_id
+    JOIN contracts ct ON ct.player_id = ps.player_id AND ct.club_id = ps.club_id
+                     AND CAST(SUBSTR(s.season_label, 1, 4) || '-07-01' AS DATE) BETWEEN ct.start_date AND ct.end_date
+    JOIN player_stats_general g ON g.player_season_id = ps.player_season_id
+    JOIN clubs c ON c.club_id = ps.club_id
+    WHERE s.season_order = 0
+    GROUP BY c.club_id, c.division_id
+    HAVING COUNT(*) >= 8
+),
+ordenados AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY division_id ORDER BY r_masa - r_rend DESC, r_rend) AS pos
+    FROM club
+)
+SELECT d.division_name AS division,
+       d.division_strength AS fuerza,
+       COUNT(*) AS cantidad_clubes,
+       ROUND(1 - 6.0 * SUM((o.r_masa - o.r_rend) * (o.r_masa - o.r_rend)) / (COUNT(*) * (COUNT(*) * COUNT(*) - 1)), 4) AS coeficiente_spearman,
+       MAX(CASE WHEN o.pos = 1 THEN o.club_name END) AS club_que_mas_puestos_gana,
+       MAX(o.r_masa - o.r_rend) AS puestos_ganados,
+       ROUND(MAX(o.masa_salarial) / MIN(o.masa_salarial), 2) AS cociente_masa_salarial
+FROM ordenados o
+JOIN divisions d ON d.division_id = o.division_id
+GROUP BY d.division_id
+HAVING COUNT(*) >= 10
+ORDER BY coeficiente_spearman DESC;
         """
         st.code(query, language="sql")
 
