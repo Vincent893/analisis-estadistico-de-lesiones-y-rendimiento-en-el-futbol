@@ -221,7 +221,44 @@ Identificá al cliente de mayor valor de cada agencia, la división en la que ju
 agencias de mayor valor con su puesto y la cuota acumulada que representan sobre el valor total de todas las agencias.
     """)
     with st.expander("**Ver Query**"):
-        query = """
+        query = """ WITH ultimo_contrato AS (
+    SELECT player_id, contract_value_eur AS valor,
+           ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY start_date DESC) AS rn
+    FROM contracts
+    ),
+    cliente AS (
+        SELECT a.agency_name, p.player_id, p.name, p.nation_id, p.is_eu_national,
+           u.valor, g.average_rating, d.division_name,
+           u.valor / SUM(u.valor) OVER (PARTITION BY a.agency_name) AS peso,
+           ROW_NUMBER() OVER (PARTITION BY a.agency_name ORDER BY u.valor DESC) AS pos
+        FROM players p
+        JOIN agents a ON a.agent_id = p.agent_id
+        JOIN ultimo_contrato u ON u.player_id = p.player_id AND u.rn = 1
+        JOIN player_seasons ps ON ps.player_id = p.player_id
+        JOIN seasons s ON s.season_id = ps.season_id AND s.season_order = 0
+        JOIN player_stats_general g ON g.player_season_id = ps.player_season_id
+        JOIN clubs c ON c.club_id = ps.club_id
+        LEFT JOIN divisions d ON d.division_id = c.division_id
+    )
+    SELECT RANK() OVER (ORDER BY SUM(cl.valor) DESC) AS puesto,
+       cl.agency_name AS agencia,
+       COUNT(*) AS clientes,
+       ag.agentes,
+       COUNT(DISTINCT cl.nation_id) AS nacionalidades,
+       ROUND(AVG(CASE WHEN cl.is_eu_national THEN 0 ELSE 1.0 END), 4) AS proporcion_extracomunitarios,
+       ROUND(SUM(cl.valor) / 1000000, 2) AS valor_cartera_millones,
+       ROUND(AVG(cl.average_rating), 2) AS valoracion_media,
+       ROUND(SUM(cl.peso * cl.peso), 4) AS indice_herfindahl,
+       MAX(CASE WHEN cl.pos = 1 THEN cl.name END) AS cliente_mayor_valor,
+       MAX(CASE WHEN cl.pos = 1 THEN cl.division_name END) AS division_cliente,
+       ROUND(MAX(cl.peso), 4) AS peso_cliente,
+       ROUND(SUM(SUM(cl.valor)) OVER (ORDER BY SUM(cl.valor) DESC) / SUM(SUM(cl.valor)) OVER (), 4) AS cuota_acumulada
+    FROM cliente cl
+    JOIN (SELECT agency_name, COUNT(*) AS agentes FROM agents GROUP BY agency_name) ag
+      ON ag.agency_name = cl.agency_name
+    GROUP BY cl.agency_name, ag.agentes
+    ORDER BY puesto
+    LIMIT 15
         """
         st.code(query, language="sql")
 
