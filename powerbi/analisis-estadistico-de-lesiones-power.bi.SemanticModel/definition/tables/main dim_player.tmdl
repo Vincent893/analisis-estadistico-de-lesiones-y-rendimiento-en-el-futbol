@@ -66,3 +66,5 @@ table 'main dim_player'
 				in
 				    #"Columnas con nombre cambiado"
 
+	annotation PBI_ResultType = Table
+
