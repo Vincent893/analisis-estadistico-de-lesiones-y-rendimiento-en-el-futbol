@@ -4,10 +4,10 @@
   "position": {
     "x": 911.90476190476193,
     "y": 242.85714285714286,
-    "z": 4000,
-    "height": 150.90909090909091,
-    "width": 387.27272727272725,
-    "tabOrder": 4000
+    "z": 3000,
+    "height": 150,
+    "width": 442.85714285714289,
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -228,5 +228,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "eb068d8c14d06b5c7c20",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_position_seasons"
+              }
+            },
+            "Property": "% Aporte Defensivo"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

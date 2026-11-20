@@ -94,9 +94,8 @@ table 'main analytics_club_position_seasons'
 			RETURN
 			DIVIDE(AccionesLinea, AccionesTotales)
 			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: 7fdb4359-4a2a-4a51-99ed-fc121935be7f
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Rend. Promedio Línea' =
 			
@@ -120,7 +119,18 @@ table 'main analytics_club_position_seasons'
 			        REMOVEFILTERS('main analytics_club_position_seasons'[primary_category])
 			    )
 			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: ee870f27-6fa6-4d22-bd59-b7e71a3747d1
+
+	measure Rendimiento_Linea =
+			
+			AVERAGE('main analytics_club_position_seasons'[line_avg_rating])
+		lineageTag: 03f7f7a8-2ea6-4e8a-acbf-1611294a9d53
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Goles' = SUM('main analytics_club_position_seasons'[line_total_goals])
+		lineageTag: cab119d7-59f5-42a8-9102-32b60ee18a38
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 

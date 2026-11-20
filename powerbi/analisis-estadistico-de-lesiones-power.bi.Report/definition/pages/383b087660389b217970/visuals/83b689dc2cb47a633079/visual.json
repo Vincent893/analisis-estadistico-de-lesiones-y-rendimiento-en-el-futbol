@@ -4,10 +4,10 @@
   "position": {
     "x": 911.90476190476193,
     "y": 426.1904761904762,
-    "z": 6004,
-    "height": 150.90909090909091,
-    "width": 387.27272727272725,
-    "tabOrder": 6004
+    "z": 7000,
+    "height": 150,
+    "width": 442.85714285714289,
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -23,11 +23,11 @@
                       "Entity": "main analytics_club_position_seasons"
                     }
                   },
-                  "Property": "% Aporte Línea (Goles)"
+                  "Property": "Total Goles"
                 }
               },
-              "queryRef": "main analytics_club_position_seasons.% Aporte Línea (Goles)",
-              "nativeQueryRef": "% Aporte Línea (Goles)"
+              "queryRef": "main analytics_club_position_seasons.Total Goles",
+              "nativeQueryRef": "Total Goles"
             }
           ]
         }
@@ -42,7 +42,7 @@
                     "Entity": "main analytics_club_position_seasons"
                   }
                 },
-                "Property": "% Aporte Línea (Goles)"
+                "Property": "Total Goles"
               }
             },
             "direction": "Descending"
