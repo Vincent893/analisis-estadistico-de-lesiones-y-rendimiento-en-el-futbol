@@ -38,7 +38,7 @@ st.subheader("Respuesta al Objetivo General")
 
 caja("Conclusión general", f"""
     <p {P}>
-        El análisis descriptivo de 108.639 registros jugador-temporada, correspondientes a 27.343 jugadores y 300 ligas
+        El análisis descriptivo de 108,639 registros jugador-temporada, correspondientes a 27,343 jugadores y 299 ligas
         en las temporadas 2022/23 a 2025/26, permite caracterizar el fútbol profesional del período a partir de tres
         rasgos. Primero, las lesiones se comportan como un fenómeno de frecuencia constante e independiente del perfil
         físico y de la carga de minutos del jugador. Segundo, el talento y la producción ofensiva están fuertemente
@@ -59,18 +59,18 @@ st.subheader("Hallazgos por Objetivo Específico")
 
 caja("Objetivo 1 · Lesiones, antropometría y carga de minutos", f"""
     <p {P}>
-        Se registraron 26.949 lesiones en 18.552 jugadores distintos. En cada temporada se lesiona aproximadamente uno
-        de cada cuatro jugadores (entre el 24,4 % y el 25,0 %), y ningún jugador registra más de una lesión por campaña.
+        Se registraron 26,949 lesiones en 18,552 jugadores distintos. En cada temporada se lesiona aproximadamente uno
+        de cada cuatro jugadores (entre el 24.4 % y el 25.0 %), y ningún jugador registra más de una lesión por campaña.
         La duración presenta una marcada asimetría positiva: la media es de 38 días de baja y la mediana de 15, y cerca
-        de la mitad de las lesiones (48,8 %) se resuelve en 14 días o menos.
+        de la mitad de las lesiones (48.8 %) se resuelve en 14 días o menos.
     </p>
     <ul {UL}>
-        <li><b>La gravedad pesa más que la frecuencia:</b> la rotura de ligamento cruzado anterior representa el 8,7 % de
-            las lesiones, pero con un promedio de 230 días de baja concentra el 52,2 % de todos los días perdidos.</li>
+        <li><b>La gravedad pesa más que la frecuencia:</b> la rotura de ligamento cruzado anterior representa el 8.7 % de
+            las lesiones, pero con un promedio de 230 días de baja concentra el 52.2 % de todos los días perdidos.</li>
         <li><b>El físico no diferencia el riesgo:</b> el porcentaje de lesionados apenas varía entre cuartiles de altura
-            (24,6 % a 25,0 %), de peso (24,7 % a 24,9 %) y de índice de masa corporal (24,4 % a 25,2 %).</li>
-        <li><b>La carga de minutos tampoco:</b> entre quienes juegan 500 minutos o menos y quienes superan los 3.000, el
-            porcentaje de lesionados se mantiene entre el 24,2 % y el 25,2 %.</li>
+            (24.6 % a 25.0 %), de peso (24.7 % a 24.9 %) y de índice de masa corporal (24.4 % a 25.2 %).</li>
+        <li><b>La carga de minutos tampoco:</b> entre quienes juegan 500 minutos o menos y quienes superan los 3,000, el
+            porcentaje de lesionados se mantiene entre el 24.2 % y el 25.2 %.</li>
         <li><b>La duración es igual de uniforme:</b> los días de baja promedio de los lesionados se sitúan entre 37 y 40
             en todos los grupos de altura, peso, IMC y minutos.</li>
     </ul>
@@ -79,42 +79,42 @@ caja("Objetivo 1 · Lesiones, antropometría y carga de minutos", f"""
 caja("Objetivo 2 · Concentración de talento", f"""
     <p {P}>
         Definiendo como élite a los jugadores que alcanzan el percentil 90 del puntaje de habilidad de cada temporada,
-        solo 115 de las 300 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English
-        Premier Division, Spanish First Division, Italian Serie A, Sky Bet Championship y Bundesliga) reúnen el 39,5 %
-        del total, y las veinte primeras el 81,9 %.
+        solo 114 de las 299 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English
+        Premier Division, Spanish First Division, Italian Serie A, Sky Bet Championship y Bundesliga) reúnen el 39.5 %
+        del total, y las veinte primeras el 81.9 %.
     </p>
     <ul {UL}>
-        <li><b>Producción ofensiva desigual:</b> el coeficiente de Gini de goles + asistencias es 0,618 y se mantiene
-            entre 0,615 y 0,619 en las cuatro temporadas. El 20 % de jugadores más productivo genera el 62,2 % del aporte
-            ofensivo y la mitad menos productiva, solo el 7,7 %; el 26,5 % de los registros no tiene goles ni asistencias.</li>
+        <li><b>Producción ofensiva desigual:</b> el coeficiente de Gini de goles + asistencias es 0.618 y se mantiene
+            entre 0.615 y 0.619 en las cuatro temporadas. El 20 % de jugadores más productivo genera el 62.2 % del aporte
+            ofensivo y la mitad menos productiva, solo el 7.7 %; el 26.5 % de los registros no tiene goles ni asistencias.</li>
         <li><b>Dependencia dentro de cada club:</b> el quinto más productivo de cada plantilla aporta en promedio
             alrededor de dos tercios de los goles y asistencias de su club.</li>
         <li><b>Minutos y producción:</b> la exposición se asocia de forma moderada con el aporte ofensivo (correlación de
-            Spearman de 0,53).</li>
+            Spearman de 0.53).</li>
         <li><b>Habilidad no es producción:</b> el puntaje de habilidad está muy débilmente asociado al aporte ofensivo
-            (Spearman de 0,10), porque la élite incluye defensas y arqueros.</li>
+            (Spearman de 0.10), porque la élite incluye defensas y arqueros.</li>
     </ul>
 """)
 
 caja("Objetivo 3 · Dinámicas posicionales", f"""
     <p {P}>
-        Los mediocampistas son la línea más numerosa (45,3 % de los registros), seguidos por los defensas (40,4 %), los
-        arqueros (8,1 %) y los delanteros (6,2 %). El peso colectivo de una línea y el rendimiento de sus jugadores
+        Los mediocampistas son la línea más numerosa (45.3 % de los registros), seguidos por los defensas (40.4 %), los
+        arqueros (8.1 %) y los delanteros (6.2 %). El peso colectivo de una línea y el rendimiento de sus jugadores
         cuentan historias distintas.
     </p>
     <ul {UL}>
-        <li><b>Aporte colectivo:</b> entre los jugadores de campo, el mediocampo produce el 65,2 % de los goles +
-            asistencias, la defensa el 22,3 % y la delantera el 12,5 %. La carga defensiva se reparte entre defensas
-            (50,4 % de los tackles) y mediocampistas (46,0 %).</li>
-        <li><b>Rendimiento por jugador:</b> el orden se invierte. Un delantero promedia 8,2 goles + asistencias por
-            temporada, un mediocampista 5,9 y un defensa 2,3; en tackles lidera el defensa (35,5), seguido del
-            mediocampista (28,8) y del delantero (16,3).</li>
+        <li><b>Aporte colectivo:</b> entre los jugadores de campo, el mediocampo produce el 65.2 % de los goles +
+            asistencias, la defensa el 22.3 % y la delantera el 12.5 %. La carga defensiva se reparte entre defensas
+            (50.4 % de los tackles) y mediocampistas (46.0 %).</li>
+        <li><b>Rendimiento por jugador:</b> el orden se invierte. Un delantero promedia 8.2 goles + asistencias por
+            temporada, un mediocampista 5.9 y un defensa 2.3; en tackles lidera el defensa (35.5), seguido del
+            mediocampista (28.8) y del delantero (16.3).</li>
         <li><b>Consistencia:</b> los delanteros son la línea más homogénea en su aporte ofensivo (coeficiente de
-            variación de 0,88), frente a mediocampistas (1,00) y defensas (1,27).</li>
+            variación de 0.88), frente a mediocampistas (1.00) y defensas (1.27).</li>
         <li><b>Habilidad similar entre líneas:</b> el puntaje de habilidad promedio va de 385 a 416 según la línea; las
             diferencias de rendimiento responden al rol en el campo y no a un nivel distinto.</li>
-        <li><b>Arqueros:</b> evaluados con sus propias métricas, detienen en promedio el 70,5 % de los remates a puerta
-            y reciben 1,27 goles por cada 90 minutos.</li>
+        <li><b>Arqueros:</b> evaluados con sus propias métricas, detienen en promedio el 70.5 % de los remates a puerta
+            y reciben 1.27 goles por cada 90 minutos.</li>
     </ul>
 """)
 
