@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "3252c2f30072257334d8",
   "position": {
-    "x": 911.90476190476193,
-    "y": 242.85714285714286,
+    "x": 868.62745098039215,
+    "y": 219.60784313725489,
     "z": 3000,
     "height": 150,
     "width": 442.85714285714289,
@@ -228,23 +228,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "eb068d8c14d06b5c7c20",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "main analytics_club_position_seasons"
-              }
-            },
-            "Property": "% Aporte Defensivo"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

@@ -110,7 +110,7 @@ table 'main analytics_club_position_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	measure '% Aporte Ofensivo (Goles)' =
+	measure '% Aporte Ofensivo' =
 			
 			DIVIDE(
 			    SUM('main analytics_club_position_seasons'[line_total_goals]),
