@@ -1,6 +1,139 @@
 table 'main analytics_club_position_seasons'
 	lineageTag: cbdbc4ee-8a1f-4aba-9e69-1d0709ae59a4
 
+	measure 'Total Goles Línea' = SUM('main analytics_club_position_seasons'[line_total_goals])
+		lineageTag: 5574ca3d-1312-4e1d-8091-0f12abe07524
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Goles Club' =
+			
+			CALCULATE(
+			    [Total Goles Línea],
+			    ALL('main analytics_club_position_seasons'[primary_category])
+			)
+		formatString: 0
+		lineageTag: 31dfa997-d3d3-46b2-a95d-cf3816859f28
+
+	measure '% Aporte Goles' =
+			
+			DIVIDE(
+			    [Total Goles Línea],
+			    [Total Goles Club],
+			    0
+			)
+		lineageTag: 7b32bd7f-5217-4aec-9cc0-a9a6cdef94f3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promedio Rating Línea' = AVERAGE('main analytics_club_position_seasons'[line_avg_rating])
+		lineageTag: 64764013-b9d3-4e5b-bb15-5eb525c9baa6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Aporte Línea (intercepciones)' = SUM('main analytics_club_position_seasons'[line_total_interceptions])
+		lineageTag: d9fe239d-03e2-43b3-9df8-c10db60cc6f9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Aporte Línea (Goles)' =
+			
+			DIVIDE(
+			    [% Aporte Goles],
+			    CALCULATE(
+			        [% Aporte Goles],
+			        ALL('main analytics_club_position_seasons'[primary_category])
+			    ),
+			    0
+			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: c572745f-de88-47d4-80a7-23f1f9de8c0c
+
+	measure 'Rend. Promedio' = AVERAGE('main analytics_club_position_seasons'[line_avg_rating])
+		lineageTag: 688e05c1-1399-48c5-90f8-a54e334dbb8b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Rend. Ponderado' =
+			
+			DIVIDE(
+			    SUMX(
+			        'main analytics_club_position_seasons',
+			        'main analytics_club_position_seasons'[line_avg_rating] * 'main analytics_club_position_seasons'[avg_mins_played]
+			    ),
+			    SUM('main analytics_club_position_seasons'[avg_mins_played]),
+			    0
+			)
+		formatString: 0.00
+		lineageTag: 1df61089-5ac4-4b77-8d30-f2c55920be02
+
+	measure '% Minutos Línea' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_position_seasons'[avg_mins_played]),
+			    CALCULATE(
+			        SUM('main analytics_club_position_seasons'[avg_mins_played]),
+			        ALL('main analytics_club_position_seasons'[primary_category])
+			    ),
+			    0
+			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: e71d33d0-5524-4c93-9b3b-2205e22b4b6c
+
+	measure '% Aporte Defensivo' = ```
+			
+			VAR AccionesLinea = 
+			    SUM('main analytics_club_position_seasons'[line_total_interceptions]) + 
+			    SUM('main analytics_club_position_seasons'[line_total_tackles])
+			VAR AccionesTotales = 
+			    CALCULATE(
+			        SUM('main analytics_club_position_seasons'[line_total_interceptions]) + 
+			        SUM('main analytics_club_position_seasons'[line_total_tackles]),
+			        REMOVEFILTERS('main analytics_club_position_seasons'[primary_category])
+			    )
+			RETURN
+			DIVIDE(AccionesLinea, AccionesTotales)
+			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 7fdb4359-4a2a-4a51-99ed-fc121935be7f
+
+	measure 'Rend. Promedio Línea' =
+			
+			DIVIDE(
+			    SUMX(
+			        'main analytics_club_position_seasons',
+			        'main analytics_club_position_seasons'[line_avg_rating] * 'main analytics_club_position_seasons'[avg_mins_played]
+			    ),
+			    SUM('main analytics_club_position_seasons'[avg_mins_played])
+			)
+		lineageTag: c55fd8ca-836e-4c9d-9a54-7aa9d4be2536
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '% Aporte Ofensivo' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_position_seasons'[line_total_goals]),
+			    CALCULATE(
+			        SUM('main analytics_club_position_seasons'[line_total_goals]),
+			        REMOVEFILTERS('main analytics_club_position_seasons'[primary_category])
+			    )
+			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: ee870f27-6fa6-4d22-bd59-b7e71a3747d1
+
+	measure Rendimiento_Linea =
+			
+			AVERAGE('main analytics_club_position_seasons'[line_avg_rating])
+		lineageTag: 03f7f7a8-2ea6-4e8a-acbf-1611294a9d53
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Goles' = SUM('main analytics_club_position_seasons'[line_total_goals])
+		lineageTag: cab119d7-59f5-42a8-9102-32b60ee18a38
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column club_id
 		dataType: int64
 		formatString: 0
@@ -43,12 +176,12 @@ table 'main analytics_club_position_seasons'
 
 		annotation SummarizationSetBy = Automatic
 
-	column players_in_position_count
+	column 'Total de Jugadores'
 		dataType: int64
 		formatString: 0
 		lineageTag: ef3bfe72-2f03-4566-aa13-b0a3c250c2f0
 		summarizeBy: sum
-		sourceColumn: players_in_position_count
+		sourceColumn: Total de Jugadores
 
 		annotation SummarizationSetBy = Automatic
 
@@ -94,13 +227,12 @@ table 'main analytics_club_position_seasons'
 
 	column line_total_tackles
 		dataType: double
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
 		lineageTag: 2ae70f03-9b48-441f-a2c4-bbc606c4ea46
 		summarizeBy: sum
 		sourceColumn: line_total_tackles
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column line_total_interceptions
 		dataType: double
@@ -140,7 +272,8 @@ table 'main analytics_club_position_seasons'
 		source =
 				let
 				    Origen = PostgreSQL.Database("pg.us-east-1-aws.motherduck.com", "database"),
-				    main_analytics_club_position_seasons = Origen{[Schema="main",Item="analytics_club_position_seasons"]}[Data]
+				    main_analytics_club_position_seasons = Origen{[Schema="main",Item="analytics_club_position_seasons"]}[Data],
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(main_analytics_club_position_seasons,{{"players_in_position_count", "Total de Jugadores"}})
 				in
-				    main_analytics_club_position_seasons
+				    #"Columnas con nombre cambiado"
 

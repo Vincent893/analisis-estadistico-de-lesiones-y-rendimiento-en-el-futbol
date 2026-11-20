@@ -1,6 +1,89 @@
 table 'main analytics_club_seasons'
 	lineageTag: e5384c70-c0c5-4032-bc69-2179910c9ec3
 
+	measure '% Concentración Jugadores Top' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_seasons'[high_performance_players_count]),
+			    SUM('main analytics_club_seasons'[squad_size]),
+			    0
+			)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 59e977ab-5910-46ff-8321-da06a7731351
+
+	measure 'Total Jugadores Top' = SUM('main analytics_club_seasons'[high_performance_players_count])
+		formatString: 0
+		lineageTag: 876634f1-b3e0-457f-8a78-a4e49322fb51
+
+	measure 'Tasa Lesiones Jugadores Top' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_seasons'[squad_total_days_lost]),
+			    SUM('main analytics_club_seasons'[high_performance_players_count]),
+			    0
+			)
+		lineageTag: eeb63fb0-b228-42d0-a835-12dd9bf3e165
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Promedio Goles por Temporada' =
+			
+			AVERAGEX(
+			    VALUES('main analytics_club_seasons'[club_name]),
+			    CALCULATE(SUM('main analytics_club_seasons'[total_goals_scored]))
+			)
+		lineageTag: 27d6edaa-d9fc-47fe-a591-6821fbbe8d08
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Es Top 10' = INT(CONTAINS(TOPN(10, ALLSELECTED('main analytics_club_seasons'[division_name]), AVERAGE('main analytics_club_seasons'[pct_high_performance_players])), 'main analytics_club_seasons'[division_name], SELECTEDVALUE('main analytics_club_seasons'[division_name])))
+		formatString: 0
+		lineageTag: e4f8cd46-e58b-4213-823d-cfb21e68bdb4
+
+	measure 'Variación Jugadores Top' = ```
+			
+			VAR Actual = SUM('main analytics_club_seasons'[high_performance_players_count])
+			VAR Anterior = 
+			    CALCULATE(
+			        SUM('main analytics_club_seasons'[high_performance_players_count]),
+			        OFFSET(
+			            -1,
+			            ALLSELECTED('main analytics_club_seasons'[season_label]),
+			            ORDERBY('main analytics_club_seasons'[season_label], ASC)
+			        )
+			    )
+			RETURN
+			IF(ISBLANK(Anterior), Actual, Actual - Anterior)
+			```
+		formatString: 0
+		lineageTag: 25332d4e-605f-43ca-b317-1ccd96489535
+
+	measure 'Elite Total' =
+			
+			SUM('main analytics_club_seasons'[high_performance_players_count])
+		formatString: 0
+		lineageTag: 53170119-0110-445c-98ad-7fb8e44dcfdc
+
+	measure 'Días Perdidos por lesión de los Jugadores top' =
+			
+			DIVIDE(
+			    SUM('main analytics_club_seasons'[squad_total_days_lost]),
+			    SUM('main analytics_club_seasons'[high_performance_players_count]),
+			    0
+			)
+		lineageTag: 633e5334-c95c-41f5-a12a-78a9d2417c02
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 9 Clubes con Mayor Talento Élite' = ```
+			
+			SUM('main analytics_club_seasons'[high_performance_players_count]) 
+			+ (AVERAGE('main analytics_club_seasons'[avg_ability_score]) / 100000)
+			```
+		lineageTag: 4c96a53d-a11d-4311-a249-e14bf4a83943
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
 	column club_id
 		dataType: int64
 		formatString: 0
@@ -140,6 +223,8 @@ table 'main analytics_club_seasons'
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"main analytics_club_seasons","TableItemName":"total_goals_scored (ubicaciones)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
 	column total_xg
 		dataType: double
 		lineageTag: d210db90-0077-4379-93a0-b1673fe8bb48
@@ -175,6 +260,48 @@ table 'main analytics_club_seasons'
 		lineageTag: ae7500a6-f20f-49ae-b3d9-3918286f8e64
 		summarizeBy: sum
 		sourceColumn: squad_total_days_lost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'total_goals_scored (ubicaciones)' =
+			IF(
+				ISBLANK('main analytics_club_seasons'[total_goals_scored]),
+				BLANK(),
+				IF(
+					'main analytics_club_seasons'[total_goals_scored] >= 0,
+					ROUNDDOWN('main analytics_club_seasons'[total_goals_scored] / 20, 0) * 20,
+					ROUNDUP('main analytics_club_seasons'[total_goals_scored] / 20, 0) * 20
+				)
+			)
+		lineageTag: 6dcfc265-3305-40cc-a05e-818249e954ab
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "main analytics_club_seasons"
+				          }
+				        },
+				        "Property": "total_goals_scored"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 20.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"m","Entity":"main analytics_club_seasons"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"m"}},"Property":"total_goals_scored"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"m"}},"Property":"total_goals_scored"}},"Size":20.0}}}}
 
 		annotation SummarizationSetBy = Automatic
 
