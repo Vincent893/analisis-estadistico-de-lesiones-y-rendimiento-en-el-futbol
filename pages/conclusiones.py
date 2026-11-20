@@ -38,7 +38,7 @@ st.subheader("Respuesta al Objetivo General")
 
 caja("Conclusión general", f"""
     <p {P}>
-        El análisis descriptivo de 108.639 registros jugador-temporada, correspondientes a 27.343 jugadores y 300 ligas
+        El análisis descriptivo de 108.639 registros jugador-temporada, correspondientes a 27.343 jugadores y 299 ligas
         en las temporadas 2022/23 a 2025/26, permite caracterizar el fútbol profesional del período a partir de tres
         rasgos. Primero, las lesiones se comportan como un fenómeno de frecuencia constante e independiente del perfil
         físico y de la carga de minutos del jugador. Segundo, el talento y la producción ofensiva están fuertemente
@@ -79,7 +79,7 @@ caja("Objetivo 1 · Lesiones, antropometría y carga de minutos", f"""
 caja("Objetivo 2 · Concentración de talento", f"""
     <p {P}>
         Definiendo como élite a los jugadores que alcanzan el percentil 90 del puntaje de habilidad de cada temporada,
-        solo 115 de las 300 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English
+        solo 114 de las 299 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English
         Premier Division, Spanish First Division, Italian Serie A, Sky Bet Championship y Bundesliga) reúnen el 39,5 %
         del total, y las veinte primeras el 81,9 %.
     </p>

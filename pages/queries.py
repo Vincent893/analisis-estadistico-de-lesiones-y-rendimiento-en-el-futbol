@@ -86,7 +86,7 @@ if query_seleccionado == "Query 2: ¿La Masa Salarial Compra Resultados?":
     """)
         
     with st.expander("**Ver Query**"):
-        query = """  WITH club AS (
+        query = """WITH club AS (
     SELECT c.division_id, c.club_name,
            SUM(ct.weekly_wage_eur) AS masa_salarial,
            RANK() OVER (PARTITION BY c.division_id ORDER BY SUM(ct.weekly_wage_eur) DESC) AS r_masa,
@@ -98,19 +98,23 @@ if query_seleccionado == "Query 2: ¿La Masa Salarial Compra Resultados?":
     JOIN player_stats_general g ON g.player_season_id = ps.player_season_id
     JOIN clubs c ON c.club_id = ps.club_id
     WHERE s.season_order = 0
-    GROUP BY c.club_id, c.division_id
+    GROUP BY c.club_id, c.division_id, c.club_name
     HAVING COUNT(*) >= 8
+),
+ordenados AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY division_id ORDER BY r_masa - r_rend DESC, r_rend) AS pos
+    FROM club
 )
 SELECT d.division_name AS division,
        d.division_strength AS fuerza,
        COUNT(*) AS cantidad_clubes,
-       ROUND(1 - 6.0 * SUM((cl.r_masa - cl.r_rend) * (cl.r_masa - cl.r_rend)) / (COUNT(*) * (COUNT(*) * COUNT(*) - 1)), 4) AS coeficiente_spearman,
-       (ARRAY_AGG(cl.club_name ORDER BY cl.r_masa - cl.r_rend DESC, cl.r_rend))[1] AS club_que_mas_puestos_gana,
-       MAX(cl.r_masa - cl.r_rend) AS puestos_ganados,
-       ROUND(MAX(cl.masa_salarial) / MIN(cl.masa_salarial), 2) AS cociente_masa_salarial
-FROM club cl
-JOIN divisions d ON d.division_id = cl.division_id
-GROUP BY d.division_id
+       ROUND(1 - 6.0 * SUM((o.r_masa - o.r_rend) * (o.r_masa - o.r_rend)) / (COUNT(*) * (COUNT(*) * COUNT(*) - 1)), 4) AS coeficiente_spearman,
+       MAX(CASE WHEN o.pos = 1 THEN o.club_name END) AS club_que_mas_puestos_gana,
+       MAX(o.r_masa - o.r_rend) AS puestos_ganados,
+       ROUND(MAX(o.masa_salarial) / MIN(o.masa_salarial), 2) AS cociente_masa_salarial
+FROM ordenados o
+JOIN divisions d ON d.division_id = o.division_id
+GROUP BY d.division_id, d.division_name, d.division_strength
 HAVING COUNT(*) >= 10
 ORDER BY coeficiente_spearman DESC
         """
@@ -341,7 +345,6 @@ SELECT division_name AS division,
        ROUND(prop_extracom, 4) AS proporcion_extracomunitarios
 FROM division
 ORDER BY puesto_crecimiento
-)
         """
         st.code(query, language="sql")
 

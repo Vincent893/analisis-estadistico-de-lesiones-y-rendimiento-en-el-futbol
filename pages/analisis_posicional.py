@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme, PALETA_APP
+from utils.graficos import apply_theme, num, PALETA_APP
 
 UI.setup_page()
 UI.render_sidebar()
@@ -41,8 +41,6 @@ SELECT COALESCE(d.division_name, 'Sin división') AS liga,
        psd.tackles_completed  AS tackles,
        psp.key_passes,
        ps.ability_score,
-       psa.goals_per_90 + psa.assists_per_90                    AS offensive_score,
-       psd.tackles_completed_per_90 + psd.interceptions_per_90  AS defensive_score,
        psk.save_ratio,
        psk.saves_per_90,
        psk.clean_sheets_per_90,
@@ -124,21 +122,21 @@ for i, linea in enumerate(LINEAS_ORDEN):
     if linea == "Arquero":
         # Métricas de portería
         detalle = (
-            f"Paradas: {df_arq['pct_paradas'].mean():.1f}%<br>"
-            f"Porterías a cero/90': {df_arq['clean_sheets_per_90'].mean():.2f}<br>"
-            f"Goles concedidos/90': {df_arq['conceded_per_90'].mean():.2f}"
+            f"Paradas: {num(df_arq['pct_paradas'].mean(), 1)}%<br>"
+            f"Porterías a cero/90': {num(df_arq['clean_sheets_per_90'].mean(), 2)}<br>"
+            f"Goles concedidos/90': {num(df_arq['conceded_per_90'].mean(), 2)}"
         )
     else:
         detalle = (
-            f"Goles prom: {row['Goles_prom']:.2f}<br>"
-            f"Asist prom: {row['Asist_prom']:.2f} · Tackles prom: {row['Tackles_prom']:.1f}<br>"
-            f"Minutos prom: {row['Mins_prom']:.0f}"
+            f"Goles prom: {num(row['Goles_prom'], 2)}<br>"
+            f"Asist prom: {num(row['Asist_prom'], 2)} · Tackles prom: {num(row['Tackles_prom'], 1)}<br>"
+            f"Minutos prom: {num(row['Mins_prom'])}"
         )
     with cols_kpi[i]:
         st.markdown(f"""
         <div class="kpi-card" style="border-top-color:{color};">
             <div class="kpi-title">{linea}</div>
-            <div class="kpi-value" style="font-size:1.35rem;">{row['Jugadores']:,.0f} jug.</div>
+            <div class="kpi-value" style="font-size:1.35rem;">{num(row['Jugadores'])} jug.</div>
             <div class="kpi-footer" style="font-size:0.85rem; line-height:1.4;">
                 {detalle}
             </div>
@@ -310,6 +308,15 @@ with st.expander("Explicación de Lectura"):
     Este boxplot resume la distribución de la variable seleccionada en cada línea posicional. La línea central de cada caja indica la mediana (percentil 50). La caja representa el rango intercuartílico (Rango IQ), donde se concentra el 50% central de los jugadores (entre el percentil 25 y el 75). La línea punteada marca la media aritmética. Los bigotes (líneas verticales que salen de la caja) llegan hasta 1,5 veces el rango intercuartílico; los valores más allá de ese límite (atípicos) no se dibujan, y el máximo de cada línea se informa en la tabla inferior. La longitud de la caja y de los bigotes describe la dispersión de los datos: cajas más largas indican mayor heterogeneidad, cajas más compactas indican mayor homogeneidad.
     """)
 
+desc_table = (
+    df_g2.groupby("linea")[metrica_box]
+         .describe(percentiles=[0.25, 0.5, 0.75])
+         .rename(columns={"count": "N", "mean": "Media", "std": "DE", "min": "Mín.", "25%": "Q1 (P25)", "50%": "Mediana", "75%": "Q3 (P75)", "max": "Máx."})
+)
+dec_tabla = 3 if metrica_box.endswith("_90") else 2
+desc_table = desc_table.apply(lambda col: col.map(lambda v: num(v, 0 if col.name == "N" else dec_tabla)))
+st.dataframe(desc_table, width="stretch")
+
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
@@ -323,14 +330,6 @@ st.markdown("""
     </ul>
 </div>
 """, unsafe_allow_html=True)
-
-desc_table = (
-    df_g2.groupby("linea")[metrica_box]
-         .describe(percentiles=[0.25, 0.5, 0.75])
-         .rename(columns={"count": "N", "mean": "Media", "std": "DE", "min": "Mín.", "25%": "Q1 (P25)", "50%": "Mediana", "75%": "Q3 (P75)", "max": "Máx."})
-         .round(3)
-)
-st.dataframe(desc_table, width="stretch")
 
 st.divider()
 
@@ -355,7 +354,7 @@ agg_g3 = agg_g3.sort_values("linea")
 fig3 = go.Figure()
 for _, row in agg_g3.iterrows():
     linea = row["linea"]
-    texto = f"{row['media']:.3f}" if row["media"] < 10 else f"{row['media']:,.1f}"
+    texto = num(row["media"], 3) if row["media"] < 10 else num(row["media"], 1)
     fig3.add_trace(go.Bar(
         y=[linea], x=[row["media"]],
         orientation="h",
@@ -364,7 +363,7 @@ for _, row in agg_g3.iterrows():
         text=texto,
         textposition="outside",
         cliponaxis=False,
-        hovertemplate=f"<b>{linea}</b><br>Media: {texto}<br>N: {row['n']:,}<extra></extra>",
+        hovertemplate=f"<b>{linea}</b><br>Media: {texto}<br>N: {num(row['n'])}<extra></extra>",
     ))
 
 fig3.update_layout(
@@ -437,11 +436,9 @@ st.divider()
 
 st.subheader("Análisis Complementario")
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab5 = st.tabs([
     "Perfil Multidimensional",
     "Balance Ofensivo vs. Defensivo",
-    "Dispersión Ofensiva vs. Defensiva",
-    "Minutos y Rotación por Rol",
     "Rendimiento de Arqueros",
 ])
 
@@ -495,6 +492,20 @@ with tab1:
     )
     st.plotly_chart(fig_r, width="stretch")
 
+    st.markdown("""
+    <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+        <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+        <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
+            Cada eje está normalizado entre la línea con el promedio más bajo (0) y la línea con el promedio más alto (1), por lo que el radar compara la forma de los perfiles y no sus magnitudes. El delantero marca el máximo en goles (6,97 por temporada) y el mínimo en minutos (1.496). El mediocampista lidera en asistencias (2,66) y pases clave (20,9) y es segundo en acciones defensivas (28,8 tackles), lo que le da el perfil más amplio de las cuatro líneas. El defensa lidera en acciones defensivas (35,5 tackles) y en minutos (1.809), con valores intermedios en asistencias y pases clave (1,40 y 13,9). El arquero solo destaca en minutos (1.805); en el resto de los ejes queda en cero porque es la línea con el promedio más bajo.
+        </p>
+        <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
+        <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
+            <li><b>Especialización:</b> Delanteros y defensas tienen perfiles concentrados en un extremo (goles y acciones defensivas, respectivamente), mientras que el mediocampista reparte su aporte entre creación y recuperación.</li>
+            <li><b>Continuidad:</b> Arqueros y defensas son las líneas con más minutos por temporada (unos 1.800), frente a unos 1.500 de los delanteros, la línea con mayor rotación.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
 with tab2:
     st.caption("Barras apiladas al 100% · Aporte ofensivo (Goles + Asistencias + Pases Clave) vs. defensivo (Tackles) por línea")
     df["aporte_ofensivo"] = df["goals"] + df["assists"] + df["key_passes"]
@@ -510,13 +521,13 @@ with tab2:
     fig_ov.add_trace(go.Bar(
         y=agg_ov_pct["linea"], x=agg_ov_pct["aporte_ofensivo"],
         name="Ofensivo", orientation="h",
-        marker_color=PALETA_APP[0], text=agg_ov_pct["aporte_ofensivo"].round(1).astype(str) + "%",
+        marker_color=PALETA_APP[0], text=agg_ov_pct["aporte_ofensivo"].map(lambda v: num(v, 1) + "%"),
         textposition="inside",
     ))
     fig_ov.add_trace(go.Bar(
         y=agg_ov_pct["linea"], x=agg_ov_pct["aporte_defensivo"],
         name="Defensivo", orientation="h",
-        marker_color=PALETA_APP[1], text=agg_ov_pct["aporte_defensivo"].round(1).astype(str) + "%",
+        marker_color=PALETA_APP[1], text=agg_ov_pct["aporte_defensivo"].map(lambda v: num(v, 1) + "%"),
         textposition="inside",
     ))
     fig_ov.update_layout(
@@ -527,56 +538,31 @@ with tab2:
     fig_ov = apply_theme(fig_ov)
     st.plotly_chart(fig_ov, width="stretch")
 
-with tab3:
-    st.caption("Dispersión · X = Goles + Asistencias por 90' · Y = Tackles + Intercepciones por 90' · Color = línea posicional · Jugadores con 450+ minutos")
-    if "offensive_score" in df.columns and "defensive_score" in df.columns:
-        # Con pocos minutos las métricas por 90' se disparan
-        df_sc = df[df["minutes_played"] >= 450]
-        df_sc = df_sc.sample(min(800, len(df_sc)), random_state=1)
-        fig_sc = px.scatter(
-            df_sc, x="offensive_score", y="defensive_score",
-            color="linea", color_discrete_map=colores_kpi,
-            opacity=0.65,
-            hover_data=["club", "position", "season"],
-            labels={
-                "offensive_score": "Goles + Asistencias por 90'",
-                "defensive_score": "Tackles + Intercepciones por 90'",
-                "linea": "Línea",
-            },
-        )
-        fig_sc.update_layout(height=430)
-        fig_sc = apply_theme(fig_sc)
-        st.plotly_chart(fig_sc, width="stretch")
-
-with tab4:
-    st.caption("Box-plot · Minutos jugados por demarcación específica · Ilustra la regularidad y rotación por rol")
-    df_t4 = df[df["linea"].isin(LINEAS_ORDEN)].copy()
-    linea_fil = st.selectbox("Filtrar línea:", ["Todas"] + LINEAS_ORDEN, key="t4_linea")
-    if linea_fil != "Todas":
-        df_t4 = df_t4[df_t4["linea"] == linea_fil]
-
-    fig_t4 = px.box(
-        df_t4, x="position", y="minutes_played",
-        color="linea", color_discrete_map=colores_kpi,
-        points="outliers",
-        labels={"position": "Posición", "minutes_played": "Minutos Jugados", "linea": "Línea"},
-        category_orders={"linea": LINEAS_ORDEN},
-    )
-    fig_t4.update_layout(height=430, xaxis_tickangle=-25, showlegend=True)
-    fig_t4 = apply_theme(fig_t4)
-    st.plotly_chart(fig_t4, width="stretch")
+    st.markdown("""
+    <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+        <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+        <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
+            En los defensas, el 68,7% de las acciones contabilizadas son defensivas (tackles) y el 31,3% ofensivas (goles, asistencias y pases clave). El mediocampista queda casi en equilibrio (48,2% ofensivo y 51,8% defensivo) y el delantero es la única línea de campo donde predomina lo ofensivo (53,3%). La barra de los arqueros (61,1% ofensivo) no es interpretable: registran en promedio menos de un pase clave y menos de un tackle por temporada, de modo que la proporción se calcula sobre un volumen mínimo.
+        </p>
+        <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
+        <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
+            <li><b>Gradiente posicional:</b> El peso de lo ofensivo crece a medida que la línea se acerca al arco rival: 31,3% en defensas, 48,2% en mediocampistas y 53,3% en delanteros.</li>
+            <li><b>Alcance de la comparación:</b> El balance suma acciones de distinta naturaleza y solo considera los tackles como acción defensiva, por lo que sirve para comparar líneas entre sí y no como medida absoluta del trabajo de cada una.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
 with tab5:
     st.caption(
         f"Métricas propias de la portería · Arqueros con {MIN_MINUTOS_90}+ minutos "
-        f"({len(df_arq):,} registros jugador-temporada) · Promedio por arquero"
+        f"({num(len(df_arq))} registros jugador-temporada) · Promedio por arquero"
     )
     k1, k2, k3, k4 = st.columns(4)
     for col_k, titulo, valor, pie in [
-        (k1, "% de Paradas", f"{df_arq['pct_paradas'].mean():.1f}%", "Remates a puerta detenidos"),
-        (k2, "Paradas por 90'", f"{df_arq['saves_per_90'].mean():.2f}", "Volumen de trabajo"),
-        (k3, "Porterías a cero por 90'", f"{df_arq['clean_sheets_per_90'].mean():.2f}", "Partidos sin goles recibidos"),
-        (k4, "Goles evitados por 90'", f"{df_arq['expected_goals_prevented_per_90'].mean():+.3f}", "Goles esperados − recibidos"),
+        (k1, "% de Paradas", f"{num(df_arq['pct_paradas'].mean(), 1)}%", "Remates a puerta detenidos"),
+        (k2, "Paradas por 90'", num(df_arq['saves_per_90'].mean(), 2), "Volumen de trabajo"),
+        (k3, "Porterías a cero por 90'", num(df_arq['clean_sheets_per_90'].mean(), 2), "Partidos sin goles recibidos"),
+        (k4, "Goles evitados por 90'", ("+" if df_arq['expected_goals_prevented_per_90'].mean() >= 0 else "") + num(df_arq['expected_goals_prevented_per_90'].mean(), 3), "Goles esperados − recibidos"),
     ]:
         with col_k:
             st.markdown(f"""
@@ -622,7 +608,7 @@ st.markdown("""
         La distribución del rendimiento individual presenta asimetría positiva en todas las líneas: la mayoría de los jugadores produce poco y unos pocos elevan la media. En términos relativos, los delanteros son la línea más homogénea (coeficiente de variación de 0,46 en goles + asistencias por 90') y los defensas la más heterogénea (1,02). La Puntuación de Habilidad, por su parte, apenas varía entre líneas (medias entre 385 y 416), por lo que las diferencias posicionales se explican por el rol en el campo y no por un nivel de habilidad distinto.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        Los arqueros, analizados con sus métricas propias, detienen en promedio el 70,5% de los remates a puerta, reciben 1,27 goles por 90' y mantienen la portería a cero en 0,32 partidos por 90'. El 59% de ellos evita más goles de los esperados, aunque el promedio (+0,044 por 90') es apenas positivo. En minutaje, centrales (mediana de 1.632 minutos), laterales izquierdos y arqueros son los roles de mayor continuidad, mientras que centrodelanteros, mediapuntas y volantes por banda registran las medianas más bajas (1.088–1.173 minutos), lo que indica mayor rotación en las posiciones ofensivas.
+        Los arqueros, analizados con sus métricas propias, detienen en promedio el 70,5% de los remates a puerta, reciben 1,27 goles por 90' y mantienen la portería a cero en 0,32 partidos por 90'. El 59% de ellos evita más goles de los esperados, aunque el promedio (+0,044 por 90') es apenas positivo. En minutaje, arqueros y defensas son las líneas de mayor continuidad (unos 1.800 minutos por temporada), mientras que los delanteros registran el promedio más bajo (unos 1.500), lo que indica mayor rotación en la posición más ofensiva.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.02rem;">
         En cuanto a la evolución temporal, tanto las proporciones como los promedios por línea se mantienen prácticamente constantes en las cuatro temporadas (variaciones menores a 0,2 puntos porcentuales en el aporte). Esta estabilidad debe leerse con cautela: tres de las cuatro temporadas (2022/23 a 2024/25) están marcadas como fabricadas en la base de datos (solo 2025/26 es real), lo que limita las conclusiones sobre tendencias.

@@ -6,7 +6,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme
+from utils.graficos import apply_theme, num
 
 UI.setup_page()
 UI.render_sidebar()
@@ -90,8 +90,8 @@ st.divider()
 
 st.subheader("Indicadores Clave")
 
-total_clubs = df["club"].nunique()
-total_ligas = df[liga_col].nunique()
+total_clubs = df.groupby([liga_col, "club"]).ngroups
+total_ligas = df.loc[df[liga_col] != "Sin división", liga_col].nunique()
 pct_elite = df["elite"].mean() * 100
 total_jugadores = len(df)
 
@@ -113,28 +113,28 @@ with k1:
     st.markdown(f"""
     <div class="kpi-card">
         <div class="kpi-title">Clubes Analizados</div>
-        <div class="kpi-value">{total_clubs}</div>
+        <div class="kpi-value">{num(total_clubs)}</div>
         <div class="kpi-footer">{total_ligas} ligas</div>
     </div>""", unsafe_allow_html=True)
 with k2:
     st.markdown(f"""
     <div class="kpi-card">
         <div class="kpi-title">Jugadores Élite (P90)</div>
-        <div class="kpi-value">{pct_elite:.1f}%</div>
-        <div class="kpi-footer">sobre {total_jugadores:,} registros</div>
+        <div class="kpi-value">{num(pct_elite, 1)}%</div>
+        <div class="kpi-footer">sobre {num(total_jugadores)} registros</div>
     </div>""", unsafe_allow_html=True)
 with k3:
     st.markdown(f"""
     <div class="kpi-card">
         <div class="kpi-title">Gini Promedio / Liga</div>
-        <div class="kpi-value">{gini_prom:.3f}</div>
+        <div class="kpi-value">{num(gini_prom, 3)}</div>
         <div class="kpi-footer">0 = equidad · 1 = máx. concentración</div>
     </div>""", unsafe_allow_html=True)
 with k4:
     st.markdown(f"""
     <div class="kpi-card">
         <div class="kpi-title">HHI Promedio / Liga</div>
-        <div class="kpi-value">{hhi_prom:,.0f}</div>
+        <div class="kpi-value">{num(hhi_prom)}</div>
         <div class="kpi-footer">Índice Herfindahl-Hirschman</div>
     </div>""", unsafe_allow_html=True)
 
@@ -177,7 +177,7 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
-        Al aplicar un umbral común a todas las competiciones (percentil 90 del Ability Score de cada temporada), los 10.866 registros de élite se distribuyen de forma muy desigual entre ligas: solo 115 de las 300 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English Premier Division con 1.024, Spanish First Division con 881, Italian Serie A con 813, Sky Bet Championship con 809 y Bundesliga con 768) reúnen el 39,5 % del total; las diez primeras, el 64,2 %, y las veinte primeras, el 81,9 %.
+        Al aplicar un umbral común a todas las competiciones (percentil 90 del Ability Score de cada temporada), los 10.866 registros de élite se distribuyen de forma muy desigual entre ligas: solo 114 de las 299 ligas cuentan con al menos un jugador élite. Las cinco ligas con mayor volumen (English Premier Division con 1.024, Spanish First Division con 881, Italian Serie A con 813, Sky Bet Championship con 809 y Bundesliga con 768) reúnen el 39,5 % del total; las diez primeras, el 64,2 %, y las veinte primeras, el 81,9 %.
     </p>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 12px;">
         La concentración también se observa en términos relativos: en la English Premier Division el 80,6 % de los registros jugador-temporada supera el umbral global, y en la Serie A, la Bundesliga, la Spanish First Division y la Ligue 1 la proporción se sitúa entre el 64 % y el 66 %. Destaca la Sky Bet Championship (segunda división inglesa), que en volumen absoluto supera a la Bundesliga, aunque con una proporción menor (44,8 %) por su mayor número de jugadores registrados.
@@ -190,8 +190,8 @@ st.markdown("""
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Concentración entre ligas:</b> El talento de élite se concentra en un grupo reducido de competiciones, principalmente las cinco grandes ligas europeas y la segunda división inglesa, mientras que 185 de las 300 ligas no registran ningún jugador élite.</li>
-        <li><b>Concentración entre clubes:</b> A nivel global, 1.016 de los 2.227 clubes (45,6 %) tienen al menos un registro élite y el coeficiente de Gini del número de élite por club es 0,81. Dentro de una misma liga de primer nivel, en cambio, el talento se reparte entre un número mayor de clubes.</li>
+        <li><b>Concentración entre ligas:</b> El talento de élite se concentra en un grupo reducido de competiciones, principalmente las cinco grandes ligas europeas y la segunda división inglesa, mientras que 185 de las 299 ligas no registran ningún jugador élite.</li>
+        <li><b>Concentración entre clubes:</b> A nivel global, 1.130 de los 2.773 clubes (40,8 %) tienen al menos un registro élite y el coeficiente de Gini del número de élite por club es 0,84. Dentro de una misma liga de primer nivel, en cambio, el talento se reparte entre un número mayor de clubes.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -227,7 +227,7 @@ for i, liga in enumerate(liga_lorenz):
     fig2.add_trace(go.Scatter(
         x=x_lorenz, y=y_lorenz,
         mode="lines",
-        name=f"{liga} (Gini={gini_i:.3f})",
+        name=f"{liga} (Gini={num(gini_i, 3)})",
         line=dict(color=colores_lorenz[i % len(colores_lorenz)], width=2.5),
     ))
 
@@ -342,7 +342,7 @@ fig4 = px.bar(
     x="cv",
     y="position",
     orientation="h",
-    text=df_cv["cv"].apply(lambda v: f"{v:.3f} ({v*100:.1f}%)"),
+    text=df_cv["cv"].apply(lambda v: f"{num(v, 3)} ({num(v * 100, 1)}%)"),
     color="cv",
     labels={"cv": "Coeficiente de Variación (CV)", "position": "Posición / Demarcación"},
 )
@@ -355,6 +355,15 @@ fig4.update_layout(
 fig4.update_traces(textposition="outside", cliponaxis=False)
 fig4 = apply_theme(fig4)
 st.plotly_chart(fig4, width="stretch")
+
+st.markdown("<p style='color:#94A3B8; font-weight:600; margin-bottom:8px;'>Tabla Descriptiva de Dispersión Relativa (CV por Posición)</p>", unsafe_allow_html=True)
+tabla_cv_resumen = df_cv[["position", "count", "mean", "std", "cv"]].copy()
+tabla_cv_resumen.columns = ["Línea", "N", "Media G+A", "Desv. estándar", "Coeficiente de Variación (CV)"]
+tabla_cv_resumen["Coeficiente de Variación (CV)"] = tabla_cv_resumen["Coeficiente de Variación (CV)"].apply(lambda x: f"{num(x, 3)} ({num(x * 100, 1)}%)")
+tabla_cv_resumen["N"] = tabla_cv_resumen["N"].map(num)
+for col in ["Media G+A", "Desv. estándar"]:
+    tabla_cv_resumen[col] = tabla_cv_resumen[col].map(lambda x: num(x, 3))
+st.dataframe(tabla_cv_resumen, width="stretch", hide_index=True)
 
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
@@ -376,13 +385,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<p style='color:#94A3B8; font-weight:600; margin-bottom:8px;'>Tabla Descriptiva de Dispersión Relativa (CV por Posición)</p>", unsafe_allow_html=True)
-tabla_cv_resumen = df_cv[["position", "count", "mean", "std", "cv"]].copy()
-tabla_cv_resumen.columns = ["Línea", "N", "Media G+A", "Desv. estándar", "Coeficiente de Variación (CV)"]
-tabla_cv_resumen[["Media G+A", "Desv. estándar"]] = tabla_cv_resumen[["Media G+A", "Desv. estándar"]].round(3)
-tabla_cv_resumen["Coeficiente de Variación (CV)"] = tabla_cv_resumen["Coeficiente de Variación (CV)"].apply(lambda x: f"{x:.3f} ({x*100:.1f}%)")
-st.dataframe(tabla_cv_resumen, width="stretch", hide_index=True)
-
 st.divider()
 
 st.subheader("Gráfico 5: Dependencia del Rendimiento en el Top 20% de la Plantilla")
@@ -391,7 +393,6 @@ st.caption("Porcentaje del rendimiento ofensivo del club generado por su 20% má
 liga_hm = st.selectbox("Liga para el mapa de calor:", ligas_disponibles, key="g5_liga")
 
 df_hm = df[df[liga_col] == liga_hm].copy()
-# shortcut: solo los 20 clubes con más G+A (hay divisiones con 189 clubes), subir si se necesita la división completa
 top_clubes_hm = df_hm.groupby("club")["goles_asistencias"].sum().nlargest(20).index
 df_hm = df_hm[df_hm["club"].isin(top_clubes_hm)]
 pct_top20_rows = []
@@ -416,7 +417,7 @@ for row in pivot_hm.values:
             fila_t.append("")
             continue
         color_texto = "#FFFFFF" if v >= 62.0 else "#082F49"
-        fila_t.append(f"<b style='color:{color_texto}; font-size:13px;'>{v:.1f}%</b>")
+        fila_t.append(f"<b style='color:{color_texto}; font-size:13px;'>{num(v, 1)}%</b>")
     textos_heatmap.append(fila_t)
 
 fig5 = go.Figure(go.Heatmap(
@@ -473,7 +474,7 @@ st.subheader("Conclusiones del Análisis")
 st.markdown("""
 <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        El análisis de las 108.639 observaciones jugador-temporada, que abarcan 2.227 clubes y 300 ligas, describe una distribución marcadamente desigual del talento de alto rendimiento. Con un umbral común para todas las competiciones, solo 115 ligas tienen jugadores élite, y las cinco con mayor volumen (English Premier Division, Spanish First Division, Italian Serie A, Sky Bet Championship y Bundesliga) reúnen el 39,5 % del total, mientras que las veinte primeras alcanzan el 81,9 %. Entre clubes, menos de la mitad (45,6 %) cuenta con algún jugador élite. Dentro de una misma liga de primer nivel, en cambio, el talento se reparte entre más clubes: en la English Premier Division los tres clubes con más élite reúnen solo el 22,5 %.
+        El análisis de las 108.639 observaciones jugador-temporada, que abarcan 2.773 clubes y 299 ligas, describe una distribución marcadamente desigual del talento de alto rendimiento. Con un umbral común para todas las competiciones, solo 114 ligas tienen jugadores élite, y las cinco con mayor volumen (English Premier Division, Spanish First Division, Italian Serie A, Sky Bet Championship y Bundesliga) reúnen el 39,5 % del total, mientras que las veinte primeras alcanzan el 81,9 %. Entre clubes, menos de la mitad (40,8 %) cuenta con algún jugador élite. Dentro de una misma liga de primer nivel, en cambio, el talento se reparte entre más clubes: en la English Premier Division los tres clubes con más élite reúnen solo el 22,5 %.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
         La producción ofensiva también está muy concentrada en pocos jugadores. El coeficiente de Gini de goles + asistencias es 0,618 para el conjunto de la muestra y se mantiene entre 0,615 y 0,619 en todas las temporadas: el 20 % más productivo genera el 62,2 % del aporte ofensivo y el 50 % menos productivo, solo el 7,7 %. Esa misma concentración aparece dentro de cada club, donde el quintil más productivo de la plantilla aporta en promedio el 68,2 % de los goles y asistencias.

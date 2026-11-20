@@ -120,11 +120,13 @@ def render_marco_teorico():
         </div>
     """, unsafe_allow_html=True)
 
-    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_glosario, tab_refs = st.tabs([
+    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_antecedentes, tab_glosario, tab_refs = st.tabs([
         "Introducción",
         "1. Epidemiología y Carga Física",
         "2. Valor Posicional y Concentración",
         "3. Dinámicas Posicionales y Rendimiento",
+        "4. Arquitectura de Datos",
+        "Antecedentes",
         "Glosario de Términos",
         "Referencias Bibliográficas",
     ])
@@ -148,7 +150,8 @@ def render_marco_teorico():
             </p>
             <p style="color: #CBD5E1; font-size: 1.0rem; line-height: 1.7; margin-bottom: 0;">
                 El desarrollo de estas secciones proporciona el rigor conceptual necesario para abordar las variables históricas del fútbol profesional
-                (2022–2026). El documento se complementa con un glosario de términos que unifica el lenguaje técnico empleado a lo largo de la investigación.
+                (2022–2026). El documento se complementa con una revisión de antecedentes, que resume estudios previos relacionados con cada objetivo,
+                y con un glosario de términos que unifica el lenguaje técnico empleado a lo largo de la investigación.
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -159,11 +162,11 @@ def render_marco_teorico():
             <div class="concept-card">
                 <div class="concept-title">1. Epidemiología de Lesiones y Carga Física</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Contextualiza el desgaste biológico del futbolista mediante estándares internacionales (Consenso BioFORM)
+                    Contextualiza el desgaste biológico del futbolista mediante los consensos internacionales de la FIFA y del COI
                     y el criterio <i>time-loss</i>, vinculando las características antropométricas (altura, peso, IMC y edad)
                     y los minutos jugados como estimador del estrés fisiológico.
                 </p>
-                <span class="tag-pill">Consenso BioFORM</span>
+                <span class="tag-pill">Consensos FIFA / COI</span>
                 <span class="tag-pill">Criterio Time-Loss</span>
                 <span class="tag-pill">Antropometría</span>
             </div>
@@ -173,12 +176,12 @@ def render_marco_teorico():
             <div class="concept-card">
                 <div class="concept-title">3. Dinámicas Posicionales y Rendimiento Individual</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Evalúa la consistencia inter-temporada mediante el Coeficiente de Variación (CV = σ / μ) y la dependencia
+                    Evalúa la homogeneidad del rendimiento mediante el Coeficiente de Variación (CV = σ / μ) y la dependencia
                     del talento a través de la concentración del rendimiento en el quintil superior (Top 20%) de la plantilla.
                 </p>
                 <span class="tag-pill">Coeficiente de Variación (CV)</span>
                 <span class="tag-pill">Dependencia Top 20%</span>
-                <span class="tag-pill">Consistencia Inter-temporada</span>
+                <span class="tag-pill">Dispersión Relativa</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -188,7 +191,7 @@ def render_marco_teorico():
                 <div class="concept-title">2. Valor Posicional y Concentración de Talento</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
                     Estructura las demarcaciones tácticas en cuatro líneas (POR, DEF, MED, DEL), aborda métricas ofensivas
-                    avanzadas (xG, SOE) y cuantifica la desigualdad competitiva mediante los índices de Gini, Herfindahl-Hirschman (HHI)
+                    (goles esperados y pases clave) y cuantifica la desigualdad competitiva mediante los índices de Gini, Herfindahl-Hirschman (HHI)
                     y la Curva de Lorenz.
                 </p>
                 <span class="tag-pill">Estratificación Táctica</span>
@@ -201,13 +204,13 @@ def render_marco_teorico():
             <div class="concept-card">
                 <div class="concept-title">4. Arquitectura de Datos y Ecosistema Analítico</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Detalla el modelo relacional normalizado en Tercera Forma Normal (3FN) con 17 tablas y más de 855,000 registros,
-                    el motor columnar OLAP local DuckDB, la conexión en la nube con Supabase, y el entorno de procesamiento con Python, Pandas,
-                    NumPy, Plotly Express y Streamlit.
+                    Describe el modelo relacional normalizado en Tercera Forma Normal (3FN),
+                    la diferencia entre el procesamiento transaccional (OLTP) y el analítico (OLAP), la desnormalización en dimensiones y hechos,
+                    y los motores columnares como DuckDB.
                 </p>
-                <span class="tag-pill">Modelo 3FN (17 Tablas)</span>
-                <span class="tag-pill">Motor DuckDB OLAP</span>
-                <span class="tag-pill">Python & Streamlit</span>
+                <span class="tag-pill">Modelo Relacional 3FN</span>
+                <span class="tag-pill">Motores Columnares</span>
+                <span class="tag-pill">OLTP vs. OLAP</span>
             </div>
             """, unsafe_allow_html=True)
 
@@ -225,20 +228,39 @@ def render_marco_teorico():
         st.markdown("#### 1.1. El Consenso Internacional y el Criterio Time-Loss")
         st.write("""
         La epidemiología de lesiones en el fútbol se rige por estándares internacionales para garantizar la comparabilidad de los datos.
-        El **consenso BioFORM** (y sus predecesores) establece que una lesión debe ser registrada bajo el criterio de **time-loss** (pérdida de tiempo).
-        Esto significa que solo se considera lesión aquella que impide al jugador participar en entrenamientos o partidos por al menos 24 horas.
-        Este criterio permite cuantificar objetivamente la gravedad a través de los **días de baja médica**, evitando sesgos subjetivos.
+        El **consenso de la FIFA** (Fuller et al., 2006) y la posterior **declaración de consenso del Comité Olímpico Internacional** (Bahr et al., 2020)
+        proponen registrar las lesiones bajo el criterio de **time-loss** (pérdida de tiempo): una lesión cuenta cuando impide al jugador
+        participar plenamente en los entrenamientos o partidos siguientes. Este criterio permite cuantificar la gravedad a través de los
+        **días de baja**, contados desde la fecha de la lesión hasta el regreso a la actividad.
         """)
 
         st.markdown("""
         <div class="quote-box">
-            <b>Criterio BioFORM / COI:</b><br>
-            "Solo se considera lesión aquella que impide al jugador participar en entrenamientos o partidos por al menos 24 horas,
-            permitiendo cuantificar de forma objetiva la severidad en días de baja médica."
+            <b>Criterio <i>time-loss</i> (Fuller et al., 2006):</b><br>
+            Se considera lesión con pérdida de tiempo aquella que impide al jugador participar plenamente en los entrenamientos o partidos
+            siguientes; su gravedad se mide por el número de días transcurridos hasta que vuelve a estar disponible.
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown("#### 1.2. Antropometría y Biomecánica")
+        st.markdown("#### 1.2. Clasificación de la Gravedad")
+        st.write("""
+        El consenso de la FIFA clasifica la gravedad de una lesión según los días de baja que ocasiona. Esta escala sirve de referencia
+        para agrupar las lesiones por rangos de duración, como se hace en el análisis del Objetivo 1:
+        """)
+        st.markdown("""
+        | Categoría | Días de baja |
+        | :--- | :--- |
+        | Mínima | 1 a 3 días |
+        | Leve | 4 a 7 días |
+        | Moderada | 8 a 28 días |
+        | Grave | Más de 28 días |
+        """)
+        st.write("""
+        Como las lesiones graves son pocas pero muy largas, la distribución de los días de baja suele presentar **asimetría positiva**:
+        la media queda por encima de la mediana. Por eso la literatura recomienda informar ambas medidas y no solo el promedio.
+        """)
+
+        st.markdown("#### 1.3. Antropometría y Biomecánica")
         st.write("""
         La literatura deportiva vincula las características antropométricas (altura, peso, Índice de Masa Corporal —IMC— y edad) con la incidencia
         y el tipo de lesión. El exceso de masa corporal o las variaciones de edad influyen en la carga biomecánica durante los esfuerzos de alta intensidad.
@@ -250,11 +272,17 @@ def render_marco_teorico():
         - **Factor Edad:** Los cambios biológicos propios de la edad condicionan la tolerancia tisular y el tiempo de recuperación, siendo una variable fundamental para la estratificación demográfica de las plantillas.
         """)
 
-        st.markdown("#### 1.3. La Carga Física (Minutos Jugados)")
+        st.markdown("#### 1.4. La Carga Física (Minutos Jugados)")
         st.write("""
         La acumulación de minutos de juego es utilizada en la literatura como un **proxy (aproximación) del estrés fisiológico y biomecánico acumulado**.
         La saturación del calendario en el fútbol moderno hace que el volumen de exposición competitiva sea un factor crítico a describir cuando se analizan
         las bajas médicas de una plantilla.
+        """)
+        st.write("""
+        La relación entre carga y lesión no es lineal ni está cerrada en la literatura. Malone et al. (2017) describen una relación en forma de U,
+        en la que tanto la exposición insuficiente como la excesiva se asocian con más lesiones, e Impellizzeri et al. (2020) advierten sobre
+        los problemas conceptuales de algunos indicadores de carga muy difundidos. Por ello, en este estudio la carga de minutos se trata
+        como una variable descriptiva y no como un predictor de lesiones.
         """)
 
     with tab_sec2:
@@ -314,8 +342,8 @@ def render_marco_teorico():
         st.write("""
         El análisis descriptivo moderno supera los conteos básicos (goles, asistencias) mediante métricas que contextualizan el rendimiento.
         Los **Goles Esperados (xG)** cuantifican la calidad de las ocasiones generadas, permitiendo evaluar si un jugador o equipo rinde por encima o por debajo
-        de lo esperado según la probabilidad de gol de sus disparos. Complementariamente, las métricas de **creación de disparos (SOE)** permiten describir
-        la participación de un jugador en la generación de peligro.
+        de lo esperado según la probabilidad de gol de sus disparos (Lucey et al., 2015). Complementariamente, los **pases clave** (pases que terminan
+        en un remate de un compañero) permiten describir la participación de un jugador en la generación de peligro.
         """)
 
         st.markdown("#### 2.3. Métricas de Concentración: Gini y HHI")
@@ -326,14 +354,14 @@ def render_marco_teorico():
 
         st.write("""
         - **Índice de Gini:** Es una medida de desigualdad que se calcula a partir de la Curva de Lorenz; su valor oscila entre 0 (igualdad perfecta) y 1 (concentración total).
-          En el contexto deportivo, un Gini cercano a 0 indica que el rendimiento ofensivo está repartido equitativamente, mientras que un valor alto indica que pocos clubes acaparan la producción.
+          En el contexto deportivo, un Gini cercano a 0 indica que el rendimiento ofensivo está repartido equitativamente, mientras que un valor alto indica que pocos jugadores acaparan la producción.
         - **Índice Herfindahl-Hirschman (HHI):** Se calcula sumando los cuadrados de las cuotas de participación. Se utiliza para evaluar la concentración del mercado:
           un HHI bajo indica una estructura competitiva equilibrada, mientras que un HHI alto describe una estructura oligopólica donde unos pocos clubes dominan el talento.
         """)
 
         st.markdown("#### 2.4. La Curva de Lorenz")
         st.write("""
-        Es la representación gráfica del Índice de Gini. Mide el **porcentaje acumulado de rendimiento (goles, asistencias)** frente al
+        Es la base gráfica del Índice de Gini. Representa el **porcentaje acumulado de rendimiento (goles, asistencias)** frente al
         **porcentaje acumulado de jugadores o clubes**. Cuanto más se aleje la curva de la diagonal de 45 grados (línea de igualdad perfecta),
         mayor será la concentración del talento o del gol en pocos actores.
         """)
@@ -351,28 +379,115 @@ def render_marco_teorico():
 
         st.markdown("#### 3.1. La Consistencia y el Coeficiente de Variación (CV)")
         st.write("""
-        La consistencia de un jugador o una demarcación se evalúa mediante la dispersión de sus datos a lo largo del tiempo.
-        El **Coeficiente de Variación (CV)** es una medida estadística que expresa la desviación estándar como un porcentaje de la media aritmética 
-        y permite comparar la volatilidad de datos con diferentes escalas.
-        Un **CV bajo** describe un rendimiento estable y homogéneo; un **CV alto** describe un rendimiento volátil, sujeto a altibajos temporada tras temporada.
-        En el análisis posicional, las posiciones defensivas y de contención exhiben habitualmente los CV más bajos, mientras que los atacantes exteriores
-        y delanteros presentan un CV superior derivado de rachas anotadoras y variabilidad táctica.
+        El **Coeficiente de Variación (CV)** es una medida estadística que expresa la desviación estándar como proporción de la media aritmética
+        y permite comparar la dispersión de datos con diferentes escalas.
+        Puede aplicarse de dos maneras: sobre los valores de un mismo jugador a lo largo del tiempo, para medir su regularidad, o sobre los valores
+        de todos los jugadores de un grupo, para medir qué tan parecidos son entre sí. En este estudio se usa de la segunda manera: se compara
+        la homogeneidad del aporte entre los jugadores de cada línea posicional.
+        Un **CV bajo** describe un grupo homogéneo, en el que la mayoría rinde cerca de la media; un **CV alto** describe un grupo heterogéneo,
+        en el que unos pocos jugadores se alejan mucho del resto.
+        """)
+        st.write("""
+        El CV pierde sentido cuando la media es cercana a cero, porque cualquier valor aislado dispara el cociente. Es el caso del aporte ofensivo
+        de los arqueros, que por esa razón se analizan con métricas propias de su posición.
         """)
 
         st.markdown("#### 3.2. La Dependencia del Talento (Top 20%)")
         st.write("""
-        La distribución interna del rendimiento en una plantilla es un indicador clave. En la literatura de análisis deportivo, se evalúa
+        La distribución interna del rendimiento en una plantilla es un indicador clave. Siguiendo la lógica del principio de Pareto, se evalúa
         qué porcentaje del rendimiento total del equipo recae sobre el **20% más productivo de sus jugadores (el quintil superior)**.
         """)
 
         st.markdown("""
         <div class="quote-box">
-            <b>Criterio de Dependencia:</b><br>
-            Una concentración superior al <b>65%</b> describe una alta dependencia de un grupo muy reducido de futbolistas, caracterizando plantillas
+            <b>Criterio de Dependencia adoptado en este estudio:</b><br>
+            Como referencia operativa, una concentración superior al <b>65%</b> describe una alta dependencia de un grupo muy reducido de futbolistas, caracterizando plantillas
             cuya producción ofensiva está fuertemente centralizada en sus figuras principales. Por el contrario, registros inferiores al <b>50%</b>
             reflejan un modelo de producción coral y distribuido.
         </div>
         """, unsafe_allow_html=True)
+
+    with tab_sec4:
+        st.markdown("""
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Sección 4</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">4. Arquitectura de Datos y Ecosistema Analítico</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Modelo relacional, normalización, procesamiento analítico y motores columnares.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("#### 4.1. El Modelo Relacional y la Tercera Forma Normal")
+        st.write("""
+        El modelo relacional (Codd, 1970) organiza la información en tablas vinculadas mediante claves. La **normalización** es el proceso de
+        dividir los datos para que cada hecho se guarde una sola vez. Una base está en **Tercera Forma Normal (3FN)** cuando cada columna depende
+        únicamente de la clave de su tabla, lo que elimina la redundancia y evita inconsistencias al actualizar. En un diseño de este tipo,
+        cada entidad (por ejemplo, jugadores, clubes, temporadas o lesiones) se guarda en su propia tabla.
+        """)
+
+        st.markdown("#### 4.2. Procesamiento Transaccional (OLTP) y Analítico (OLAP)")
+        st.write("""
+        Los sistemas **OLTP** están pensados para registrar operaciones individuales con rapidez y se apoyan en modelos normalizados. Los sistemas
+        **OLAP** están pensados para el análisis: leen y agregan grandes volúmenes de datos para responder preguntas de conjunto. Un mismo conjunto
+        de datos puede servir a ambos propósitos con estructuras distintas.
+        """)
+
+        st.markdown("#### 4.3. Desnormalización: Dimensiones y Hechos")
+        st.write("""
+        Para el análisis es habitual **desnormalizar**: reunir en pocas tablas anchas la información que el modelo normalizado reparte en muchas.
+        El modelado dimensional (Kimball y Ross, 2013) distingue entre tablas de **hechos**, que guardan las medidas numéricas (minutos, goles,
+        días de baja), y tablas de **dimensiones**, que guardan el contexto (jugador, club, temporada). Se gana velocidad y simplicidad en las
+        consultas a cambio de repetir datos.
+        """)
+
+        st.markdown("#### 4.4. Motores Columnares")
+        st.write("""
+        Los motores analíticos como DuckDB almacenan los datos **por columnas** y no por filas. Como una consulta analítica suele usar pocas columnas
+        de muchas filas, este diseño permite calcular agregaciones y funciones de ventana sobre cientos de miles de registros en muy poco tiempo.
+        """)
+
+    with tab_antecedentes:
+        st.markdown("""
+        <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 22px 26px; margin-bottom: 22px;">
+            <span class="theory-badge">Antecedentes</span>
+            <h3 style="color: #F8FAFC; margin-top: 5px; margin-bottom: 8px;">Antecedentes de la Investigación</h3>
+            <p style="color: #94A3B8; margin: 0; font-size: 0.95rem;">
+                Estudios previos relacionados con cada uno de los objetivos específicos.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        antecedentes = [
+            ("Leventer et al. (2016) · Objetivo 1",
+             "Analizaron los patrones de lesión de 1.448 jugadores de la primera división alemana durante seis temporadas consecutivas, "
+             "con énfasis en la posición de juego y a partir de un registro basado en medios de comunicación.",
+             "Muestra que es posible describir las lesiones de una liga completa a partir de registros públicos de días de baja, "
+             "el mismo tipo de dato que se emplea en este estudio."),
+            ("Seshadri et al. (2021) · Objetivo 1",
+             "Compararon las lesiones de la liga alemana antes y después de la interrupción por la COVID-19, usando reportes públicos "
+             "y definiendo la lesión por la pérdida de tiempo de juego.",
+             "Aplica el criterio de pérdida de tiempo a datos públicos y relaciona los cambios en la carga competitiva con las lesiones."),
+            ("Frick et al. (2023) · Objetivo 2",
+             "Midieron la concentración de talento entre los clubes de las ligas europeas usando los valores de mercado de los jugadores, "
+             "y hallaron un efecto débil sobre el equilibrio competitivo de las ligas.",
+             "Sustenta el uso de medidas de concentración para describir cómo se reparte el talento entre clubes."),
+            ("Pelechrinis y Winston (2021) · Objetivo 3",
+             "Propusieron un modelo para cuantificar el valor de cada posición en el fútbol, expresado en puntos de liga esperados "
+             "por encima de un jugador de reemplazo.",
+             "Sustenta la idea de que el aporte de un jugador debe evaluarse según su posición y no con una misma vara para todos."),
+        ]
+
+        col_a1, col_a2 = st.columns(2)
+        for i, (estudio, resumen, relacion) in enumerate(antecedentes):
+            with (col_a1 if i % 2 == 0 else col_a2):
+                st.markdown(f"""
+                <div class="concept-card">
+                    <div class="glossary-term">{estudio}</div>
+                    <p class="glossary-desc">{resumen}</p>
+                    <p class="glossary-desc"><b>Relación con este estudio:</b> {relacion}</p>
+                </div>
+                """, unsafe_allow_html=True)
 
     with tab_glosario:
         st.markdown("""
@@ -386,7 +501,7 @@ def render_marco_teorico():
         """, unsafe_allow_html=True)
 
         g_items = [
-            ("BioFORM", "Consenso internacional para el registro estandarizado de lesiones deportivas."),
+            ("Consensos FIFA / COI", "Declaraciones internacionales que estandarizan la definición y el registro de las lesiones deportivas (Fuller et al., 2006; Bahr et al., 2020)."),
             ("Time-Loss", "Criterio epidemiológico que define una lesión por la incapacidad de participar en entrenamientos o partidos."),
             ("P90 (Percentil 90)", "Umbral estadístico que identifica al 10% superior de los jugadores en una métrica determinada (jugadores de élite)."),
             ("Coeficiente de Variación (CV)", "Medida estadística que expresa la desviación estándar como porcentaje de la media (CV = σ / μ)."),
@@ -394,6 +509,11 @@ def render_marco_teorico():
             ("HHI (Herfindahl-Hirschman)", "Medida de concentración de mercado que suma los cuadrados de las cuotas de participación."),
             ("xG (Goles Esperados)", "Métrica probabilística que mide la calidad de un disparo."),
             ("Top 20%", "El quintil superior de una plantilla (el 20% más productivo)."),
+            ("Curva de Lorenz", "Gráfico del porcentaje acumulado de rendimiento frente al porcentaje acumulado de jugadores; cuanto más se aleja de la diagonal, mayor es la desigualdad."),
+            ("Correlación de Spearman", "Medida de asociación entre dos variables basada en sus rangos; va de −1 a 1."),
+            ("IMC (Índice de Masa Corporal)", "Peso en kilogramos dividido entre el cuadrado de la altura en metros."),
+            ("Ability Score", "Puntaje general de habilidad que la base de datos asigna a cada jugador en cada temporada."),
+            ("Pases clave", "Pases que terminan en un remate de un compañero."),
             ("3FN (Tercera Forma Normal)", "Estándar de diseño de bases de datos relacionales que elimina la redundancia."),
             ("OLAP", "Procesamiento Analítico en Línea; arquitectura de bases de datos optimizada para consultas multidimensionales y agregación de grandes volúmenes de datos."),
             ("OLTP", "Procesamiento de Transacciones en Línea; arquitectura de bases de datos optimizada para el registro rápido de operaciones diarias."),
@@ -423,15 +543,17 @@ def render_marco_teorico():
 
         referencias = [
             ("Bahr, R., Clarsen, B., Derman, W., Dvorak, J., Emery, C. A., Finch, C. F., ... & Khan, K. M. (2020)", "International Olympic Committee consensus statement: Methods for recording and reporting of epidemiological data on injury and illness in sport 2020 (including the STROBE Extension for Sport Injury and Illness Surveillance (STROBE-SIIS)). British Journal of Sports Medicine, 54(7), 372–389."),
+            ("Codd, E. F. (1970)", "A relational model of data for large shared data banks. Communications of the ACM, 13(6), 377–387."),
             ("Frick, B., Quansah, T. K., & Lang, M. (2023)", "Talent concentration and competitive imbalance in European soccer. Frontiers in Sports and Active Living, 5, 1148122. https://doi.org/10.3389/fspor.2023.1148122"),
             ("Fuller, C. W., Ekstrand, J., Junge, A., Andersen, T. E., Bahr, R., Dvorak, J., ... & Meeuwisse, W. H. (2006)", "Consensus statement on injury definitions and data collection procedures in studies of football (soccer) injuries. British Journal of Sports Medicine, 40(3), 193–201."),
-            ("Gabbett, T. J., Hulin, B. T., Blanch, P., & Whiteley, R. (2016)", "High chronic training loads and exposure to bouts of maximal velocity running reduce injury risk in elite rugby league players. Journal of Science and Medicine in Sport, 19(3), 234–238."),
-            ("Harlow, C. K., Drummond, J. E., & Voos, J. E. (2021)", "The effect of COVID-19 lockdown on injury rates in the Bundesliga. Frontiers in Sports and Active Living, 3, 630576."),
             ("Impellizzeri, F. M., Tenan, M. S., Kempton, T., Novak, A., & Coutts, A. J. (2020)", "Acute:Chronic Workload Ratio: Conceptual issues and fundamental pitfalls. International Journal of Sports Physiology and Performance, 15(6), 907–913."),
-            ("Krutsch, W., Zeman, F., Zellner, J., Pfeifer, C., Nerlich, M., & Angele, P. (2016)", "Injury patterns among elite football players: A media-based analysis over 6 seasons with emphasis on playing position. International Journal of Sports Medicine, 37(11), 898–908."),
+            ("Kimball, R., & Ross, M. (2013)", "The data warehouse toolkit: The definitive guide to dimensional modeling (3.ª ed.). Wiley."),
+            ("Leventer, L., Eek, F., Hofstetter, S., & Lames, M. (2016)", "Injury patterns among elite football players: A media-based analysis over 6 seasons with emphasis on playing position. International Journal of Sports Medicine, 37(11), 898–908."),
             ("Lucey, P., Bialkowski, A., Monfort, M., Carr, P., & Matthews, I. (2015)", "Quality vs quantity: Improved shot prediction in soccer using strategic features from spatiotemporal data. MIT Sloan Sports Analytics Conference."),
+            ("Malone, S., Roe, M., Doran, D. A., Gabbett, T. J., & Collins, K. (2017)", "High chronic training loads and exposure to bouts of maximal velocity running reduce injury risk in elite Gaelic football. Journal of Science and Medicine in Sport, 20(3), 250–254."),
             ("Pappalardo, L., Cintia, P., Ferragina, P., Massucco, E., Pedreschi, D., & Giannotti, F. (2019)", "PlayerRank: Data-driven performance evaluation and player ranking in soccer via a machine learning approach. ACM Transactions on Intelligent Systems and Technology, 10(5), 1–27."),
-            ("Pelechrinis, K., & Winston, W. (2021)", "Positional value in soccer: Expected league points added above replacement. Journal of Quantitative Analysis in Sports, 17(3), 187–201."),
+            ("Pelechrinis, K., & Winston, W. (2021)", "A Skellam regression model for quantifying positional value in soccer. Journal of Quantitative Analysis in Sports, 17(3), 187–201. https://doi.org/10.1515/jqas-2019-0122"),
+            ("Seshadri, D. R., Thom, M. L., Harlow, E. R., Drummond, C. K., & Voos, J. E. (2021)", "Case report: Return to sport following the COVID-19 lockdown and its impact on injury rates in the German soccer league. Frontiers in Sports and Active Living, 3, 604226. https://doi.org/10.3389/fspor.2021.604226"),
         ]
 
         for autor, obra in referencias:
@@ -449,10 +571,10 @@ def render_marco_teorico():
     <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
         <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Síntesis Conceptual y Metodológica de la Investigación</h4>
         <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.0rem;">
-            <li><b>Estandarización Epidemiológica y Cuantificación de Carga:</b> La adopción del consenso internacional BioFORM bajo el criterio de pérdida de tiempo (<i>time-loss</i>) proporciona una delimitación médica objetiva. A su vez, los minutos acumulados se consolidan como un estimador (<i>proxy</i>) reproducible del estrés mecánico y fisiológico en el ciclo 2022–2026.</li>
+            <li><b>Estandarización Epidemiológica y Cuantificación de Carga:</b> La adopción de los consensos internacionales de la FIFA y del COI bajo el criterio de pérdida de tiempo (<i>time-loss</i>) proporciona una delimitación médica objetiva. A su vez, los minutos acumulados se consolidan como un estimador (<i>proxy</i>) reproducible del estrés mecánico y fisiológico en el ciclo 2022–2026.</li>
             <li><b>Estratificación Táctica y Valor Posicional:</b> La estructuración del juego en cuatro bloques funcionales (Arqueros, Defensas, Mediocampistas y Delanteros) sustenta la asimetría de responsabilidades: especialización extrema en finalización y neutralización en los extremos del campo frente a la polivalencia bidireccional en la zona media.</li>
             <li><b>Cuantificación de la Desigualdad y Concentración Competitiva:</b> La traslación de métricas económicas como el Coeficiente de Gini, las Curvas de Lorenz y el Índice Herfindahl-Hirschman (HHI) permite diagnosticar con precisión matemática si el rendimiento y el talento de élite (P90) se distribuyen de forma paritaria o se concentran en oligopolios deportivos.</li>
-            <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> La arquitectura normalizada en Tercera Forma Normal (3FN) con 17 entidades y más de 855,000 registros, procesada a través del motor columnar local DuckDB y visualizada en Streamlit y Plotly, asegura la trazabilidad íntegra del estudio bajo una perspectiva estrictamente descriptiva.</li>
+            <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> El modelo relacional normalizado en Tercera Forma Normal (3FN) garantiza la integridad de los datos de origen, mientras que la desnormalización en dimensiones y hechos y los motores columnares facilitan su análisis. Estos conceptos sustentan el tratamiento de los datos bajo una perspectiva estrictamente descriptiva.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)

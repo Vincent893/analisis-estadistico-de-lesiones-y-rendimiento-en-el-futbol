@@ -6,7 +6,7 @@ import streamlit as st
 from database.DB import DB
 from models.UI import UI
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme
+from utils.graficos import apply_theme, num
 
 
 UI.setup_page()
@@ -42,7 +42,7 @@ def interpretacion(texto):
 
 def etiqueta_pct_dias(df):
     """Etiqueta de barra: % de lesionados y, debajo, días de baja promedio de los lesionados."""
-    return [f"{p:.1f}%<br>{d:.0f} d" for p, d in zip(df["pct_lesionados"], df["dias_prom"])]
+    return [f"{num(p, 1)}%<br>{num(d)} d" for p, d in zip(df["pct_lesionados"], df["dias_prom"])]
 
 
 TIPOS_ES = {
@@ -127,7 +127,7 @@ st.divider()
 st.header("1. Panorama general")
 
 st.markdown("""
-El análisis descriptivo inicial abarca un total de 108,639 observaciones de jugador-temporada. Esta exploración preliminar permite cuantificar la dimensión global de las afectaciones físicas, estableciendo los parámetros de frecuencia de los futbolistas que presentan al menos un evento lesivo durante el periodo competitivo, así como la distribución acumulada de los días de inactividad.
+El análisis descriptivo inicial abarca un total de 108.639 observaciones de jugador-temporada. Esta exploración preliminar permite cuantificar la dimensión global de las afectaciones físicas, estableciendo los parámetros de frecuencia de los futbolistas que presentan al menos un evento lesivo durante el periodo competitivo, así como la distribución acumulada de los días de inactividad.
 """)
 
 sql_q1 = P_CTE + """
@@ -143,63 +143,26 @@ SELECT
 """
 k = run_query(sql_q1).iloc[0]
 
-f1 = st.columns(4)
-with f1[0]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Lesiones registradas</div>
-        <div class="kpi-value">{int(k['total_lesiones']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f1[1]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Jugadores distintos lesionados</div>
-        <div class="kpi-value">{int(k['jugadores_lesionados']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f1[2]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Jugador-temporadas analizadas</div>
-        <div class="kpi-value">{int(k['jugadores_temporada']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f1[3]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Porcentaje con al menos una lesión</div>
-        <div class="kpi-value">{k['pct_con_lesion']} %</div>
-    </div>""", unsafe_allow_html=True)
-
-f2 = st.columns(4)
-with f2[0]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Días perdidos (total)</div>
-        <div class="kpi-value">{int(k['dias_totales']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f2[1]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Duración promedio</div>
-        <div class="kpi-value">{int(k['dias_promedio'])} días</div>
-    </div>""", unsafe_allow_html=True)
-
-with f2[2]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Duración mediana</div>
-        <div class="kpi-value">{int(k['dias_mediana'])} días</div>
-    </div>""", unsafe_allow_html=True)
-
-with f2[3]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Duración máxima</div>
-        <div class="kpi-value">{int(k['dias_max']):,}</div>
-    </div>""", unsafe_allow_html=True)
+# Fila 1: cuántos se lesionan. Fila 2: cuánto duran las lesiones.
+kpis = [
+    ("Registros analizados", num(k['jugadores_temporada']), "Un registro por jugador y temporada"),
+    ("Lesiones registradas", num(k['total_lesiones']), "Total de lesiones en el período"),
+    ("Jugadores lesionados", num(k['jugadores_lesionados']), "Jugadores distintos con al menos una lesión"),
+    ("Tasa de lesión", f"{num(k['pct_con_lesion'], 1)} %", "Registros con al menos una lesión"),
+    ("Duración mediana", f"{int(k['dias_mediana'])} días", "La mitad de las lesiones dura esto o menos"),
+    ("Duración promedio", f"{int(k['dias_promedio'])} días", "Media de días de baja por lesión"),
+    ("Lesión más larga", f"{num(k['dias_max'])} días", "Mayor baja registrada por una lesión"),
+    ("Días de baja totales", num(k['dias_totales']), "Suma de los días de baja de todas las lesiones"),
+]
+for fila in (kpis[:4], kpis[4:]):
+    for col, (titulo, valor, pie) in zip(st.columns(4), fila):
+        with col:
+            st.markdown(f"""
+            <div class="kpi-card">
+                <div class="kpi-title">{titulo}</div>
+                <div class="kpi-value">{valor}</div>
+                <div class="kpi-footer" style="font-size:0.85rem; line-height:1.4;">{pie}</div>
+            </div>""", unsafe_allow_html=True)
 
 interpretacion("Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38 días) es considerablemente mayor que la mediana (15 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.")
 st.divider()
@@ -223,7 +186,7 @@ FROM ps GROUP BY season_label, season_order ORDER BY season_order;
 q2 = run_query(sql_q2).sort_values("season_label")
 
 q2["top_rect"] = q2.apply(
-    lambda r: f"{r['lesiones']:,.0f} les. ({r['pct_lesionados']}%)", 
+    lambda r: f"{num(r['lesiones'])} les. ({num(r['pct_lesionados'], 1)}%)",
     axis=1
 )
 
@@ -232,10 +195,9 @@ fig_q2 = px.bar(q2, x="season_label", y="lesiones", text="top_rect",
                 labels={"season_label": "Temporada", "lesiones": "Cantidad de Lesiones"})
 
 fig_q2.update_traces(textposition="outside", cliponaxis=False, width=0.40)
-fig_q2.update_xaxes(title_text="")
 mostrar(fig_q2, 400)
 
-interpretacion("Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24.4% y el 25.0% anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada. Ningún jugador registra más de una lesión en una misma temporada, por lo que ese porcentaje de afectados corresponde siempre a un único episodio por jugador y campaña.")
+interpretacion("Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24,4 % y el 25,0 % anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada. Ningún jugador registra más de una lesión en una misma temporada, por lo que ese porcentaje de afectados corresponde siempre a un único episodio por jugador y campaña.")
 
 
 st.subheader("2.2 Distribución mensual de las lesiones")
@@ -256,7 +218,7 @@ fig_q6 = go.Figure()
 fig_q6.add_trace(go.Bar(
     x=q6["mes_txt"],
     y=q6["lesiones"],
-    text=q6["lesiones"].apply(lambda x: f"<b>{x} les.</b>"),
+    text=q6["lesiones"].apply(lambda x: f"<b>{num(x)} les.</b>"),
     textposition="outside",
     width=0.5,
     showlegend=False
@@ -265,7 +227,7 @@ fig_q6.add_trace(go.Bar(
 fig_q6.add_trace(go.Bar(
     x=q6["mes_txt"],
     y=q6["lesiones"],
-    text=q6["dias_promedio"].apply(lambda x: f"{x}d prom"),
+    text=q6["dias_promedio"].apply(lambda x: f"{num(x, 1)} d prom"),
     textposition="inside",
     insidetextanchor="middle",
     textangle=0,
@@ -278,7 +240,7 @@ fig_q6.update_layout(
     title="Volumen de lesiones y duración media según mes de inicio",
     barmode="overlay"
 )
-fig_q6.update_xaxes(title_text="")
+fig_q6.update_xaxes(title_text="Mes de inicio de la lesión")
 mostrar(fig_q6, 380)
 
 interpretacion("Se advierte una distribución bastante homogénea a lo largo de los meses activos del año, con una ausencia lógica de registros durante los meses de receso estival. Los valores se mantienen estables sin picos extremos que sugieran un riesgo asociado a un mes en particular, reflejando una carga de estrés físico sostenida.")
@@ -409,14 +371,13 @@ with col_alt:
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     alt = run_query(sql_q7)
-    alt["grupo"] = [f"C{c}: {a:g}–{b:g} cm" for c, a, b in zip(alt["cuartil"], alt["min_cm"], alt["max_cm"])]
+    alt["grupo"] = [f"C{c}: {a:g}–{b:g} cm".replace(".", ",") for c, a, b in zip(alt["cuartil"], alt["min_cm"], alt["max_cm"])]
 
     fig_alt = px.bar(alt, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(alt),
                      title="Porcentaje de lesionados por cuartil de altura",
-                     labels={"grupo": "Cuartil de Altura", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
+                     labels={"grupo": "Cuartil de altura (rango en cm)", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
     fig_alt.update_traces(textposition="outside", cliponaxis=False, width=0.45)
     fig_alt.update_yaxes(range=[0, 40])
-    fig_alt.update_xaxes(title_text="")
     mostrar(fig_alt, 360)
 
 with col_pes:
@@ -428,14 +389,13 @@ with col_pes:
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     pes = run_query(sql_q8)
-    pes["grupo"] = [f"C{c}: {a:g}–{b:g} kg" for c, a, b in zip(pes["cuartil"], pes["min_kg"], pes["max_kg"])]
+    pes["grupo"] = [f"C{c}: {a:g}–{b:g} kg".replace(".", ",") for c, a, b in zip(pes["cuartil"], pes["min_kg"], pes["max_kg"])]
 
     fig_pes = px.bar(pes, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(pes),
                      title="Porcentaje de lesionados por cuartil de peso",
-                     labels={"grupo": "Cuartil de Peso", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
+                     labels={"grupo": "Cuartil de peso (rango en kg)", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
     fig_pes.update_traces(textposition="outside", cliponaxis=False, width=0.45)
     fig_pes.update_yaxes(range=[0, 40])
-    fig_pes.update_xaxes(title_text="")
     mostrar(fig_pes, 360)
 
 interpretacion("Los gráficos anteriores evidencian la gran independencia entre las características antropométricas y la probabilidad de lesión. Las variaciones porcentuales entre el cuartil inferior y el superior son pequeñas, dándonos como resultado que un jugador más alto o más pesado no incrementa ni reduce por sí solo el riesgo de sufrir una lesión. La duración tampoco cambia: en el ciclo completo, los lesionados de cada cuartil de altura y de peso pierden en promedio entre 37 y 39 días.")
@@ -467,7 +427,7 @@ with col_grafico:
     FROM imc_q GROUP BY 1 ORDER BY 1;
     """
     df_imc = run_query(sql_imc)
-    df_imc["categoria"] = [f"C{c}: {a:.1f}–{b:.1f}" for c, a, b in zip(df_imc["cuartil"], df_imc["min_imc"], df_imc["max_imc"])]
+    df_imc["categoria"] = [f"C{c}: {num(a, 1)}–{num(b, 1)}" for c, a, b in zip(df_imc["cuartil"], df_imc["min_imc"], df_imc["max_imc"])]
 
     fig_imc = px.bar(
         df_imc,
@@ -528,10 +488,9 @@ with col_fig_min:
 
     fig_mins = px.bar(q10, x="banda_min", y="pct_lesionados", text=etiqueta_pct_dias(q10),
                       title="Porcentaje de lesionados según minutos jugados",
-                      labels={"banda_min": "Banda de Minutos", "pct_lesionados": "% Lesionados"})
+                      labels={"banda_min": "Minutos jugados en la temporada", "pct_lesionados": "% Lesionados"})
     fig_mins.update_traces(textposition="outside", cliponaxis=False, width=0.35)
     fig_mins.update_yaxes(range=[0, 40])
-    fig_mins.update_xaxes(title_text="")
     mostrar(fig_mins, 380)
 
 st.divider()
@@ -557,7 +516,8 @@ perfil = q15.set_index("grupo").T
 etiq = {"jugadores": "Jugador-temporadas", "altura_prom": "Altura promedio (cm)", "peso_prom": "Peso promedio (kg)",
         "mins_promedio": "Minutos promedio", "edad_prom": "Edad promedio"}
 perfil.index = [etiq.get(i, i) for i in perfil.index]
-st.dataframe(perfil.round(2).reset_index().rename(columns={"index": "Variable Biométrica / Operativa"}), hide_index=True)
+perfil = perfil.map(lambda v: num(v, 0 if float(v).is_integer() else 2))
+st.dataframe(perfil.reset_index().rename(columns={"index": "Variable Biométrica / Operativa"}), hide_index=True)
 
 interpretacion("Los promedios de altura, peso, volumen de minutos y edad son prácticamente idénticos entre los jugadores que completaron la temporada sin lesiones y aquellos que registraron bajas médicas.")
 
@@ -606,7 +566,7 @@ with c1:
     df_styled = (
         df_renombrado
         .style.map(columna_resalte, subset=["Lesiones"])
-        .format({"Altura (cm)": "{:.0f}", "Peso (kg)": "{:.1f}", "Minutos": "{:,.0f}", "Lesiones": "{:.0f}", "Días perdidos": "{:,.0f}"})
+        .format({"Altura (cm)": num, "Peso (kg)": lambda v: num(v, 1), "Minutos": num, "Lesiones": num, "Días perdidos": num})
     )
     st.dataframe(df_styled, hide_index=True)
 
@@ -679,16 +639,13 @@ tot_dias_a = df_a["Días de baja"].sum() if not df_a.empty else 0
 tot_les_b = len(df_b)
 tot_dias_b = df_b["Días de baja"].sum() if not df_b.empty else 0
 
-st.markdown("---")
 st.markdown("### Resumen de Jugadores y Lesiones por Club")
 
 m1, m2, m3, m4 = st.columns(4)
-m1.metric(f"Lesiones Totales (A)", f"{tot_les_a:,}")
-m2.metric(f"Días de baja Totales (A)", f"{tot_dias_a:,}")
-m3.metric(f"Lesiones Totales (B)", f"{tot_les_b:,}")
-m4.metric(f"Días de baja Totales (B)", f"{tot_dias_b:,}")
-
-st.markdown("---")
+m1.metric("Lesiones Totales (A)", num(tot_les_a))
+m2.metric("Días de baja Totales (A)", num(tot_dias_a))
+m3.metric("Lesiones Totales (B)", num(tot_les_b))
+m4.metric("Días de baja Totales (B)", num(tot_dias_b))
 
 col_t1, col_t2 = st.columns(2)
 with col_t1:
@@ -707,13 +664,13 @@ st.header("Conclusión general")
 st.markdown("""
 <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        A modo de síntesis global, el análisis desarrollado a lo largo de las cuatro temporadas permite responder con total claridad al objetivo planteado:
+        A modo de síntesis global, el análisis desarrollado a lo largo de las cuatro temporadas permite responder al objetivo planteado:
     </p>
     <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        <li><b>Frecuencia constante:</b> Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (~24.8%), siendo lo habitual registrar un único episodio por campaña en cada jugador.</li>
-        <li><b>El físico no define el riesgo:</b> Características corporales como la altura y el peso no tienen relación con las lesiones; los jugadores altos, bajos, delgados o pesados se lesionan exactamente en la misma proporción.</li>
+        <li><b>Frecuencia constante:</b> Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (24,8 %), siendo lo habitual registrar un único episodio por campaña en cada jugador.</li>
+        <li><b>El físico no define el riesgo:</b> Características corporales como la altura y el peso no tienen relación con las lesiones; los jugadores altos, bajos, delgados o pesados se lesionan prácticamente en la misma proporción.</li>
         <li><b>Lo que importa es el tipo de lesión, no el cansancio:</b> Acumular muchos o pocos minutos en el terreno de juego no hace que un futbolista sea más propenso a lastimarse. El tiempo total de baja depende de la gravedad de cada lesión (como una rotura de ligamentos), no del desgaste por minutos.</li>
-        <li><b>Resultados estables:</b> Los datos se comportan de forma idéntica año tras año, lo que confirma que las tendencias encontradas son sólidas en todo el período estudiado.</li>
+        <li><b>Resultados estables, con una salvedad:</b> Los porcentajes se repiten casi sin cambios en las cuatro temporadas. Esta estabilidad debe leerse con cautela: en la base de datos, las temporadas 2022/23 a 2024/25 están marcadas como fabricadas y solo 2025/26 corresponde a registros originales, por lo que no puede interpretarse como una tendencia real.</li>
     </ul>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.02rem;">
         Con base en los datos analizados, ni la complexión física ni la cantidad de minutos jugados determinan quién se lesiona o cuánto tiempo pasa fuera de las canchas en el fútbol profesional evaluado.
