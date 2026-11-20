@@ -595,6 +595,20 @@ with tab5:
     fig_arq = apply_theme(fig_arq)
     st.plotly_chart(fig_arq, width="stretch")
 
+    st.markdown("""
+    <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+        <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+        <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
+            Entre los 6.902 registros de arqueros con 450 minutos o más, el arquero promedio detiene el 70,5% de los remates a puerta, realiza 2,37 paradas por cada 90 minutos y recibe 1,27 goles en ese mismo tiempo. Mantiene la portería a cero en 0,32 de cada 90 minutos jugados, es decir, aproximadamente en uno de cada tres partidos. El indicador de goles evitados compara los goles que se esperaba que recibiera con los que realmente recibió: el promedio es de +0,044 por 90 minutos, apenas por encima de cero, y el 58,8% de los arqueros evita más goles de los esperados. La mitad central de los arqueros detiene entre el 65,4% y el 76,0% de los remates, lo que describe un rendimiento bastante parejo dentro de la línea.
+        </p>
+        <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
+        <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
+            <li><b>Rendimiento típico:</b> Un arquero detiene siete de cada diez remates a puerta y concede algo más de un gol por partido; su aporte frente a lo esperado es positivo pero pequeño.</li>
+            <li><b>Evolución:</b> Las cuatro métricas son prácticamente idénticas en todas las temporadas (porcentaje de paradas entre 70,1% y 70,7%; goles concedidos entre 1,26 y 1,28 por 90 minutos), una estabilidad que debe leerse con cautela porque tres de las cuatro temporadas están marcadas como fabricadas.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
 st.divider()
 
 st.subheader("Conclusiones del Análisis")

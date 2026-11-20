@@ -1,9 +1,6 @@
 from database.DB import DB
 from models.UI import UI
-from models.Graphics import Graphics
 import streamlit as st
-import pandas as pd
-import plotly.express as px
 from utils.estilos import cargar_estilos
 
 class Main:
