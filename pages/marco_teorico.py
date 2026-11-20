@@ -204,12 +204,12 @@ def render_marco_teorico():
             <div class="concept-card">
                 <div class="concept-title">4. Arquitectura de Datos y Ecosistema Analítico</div>
                 <p style="color: #94A3B8; font-size: 0.95rem; line-height: 1.6;">
-                    Detalla el modelo relacional normalizado en Tercera Forma Normal (3FN) con 17 tablas y más de 855.000 registros,
+                    Describe el modelo relacional normalizado en Tercera Forma Normal (3FN),
                     la diferencia entre el procesamiento transaccional (OLTP) y el analítico (OLAP), la desnormalización en dimensiones y hechos,
                     y los motores columnares como DuckDB.
                 </p>
-                <span class="tag-pill">Modelo 3FN (17 Tablas)</span>
-                <span class="tag-pill">Motor DuckDB OLAP</span>
+                <span class="tag-pill">Modelo Relacional 3FN</span>
+                <span class="tag-pill">Motores Columnares</span>
                 <span class="tag-pill">OLTP vs. OLAP</span>
             </div>
             """, unsafe_allow_html=True)
@@ -422,9 +422,8 @@ def render_marco_teorico():
         st.write("""
         El modelo relacional (Codd, 1970) organiza la información en tablas vinculadas mediante claves. La **normalización** es el proceso de
         dividir los datos para que cada hecho se guarde una sola vez. Una base está en **Tercera Forma Normal (3FN)** cuando cada columna depende
-        únicamente de la clave de su tabla, lo que elimina la redundancia y evita inconsistencias al actualizar. La base de datos original de este
-        estudio sigue ese diseño: 17 tablas y más de 855.000 registros, con los jugadores, los clubes, las temporadas, las lesiones y las estadísticas
-        en tablas separadas.
+        únicamente de la clave de su tabla, lo que elimina la redundancia y evita inconsistencias al actualizar. En un diseño de este tipo,
+        cada entidad (por ejemplo, jugadores, clubes, temporadas o lesiones) se guarda en su propia tabla.
         """)
 
         st.markdown("#### 4.2. Procesamiento Transaccional (OLTP) y Analítico (OLAP)")
@@ -575,7 +574,7 @@ def render_marco_teorico():
             <li><b>Estandarización Epidemiológica y Cuantificación de Carga:</b> La adopción de los consensos internacionales de la FIFA y del COI bajo el criterio de pérdida de tiempo (<i>time-loss</i>) proporciona una delimitación médica objetiva. A su vez, los minutos acumulados se consolidan como un estimador (<i>proxy</i>) reproducible del estrés mecánico y fisiológico en el ciclo 2022–2026.</li>
             <li><b>Estratificación Táctica y Valor Posicional:</b> La estructuración del juego en cuatro bloques funcionales (Arqueros, Defensas, Mediocampistas y Delanteros) sustenta la asimetría de responsabilidades: especialización extrema en finalización y neutralización en los extremos del campo frente a la polivalencia bidireccional en la zona media.</li>
             <li><b>Cuantificación de la Desigualdad y Concentración Competitiva:</b> La traslación de métricas económicas como el Coeficiente de Gini, las Curvas de Lorenz y el Índice Herfindahl-Hirschman (HHI) permite diagnosticar con precisión matemática si el rendimiento y el talento de élite (P90) se distribuyen de forma paritaria o se concentran en oligopolios deportivos.</li>
-            <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> La arquitectura normalizada en Tercera Forma Normal (3FN) con 17 tablas y más de 855.000 registros, procesada a través del motor columnar DuckDB y visualizada en Streamlit y Plotly, asegura la trazabilidad íntegra del estudio bajo una perspectiva estrictamente descriptiva.</li>
+            <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> El modelo relacional normalizado en Tercera Forma Normal (3FN) garantiza la integridad de los datos de origen, mientras que la desnormalización en dimensiones y hechos y los motores columnares facilitan su análisis. Estos conceptos sustentan el tratamiento de los datos bajo una perspectiva estrictamente descriptiva.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)

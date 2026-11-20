@@ -143,63 +143,26 @@ SELECT
 """
 k = run_query(sql_q1).iloc[0]
 
-f1 = st.columns(4)
-with f1[0]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Lesiones registradas</div>
-        <div class="kpi-value">{int(k['total_lesiones']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f1[1]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Jugadores distintos lesionados</div>
-        <div class="kpi-value">{int(k['jugadores_lesionados']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f1[2]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Jugador-temporadas analizadas</div>
-        <div class="kpi-value">{int(k['jugadores_temporada']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f1[3]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Porcentaje con al menos una lesión</div>
-        <div class="kpi-value">{k['pct_con_lesion']} %</div>
-    </div>""", unsafe_allow_html=True)
-
-f2 = st.columns(4)
-with f2[0]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Días perdidos (total)</div>
-        <div class="kpi-value">{int(k['dias_totales']):,}</div>
-    </div>""", unsafe_allow_html=True)
-
-with f2[1]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Duración promedio</div>
-        <div class="kpi-value">{int(k['dias_promedio'])} días</div>
-    </div>""", unsafe_allow_html=True)
-
-with f2[2]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Duración mediana</div>
-        <div class="kpi-value">{int(k['dias_mediana'])} días</div>
-    </div>""", unsafe_allow_html=True)
-
-with f2[3]:
-    st.markdown(f"""
-    <div class="kpi-card">
-        <div class="kpi-title">Duración máxima</div>
-        <div class="kpi-value">{int(k['dias_max']):,}</div>
-    </div>""", unsafe_allow_html=True)
+# Fila 1: cuántos se lesionan. Fila 2: cuánto duran las lesiones.
+kpis = [
+    ("Registros analizados", f"{int(k['jugadores_temporada']):,}", "Un registro por jugador y temporada"),
+    ("Lesiones registradas", f"{int(k['total_lesiones']):,}", "Total de lesiones en el período"),
+    ("Jugadores lesionados", f"{int(k['jugadores_lesionados']):,}", "Jugadores distintos con al menos una lesión"),
+    ("Tasa de lesión", f"{k['pct_con_lesion']} %", "Registros con al menos una lesión"),
+    ("Duración mediana", f"{int(k['dias_mediana'])} días", "La mitad de las lesiones dura esto o menos"),
+    ("Duración promedio", f"{int(k['dias_promedio'])} días", "Media de días de baja por lesión"),
+    ("Lesión más larga", f"{int(k['dias_max']):,} días", "Mayor baja registrada por una lesión"),
+    ("Días de baja totales", f"{int(k['dias_totales']):,}", "Suma de los días de baja de todas las lesiones"),
+]
+for fila in (kpis[:4], kpis[4:]):
+    for col, (titulo, valor, pie) in zip(st.columns(4), fila):
+        with col:
+            st.markdown(f"""
+            <div class="kpi-card">
+                <div class="kpi-title">{titulo}</div>
+                <div class="kpi-value">{valor}</div>
+                <div class="kpi-footer" style="font-size:0.85rem; line-height:1.4;">{pie}</div>
+            </div>""", unsafe_allow_html=True)
 
 interpretacion("Al analizar los estadísticos de posición, se observa que la media aritmética de la duración de las lesiones (38 días) es considerablemente mayor que la mediana (15 días). Esta diferencia evidencia una asimetría positiva en la distribución, provocada por un subconjunto de lesiones severas de larga duración que desplazan el promedio hacia valores altos. Por esta razón, se emplean conjuntamente ambas medidas de tendencia central para lograr una caracterización adecuada de la severidad sin distorsiones.")
 st.divider()
@@ -232,7 +195,6 @@ fig_q2 = px.bar(q2, x="season_label", y="lesiones", text="top_rect",
                 labels={"season_label": "Temporada", "lesiones": "Cantidad de Lesiones"})
 
 fig_q2.update_traces(textposition="outside", cliponaxis=False, width=0.40)
-fig_q2.update_xaxes(title_text="")
 mostrar(fig_q2, 400)
 
 interpretacion("Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24.4% y el 25.0% anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada. Ningún jugador registra más de una lesión en una misma temporada, por lo que ese porcentaje de afectados corresponde siempre a un único episodio por jugador y campaña.")
@@ -278,7 +240,7 @@ fig_q6.update_layout(
     title="Volumen de lesiones y duración media según mes de inicio",
     barmode="overlay"
 )
-fig_q6.update_xaxes(title_text="")
+fig_q6.update_xaxes(title_text="Mes de inicio de la lesión")
 mostrar(fig_q6, 380)
 
 interpretacion("Se advierte una distribución bastante homogénea a lo largo de los meses activos del año, con una ausencia lógica de registros durante los meses de receso estival. Los valores se mantienen estables sin picos extremos que sugieran un riesgo asociado a un mes en particular, reflejando una carga de estrés físico sostenida.")
@@ -413,10 +375,9 @@ with col_alt:
 
     fig_alt = px.bar(alt, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(alt),
                      title="Porcentaje de lesionados por cuartil de altura",
-                     labels={"grupo": "Cuartil de Altura", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
+                     labels={"grupo": "Cuartil de altura (rango en cm)", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
     fig_alt.update_traces(textposition="outside", cliponaxis=False, width=0.45)
     fig_alt.update_yaxes(range=[0, 40])
-    fig_alt.update_xaxes(title_text="")
     mostrar(fig_alt, 360)
 
 with col_pes:
@@ -432,10 +393,9 @@ with col_pes:
 
     fig_pes = px.bar(pes, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(pes),
                      title="Porcentaje de lesionados por cuartil de peso",
-                     labels={"grupo": "Cuartil de Peso", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
+                     labels={"grupo": "Cuartil de peso (rango en kg)", "pct_lesionados": "Porcentaje de Lesionados por Cuartil"})
     fig_pes.update_traces(textposition="outside", cliponaxis=False, width=0.45)
     fig_pes.update_yaxes(range=[0, 40])
-    fig_pes.update_xaxes(title_text="")
     mostrar(fig_pes, 360)
 
 interpretacion("Los gráficos anteriores evidencian la gran independencia entre las características antropométricas y la probabilidad de lesión. Las variaciones porcentuales entre el cuartil inferior y el superior son pequeñas, dándonos como resultado que un jugador más alto o más pesado no incrementa ni reduce por sí solo el riesgo de sufrir una lesión. La duración tampoco cambia: en el ciclo completo, los lesionados de cada cuartil de altura y de peso pierden en promedio entre 37 y 39 días.")
@@ -528,10 +488,9 @@ with col_fig_min:
 
     fig_mins = px.bar(q10, x="banda_min", y="pct_lesionados", text=etiqueta_pct_dias(q10),
                       title="Porcentaje de lesionados según minutos jugados",
-                      labels={"banda_min": "Banda de Minutos", "pct_lesionados": "% Lesionados"})
+                      labels={"banda_min": "Minutos jugados en la temporada", "pct_lesionados": "% Lesionados"})
     fig_mins.update_traces(textposition="outside", cliponaxis=False, width=0.35)
     fig_mins.update_yaxes(range=[0, 40])
-    fig_mins.update_xaxes(title_text="")
     mostrar(fig_mins, 380)
 
 st.divider()
@@ -679,7 +638,6 @@ tot_dias_a = df_a["Días de baja"].sum() if not df_a.empty else 0
 tot_les_b = len(df_b)
 tot_dias_b = df_b["Días de baja"].sum() if not df_b.empty else 0
 
-st.markdown("---")
 st.markdown("### Resumen de Jugadores y Lesiones por Club")
 
 m1, m2, m3, m4 = st.columns(4)
@@ -687,8 +645,6 @@ m1.metric(f"Lesiones Totales (A)", f"{tot_les_a:,}")
 m2.metric(f"Días de baja Totales (A)", f"{tot_dias_a:,}")
 m3.metric(f"Lesiones Totales (B)", f"{tot_les_b:,}")
 m4.metric(f"Días de baja Totales (B)", f"{tot_dias_b:,}")
-
-st.markdown("---")
 
 col_t1, col_t2 = st.columns(2)
 with col_t1:

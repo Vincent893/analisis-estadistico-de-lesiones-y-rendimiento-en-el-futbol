@@ -9,19 +9,6 @@ def render_marco_metodologico():
 
     st.markdown("""
         <style>
-        .method-badge {
-            background: rgba(16, 185, 129, 0.12);
-            color: #34D399;
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            padding: 4px 14px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
         .quote-box-m {
             background: rgba(11, 19, 43, 0.7);
             border-left: 4px solid #34D399;
@@ -76,7 +63,7 @@ def render_marco_metodologico():
 
     st.markdown("""
         <div class="hero-header">
-            <span class="method-badge">Marco Metodológico</span>
+            <span class="hero-badge">Marco Metodológico</span>
             <div class="hero-title">Marco Metodológico</div>
             <p style="color: #94A3B8; margin: 0; font-size: 1.05rem; line-height: 1.6;">
                 Cómo hicimos la investigación, qué pasos seguimos, las técnicas y herramientas estadísticas que usamos para resolver los objetivos del estudio (2022–2026).
@@ -190,10 +177,10 @@ def render_marco_metodologico():
         st.markdown("### Arquitectura y Herramientas del Proyecto")
         st.markdown("""
         <div class="text-block-m">
-            Los datos provienen de un conjunto público de Kaggle sobre fútbol profesional. A partir de él, el proyecto se apoya en dos bases de datos con funciones distintas y en un conjunto de herramientas de análisis y visualización:
+            Los datos provienen de un conjunto público de Kaggle sobre fútbol profesional. A partir de él, el proyecto se apoya en dos bases de datos con funciones distintas, una desnormalizada para la investigación y otra normalizada para el Cuestionario SQL, y en un conjunto de herramientas de análisis y visualización:
             <ul>
-                <li><b>Base de datos original en Supabase (PostgreSQL):</b> Aloja la base relacional normalizada en Tercera Forma Normal (3FN): 17 tablas conectadas mediante claves, con 855.439 registros en total. Sobre ella se ejecutan las consultas del Cuestionario SQL.</li>
-                <li><b>Base analítica en DuckDB / MotherDuck:</b> Una copia de las mismas tablas alimenta el dashboard. Se usa DuckDB de forma local durante el desarrollo y MotherDuck (DuckDB en la nube) en la aplicación publicada. Sobre esta copia se añadieron 3 vistas analíticas, que resumen los datos por jugador, por club y por línea posicional, y 6 tablas desnormalizadas (dimensiones y hechos) que alimentan el Simulador de Plantilla.</li>
+                <li><b>Base de datos de la investigación en MotherDuck (DuckDB):</b> Es la base analítica (OLAP) sobre la que se calcularon todos los resultados de los tres objetivos y el Simulador de Plantilla. Contiene un modelo desnormalizado, formado por 6 tablas de dimensiones y hechos y 3 vistas analíticas que resumen los datos por jugador, por club y por línea posicional, junto con las tablas de origen de las que se derivan. Se usa DuckDB de forma local durante el desarrollo y MotherDuck (DuckDB en la nube) en la aplicación publicada.</li>
+                <li><b>Base de datos original en Supabase (PostgreSQL):</b> Conserva la base relacional totalmente normalizada en Tercera Forma Normal (3FN): 17 tablas conectadas mediante claves, con 855.439 registros en total. Se utilizó únicamente para el Cuestionario SQL, cuyas consultas se ejecutan sobre ella.</li>
                 <li><b>Consultas SQL:</b> Los cálculos se resuelven con expresiones de tabla comunes (CTE), agregaciones y funciones de ventana.</li>
                 <li><b>Python, Pandas y NumPy:</b> La lógica de la aplicación corre sobre Python; Pandas y NumPy se emplean para el filtrado y el cálculo de indicadores como el Gini, el HHI y el coeficiente de variación.</li>
                 <li><b>Plotly (Express y Graph Objects):</b> Con esta librería se construyeron todas las visualizaciones interactivas del dashboard.</li>
