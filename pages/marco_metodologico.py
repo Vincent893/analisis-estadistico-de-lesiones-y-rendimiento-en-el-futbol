@@ -336,6 +336,17 @@ def render_marco_metodologico():
             * **Objetivo 3:** Para calcular el porcentaje de goles, asistencias y tackles que aporta cada línea de campo (Defensas, Mediocampistas y Delanteros) sobre el total de cada temporada.
             """)
 
+    with tab_imc:
+        col_formula_imc, col_texto_imc = st.columns([1, 1])
+        with col_formula_imc:
+            st.markdown("##### Índice de Masa Corporal (IMC)")
+            st.latex(r"\text{IMC} = \frac{\text{Peso (kg)}}{\text{Altura (m)}^2}")
+        with col_texto_imc:
+            st.markdown("##### Se aplicó en:")
+            st.markdown("""
+            * **Objetivo 1:** Para evaluar la relación entre la composición corporal de los jugadores, la incidencia y severidad de las lesiones registradas en los días de baja.
+            """)
+
     st.markdown("<br>", unsafe_allow_html=True)
 
     st.divider()
