@@ -109,6 +109,59 @@ def render_marco_metodologico():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
+    st.divider()
+
+    st.markdown("### 1. Enfoque y Tipo de Investigación")
+    st.markdown("""
+    <div class="text-block-m">
+        Este trabajo se desarrolló con un enfoque cuantitativo y un diseño no experimental: no se manipuló ninguna variable, sino que se analizó la información tal como está registrada en la base de datos, temporada por temporada, entre 2022/23 y 2025/26. Al observar a los mismos jugadores a lo largo de varias temporadas, el estudio es de tipo longitudinal, y su nivel es descriptivo: se describen frecuencias, distribuciones y asociaciones, sin aplicar pruebas de hipótesis ni modelos predictivos. La fuente es secundaria, ya que los datos no fueron recolectados por el equipo sino tomados de un conjunto de datos público.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+    st.markdown("### 2. Cómo se conecta el Marco Teórico con los Objetivos")
+    st.markdown("""
+    <div class="text-block-m">
+        Para mantener la coherencia entre el marco teórico y el análisis, establecimos los siguientes nexos prácticos:
+        <ul>
+            <li>La teoría sobre el criterio de días perdidos (<i>time-loss</i>) se aplicó directamente en el <b>Objetivo 1</b> para medir la duración de las lesiones.</li>
+            <li>Los conceptos económicos y estadísticos sobre concentración de talento y desigualdad se usaron en el <b>Objetivo 2</b> mediante la Curva de Lorenz y los índices de Gini y HHI.</li>
+            <li>La división clásica de las posiciones en la cancha (arqueros, defensas, mediocampistas y delanteros) sirvió de base en el <b>Objetivo 3</b> para medir el aporte porcentual y el rendimiento de cada línea.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+    st.markdown("### 3. La Población: Trabajamos con el Censo Completo")
+    st.markdown("""
+    <div class="text-block-m">
+        A diferencia de los estudios que trabajan con muestras, en este proyecto analizamos el <b>100% de los registros disponibles</b> en la base de datos, por lo que no se aplicó ninguna técnica de muestreo:
+        <ul>
+            <li><b>27.343 jugadores</b> registrados en total.</li>
+            <li><b>108.639 observaciones</b> jugador-temporada.</li>
+            <li><b>26.949 lesiones</b> documentadas con sus respectivos días de baja.</li>
+        </ul>
+        Antes de generar los cálculos, depuramos la base de datos eliminando registros vacíos (como las 250 filas totalmente nulas detectadas en la fase inicial).
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+    st.markdown("### 4. Limitaciones de los Datos")
+    st.markdown("""
+    <div class="text-block-m">
+        Los resultados deben leerse teniendo en cuenta las siguientes características de la base de datos:
+        <ul>
+            <li><b>Temporadas fabricadas:</b> Las temporadas 2022/23 a 2024/25 están marcadas como fabricadas en la base de datos; solo 2025/26 corresponde a registros originales. Por eso la estabilidad observada entre temporadas no puede interpretarse como una tendencia real.</li>
+            <li><b>Registro de lesiones:</b> Cada jugador registra como máximo una lesión por temporada y los once tipos de lesión aparecen con frecuencias casi idénticas, una uniformidad poco habitual en registros reales.</li>
+            <li><b>Plantillas incompletas:</b> La base no contiene plantillas completas (mediana de 10 jugadores registrados por club y temporada), lo que afecta a los indicadores calculados dentro de cada club.</li>
+            <li><b>Clasificación posicional:</b> Solo el centrodelantero se clasifica como delantero; extremos y mediapuntas se cuentan como mediocampistas.</li>
+            <li><b>Alcance descriptivo:</b> Las asociaciones descritas no permiten afirmar relaciones de causa y efecto.</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+    st.markdown("### 5. Procedimiento por Objetivo y Arquitectura")
         # Tabs parte 1 para los objetivos y arquitectura
     tab_obj1, tab_obj2, tab_obj3, tab_arq = st.tabs([
         "Obj. 1: Lesiones y Carga",
@@ -189,61 +242,8 @@ def render_marco_metodologico():
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
     st.divider()
-
-    # Primera parte del cuerpo del .py
-    st.markdown("### 1. Enfoque y Tipo de Investigación")
-    st.markdown("""
-    <div class="text-block-m">
-        Este trabajo se desarrolló con un enfoque cuantitativo y un diseño no experimental: no se manipuló ninguna variable, sino que se analizó la información tal como está registrada en la base de datos, temporada por temporada, entre 2022/23 y 2025/26. Al observar a los mismos jugadores a lo largo de varias temporadas, el estudio es de tipo longitudinal, y su nivel es descriptivo: se describen frecuencias, distribuciones y asociaciones, sin aplicar pruebas de hipótesis ni modelos predictivos. La fuente es secundaria, ya que los datos no fueron recolectados por el equipo sino tomados de un conjunto de datos público.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.divider()
-    st.markdown("### 2. Cómo se conecta el Marco Teórico con los Objetivos")
-    st.markdown("""
-    <div class="text-block-m">
-        Para mantener la coherencia entre el marco teórico y el análisis, establecimos los siguientes nexos prácticos:
-        <ul>
-            <li>La teoría sobre el criterio de días perdidos (<i>time-loss</i>) se aplicó directamente en el <b>Objetivo 1</b> para medir la duración de las lesiones.</li>
-            <li>Los conceptos económicos y estadísticos sobre concentración de talento y desigualdad se usaron en el <b>Objetivo 2</b> mediante la Curva de Lorenz y los índices de Gini y HHI.</li>
-            <li>La división clásica de las posiciones en la cancha (arqueros, defensas, mediocampistas y delanteros) sirvió de base en el <b>Objetivo 3</b> para medir el aporte porcentual y el rendimiento de cada línea.</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.divider()
-    st.markdown("### 3. La Población: Trabajamos con el Censo Completo")
-    st.markdown("""
-    <div class="text-block-m">
-        A diferencia de los estudios que trabajan con muestras, en este proyecto analizamos el <b>100% de los registros disponibles</b> en la base de datos, por lo que no se aplicó ninguna técnica de muestreo:
-        <ul>
-            <li><b>27.343 jugadores</b> registrados en total.</li>
-            <li><b>108.639 observaciones</b> jugador-temporada.</li>
-            <li><b>26.949 lesiones</b> documentadas con sus respectivos días de baja.</li>
-        </ul>
-        Antes de generar los cálculos, depuramos la base de datos eliminando registros vacíos (como las 250 filas totalmente nulas detectadas en la fase inicial).
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.divider()
-    st.markdown("### 4. Limitaciones de los Datos")
-    st.markdown("""
-    <div class="text-block-m">
-        Los resultados deben leerse teniendo en cuenta las siguientes características de la base de datos:
-        <ul>
-            <li><b>Temporadas fabricadas:</b> Las temporadas 2022/23 a 2024/25 están marcadas como fabricadas en la base de datos; solo 2025/26 corresponde a registros originales. Por eso la estabilidad observada entre temporadas no puede interpretarse como una tendencia real.</li>
-            <li><b>Registro de lesiones:</b> Cada jugador registra como máximo una lesión por temporada y los once tipos de lesión aparecen con frecuencias casi idénticas, una uniformidad poco habitual en registros reales.</li>
-            <li><b>Plantillas incompletas:</b> La base no contiene plantillas completas (mediana de 10 jugadores registrados por club y temporada), lo que afecta a los indicadores calculados dentro de cada club.</li>
-            <li><b>Clasificación posicional:</b> Solo el centrodelantero se clasifica como delantero; extremos y mediapuntas se cuentan como mediocampistas.</li>
-            <li><b>Alcance descriptivo:</b> Las asociaciones descritas no permiten afirmar relaciones de causa y efecto.</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.divider()
-    st.markdown("### 5. Fórmulas Matemáticas que usamos en el Análisis")
+    st.markdown("### 6. Fórmulas Matemáticas que usamos en el Análisis")
     st.markdown("""
     <div class="text-block-m">
         Para respaldar los cálculos presentados en el dashboard, organizamos las fórmulas estadísticas en pestañas, detallando en qué parte del estudio se aplicó cada una:
@@ -351,7 +351,7 @@ def render_marco_metodologico():
     st.markdown("<br>", unsafe_allow_html=True)
 
     st.divider()
-    st.markdown("### 6. Operacionalización de Variables por Objetivo")
+    st.markdown("### 7. Operacionalización de Variables por Objetivo")
     st.markdown("""
     <div class="text-block-m">
         Para tener claridad sobre qué medimos y de dónde extrajimos cada dato, estructuramos un cuadro de operacionalización para cada objetivo específico:

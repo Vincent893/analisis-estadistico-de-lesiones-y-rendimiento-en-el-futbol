@@ -120,13 +120,14 @@ def render_marco_teorico():
         </div>
     """, unsafe_allow_html=True)
 
-    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_antecedentes, tab_glosario, tab_refs = st.tabs([
+    tab_intro, tab_sec1, tab_sec2, tab_sec3, tab_sec4, tab_antecedentes, tab_conclusiones, tab_glosario, tab_refs = st.tabs([
         "Introducción",
         "1. Epidemiología y Carga Física",
         "2. Valor Posicional y Concentración",
         "3. Dinámicas Posicionales y Rendimiento",
         "4. Arquitectura de Datos",
         "Antecedentes",
+        "Conclusiones",
         "Glosario de Términos",
         "Referencias Bibliográficas",
     ])
@@ -563,21 +564,18 @@ def render_marco_teorico():
             </div>
             """, unsafe_allow_html=True)
 
-    st.divider()
-
-    st.subheader("Conclusiones del Marco Teórico")
-
-    st.markdown("""
-    <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
-        <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Síntesis Conceptual y Metodológica de la Investigación</h4>
-        <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.0rem;">
-            <li><b>Estandarización Epidemiológica y Cuantificación de Carga:</b> La adopción de los consensos internacionales de la FIFA y del COI bajo el criterio de pérdida de tiempo (<i>time-loss</i>) proporciona una delimitación médica objetiva. A su vez, los minutos acumulados se consolidan como un estimador (<i>proxy</i>) reproducible del estrés mecánico y fisiológico en el ciclo 2022–2026.</li>
-            <li><b>Estratificación Táctica y Valor Posicional:</b> La estructuración del juego en cuatro bloques funcionales (Arqueros, Defensas, Mediocampistas y Delanteros) sustenta la asimetría de responsabilidades: especialización extrema en finalización y neutralización en los extremos del campo frente a la polivalencia bidireccional en la zona media.</li>
-            <li><b>Cuantificación de la Desigualdad y Concentración Competitiva:</b> La traslación de métricas económicas como el Coeficiente de Gini, las Curvas de Lorenz y el Índice Herfindahl-Hirschman (HHI) permite diagnosticar con precisión matemática si el rendimiento y el talento de élite (P90) se distribuyen de forma paritaria o se concentran en oligopolios deportivos.</li>
-            <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> El modelo relacional normalizado en Tercera Forma Normal (3FN) garantiza la integridad de los datos de origen, mientras que la desnormalización en dimensiones y hechos y los motores columnares facilitan su análisis. Estos conceptos sustentan el tratamiento de los datos bajo una perspectiva estrictamente descriptiva.</li>
-        </ul>
-    </div>
-    """, unsafe_allow_html=True)
+    with tab_conclusiones:
+        st.markdown("""
+        <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
+            <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Síntesis Conceptual y Metodológica de la Investigación</h4>
+            <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.0rem;">
+                <li><b>Estandarización Epidemiológica y Cuantificación de Carga:</b> La adopción de los consensos internacionales de la FIFA y del COI bajo el criterio de pérdida de tiempo (<i>time-loss</i>) proporciona una delimitación médica objetiva. A su vez, los minutos acumulados se consolidan como un estimador (<i>proxy</i>) reproducible del estrés mecánico y fisiológico en el ciclo 2022–2026.</li>
+                <li><b>Estratificación Táctica y Valor Posicional:</b> La estructuración del juego en cuatro bloques funcionales (Arqueros, Defensas, Mediocampistas y Delanteros) sustenta la asimetría de responsabilidades: especialización extrema en finalización y neutralización en los extremos del campo frente a la polivalencia bidireccional en la zona media.</li>
+                <li><b>Cuantificación de la Desigualdad y Concentración Competitiva:</b> La traslación de métricas económicas como el Coeficiente de Gini, las Curvas de Lorenz y el Índice Herfindahl-Hirschman (HHI) permite diagnosticar con precisión matemática si el rendimiento y el talento de élite (P90) se distribuyen de forma paritaria o se concentran en oligopolios deportivos.</li>
+                <li><b>Solidez del Ecosistema Relacional y Enfoque Descriptivo:</b> El modelo relacional normalizado en Tercera Forma Normal (3FN) garantiza la integridad de los datos de origen, mientras que la desnormalización en dimensiones y hechos y los motores columnares facilitan su análisis. Estos conceptos sustentan el tratamiento de los datos bajo una perspectiva estrictamente descriptiva.</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     render_marco_teorico()
