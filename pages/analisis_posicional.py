@@ -145,7 +145,7 @@ for i, linea in enumerate(LINEAS_ORDEN):
 st.divider()
 
 st.subheader("Gráfico 1: Aporte Porcentual por Línea y Temporada")
-# Gráficos 1 y 2: sin arqueros, su aporte en goles, asistencias y tackles es prácticamente nulo
+# Gráficos 1 y 3: sin arqueros, su aporte en goles, asistencias y tackles es prácticamente nulo
 df_campo = df[df["linea"] != "Arquero"]
 st.caption("Porcentaje de goles, asistencias y tackles aportado por cada línea de campo respecto al total de la muestra. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles)."
 )
@@ -196,7 +196,49 @@ st.markdown("""
 
 st.divider()
 
-st.subheader("Gráfico 2: Promedio por Jugador por Línea y Temporada")
+st.subheader("Gráfico 2: Distribución Porcentual de Jugadores por Línea Posicional")
+st.caption("Proporción de jugadores en la muestra según su demarcación táctica.")
+
+comp_linea = df["linea"].value_counts().reset_index()
+comp_linea.columns = ["Línea", "Jugadores"]
+comp_linea["Línea"] = pd.Categorical(comp_linea["Línea"], categories=LINEAS_ORDEN, ordered=True)
+comp_linea = comp_linea.sort_values("Línea")
+
+fig5 = px.pie(
+    comp_linea,
+    names="Línea",
+    values="Jugadores",
+    hole=0.45,
+    color="Línea",
+    color_discrete_map=colores_kpi,
+    category_orders={"Línea": LINEAS_ORDEN},
+)
+fig5.update_traces(
+    textinfo="label+percent",
+    textfont_size=13,
+    hovertemplate="<b>%{label}</b><br>Jugadores: %{value:,}<br>Proporción: %{percent}<extra></extra>",
+)
+fig5.update_layout(height=400)
+fig5 = apply_theme(fig5)
+st.plotly_chart(fig5, width="stretch")
+
+st.markdown("""
+<div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
+    <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
+    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
+        Los mediocampistas son la línea más numerosa (45,3% de los registros jugador-temporada), seguidos por los defensas (40,4%), los arqueros (8,1%) y los delanteros (6,2%). La baja proporción de delanteros se debe a la clasificación de la base de datos: solo el centrodelantero se considera delantero, mientras que extremos y mediapuntas se cuentan como mediocampistas. Esta composición explica los resultados del Gráfico 1: el mediocampo domina el aporte total por volumen, mientras que los delanteros, con el 6,2% de los registros, generan el 12,5% de los goles + asistencias y el 19,3% de los goles.
+    </p>
+    <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
+    <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
+        <li><b>Composición de la muestra:</b> Mediocampistas y defensas suman el 85,7% de los registros; arqueros y delanteros, el 14,3% restante.</li>
+        <li><b>Impacto relativo:</b> Los delanteros aportan aproximadamente el triple de goles que su peso en la muestra (19,3% frente a 6,2%), el mayor impacto relativo por jugador de las cuatro líneas.</li>
+    </ul>
+</div>
+""", unsafe_allow_html=True)
+
+st.divider()
+
+st.subheader("Gráfico 3: Promedio por Jugador por Línea y Temporada")
 st.caption("Promedio por jugador de goles, asistencias y tackles en cada línea posicional. Contrasta con el Gráfico 1: aquel muestra cuánto aporta cada línea al total; este, cuánto aporta un jugador típico de cada línea. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles).")
 
 metrica_prom = st.radio(
@@ -259,7 +301,7 @@ NOMBRES_VAR = {
     "minutes_played": "Minutos Jugados",
 }
 
-st.subheader("Gráfico 3: Distribución del Rendimiento Individual por Línea")
+st.subheader("Gráfico 4: Distribución del Rendimiento Individual por Línea")
 
 metrica_box = st.selectbox(
     "Variable analizada:", list(NOMBRES_VAR), format_func=NOMBRES_VAR.get,
@@ -333,7 +375,7 @@ st.markdown("""
 
 st.divider()
 
-st.subheader("Gráfico 4: Promedio de Rendimiento por Línea")
+st.subheader("Gráfico 5: Promedio de Rendimiento por Línea")
 
 metrica_g3 = st.selectbox(
     "Variable evaluada:", list(NOMBRES_VAR), format_func=NOMBRES_VAR.get,
@@ -386,48 +428,6 @@ st.markdown("""
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
         <li><b>Habilidad:</b> El Ability Score no discrimina entre líneas; las medias se ordenan mediocampistas > defensas > delanteros > arqueros con brechas muy pequeñas.</li>
         <li><b>Producción:</b> Las métricas de goles y asistencias sí separan las líneas, con el delantero a la cabeza en goles y el mediocampista en asistencias.</li>
-    </ul>
-</div>
-""", unsafe_allow_html=True)
-
-st.divider()
-
-st.subheader("Gráfico 5: Distribución Porcentual de Jugadores por Línea Posicional")
-st.caption("Proporción de jugadores en la muestra según su demarcación táctica.")
-
-comp_linea = df["linea"].value_counts().reset_index()
-comp_linea.columns = ["Línea", "Jugadores"]
-comp_linea["Línea"] = pd.Categorical(comp_linea["Línea"], categories=LINEAS_ORDEN, ordered=True)
-comp_linea = comp_linea.sort_values("Línea")
-
-fig5 = px.pie(
-    comp_linea,
-    names="Línea",
-    values="Jugadores",
-    hole=0.45,
-    color="Línea",
-    color_discrete_map=colores_kpi,
-    category_orders={"Línea": LINEAS_ORDEN},
-)
-fig5.update_traces(
-    textinfo="label+percent",
-    textfont_size=13,
-    hovertemplate="<b>%{label}</b><br>Jugadores: %{value:,}<br>Proporción: %{percent}<extra></extra>",
-)
-fig5.update_layout(height=400)
-fig5 = apply_theme(fig5)
-st.plotly_chart(fig5, width="stretch")
-
-st.markdown("""
-<div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
-    <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
-    <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        Los mediocampistas son la línea más numerosa (45,3% de los registros jugador-temporada), seguidos por los defensas (40,4%), los arqueros (8,1%) y los delanteros (6,2%). La baja proporción de delanteros se debe a la clasificación de la base de datos: solo el centrodelantero se considera delantero, mientras que extremos y mediapuntas se cuentan como mediocampistas. Esta composición explica los resultados del Gráfico 1: el mediocampo domina el aporte total por volumen, mientras que los delanteros, con el 6,2% de los registros, generan el 12,5% de los goles + asistencias y el 19,3% de los goles.
-    </p>
-    <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
-    <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Composición de la muestra:</b> Mediocampistas y defensas suman el 85,7% de los registros; arqueros y delanteros, el 14,3% restante.</li>
-        <li><b>Impacto relativo:</b> Los delanteros aportan aproximadamente el triple de goles que su peso en la muestra (19,3% frente a 6,2%), el mayor impacto relativo por jugador de las cuatro líneas.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -637,7 +637,7 @@ st.subheader("Nota Metodológica")
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid rgba(255, 255, 255, 0.25); padding: 20px 25px; margin-top: 15px;">
     <p style="color: #94A3B8; line-height: 1.7; margin-bottom: 0; font-size: 0.98rem;">
-        El análisis posicional se desarrolló sobre 108.639 registros jugador-temporada, clasificando a cada jugador en una de cuatro líneas (Arqueros, Defensas, Mediocampistas y Delanteros) según la categoría principal de la base de datos, y en una demarcación específica según su posición principal. El aporte porcentual (Gráfico 1) y el promedio por jugador (Gráfico 2) se calcularon por temporada, excluyendo a los arqueros, cuyo aporte en goles, asistencias y tackles es prácticamente nulo. Las métricas por 90 minutos solo consideran jugadores con 450 minutos o más, para evitar valores inflados por muestras pequeñas; el mismo filtro se aplicó a las métricas de portería. Se emplearon medidas de tendencia central (media y mediana) y de dispersión (rango intercuartílico y coeficiente de variación). Las temporadas 2022/23 a 2024/25 están marcadas como fabricadas en la base de datos (campo is_fabricated); solo 2025/26 corresponde a datos reales. No se aplicaron pruebas de hipótesis ni modelos predictivos.
+        El análisis posicional se desarrolló sobre 108.639 registros jugador-temporada, clasificando a cada jugador en una de cuatro líneas (Arqueros, Defensas, Mediocampistas y Delanteros) según la categoría principal de la base de datos, y en una demarcación específica según su posición principal. El aporte porcentual (Gráfico 1) y el promedio por jugador (Gráfico 3) se calcularon por temporada, excluyendo a los arqueros, cuyo aporte en goles, asistencias y tackles es prácticamente nulo. Las métricas por 90 minutos solo consideran jugadores con 450 minutos o más, para evitar valores inflados por muestras pequeñas; el mismo filtro se aplicó a las métricas de portería. Se emplearon medidas de tendencia central (media y mediana) y de dispersión (rango intercuartílico y coeficiente de variación). Las temporadas 2022/23 a 2024/25 están marcadas como fabricadas en la base de datos (campo is_fabricated); solo 2025/26 corresponde a datos reales. No se aplicaron pruebas de hipótesis ni modelos predictivos.
     </p>
 </div>
 """, unsafe_allow_html=True)
