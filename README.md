@@ -29,7 +29,7 @@ Para dar respuesta al objetivo general, el dashboard aborda y desglosa los sigui
 
 ## Fuente de los datos
 
-Los datos provienen del conjunto público de Kaggle [SQL Practice: Football Players](https://www.kaggle.com/datasets/tomersolo/sql-practice-football-players): una base relacional normalizada de 17 tablas y 855,439 registros, con 27,343 jugadores, 108,639 registros jugador-temporada y 26,949 lesiones entre las temporadas 2022/23 y 2025/26.
+Los datos provienen del conjunto público de Kaggle [SQL Practice: Football Players](https://www.kaggle.com/datasets/tomersolo/sql-practice-football-players): una base relacional normalizada de 17 tablas y 855.439 registros, con 27.343 jugadores, 108.639 registros jugador-temporada y 26.949 lesiones entre las temporadas 2022/23 y 2025/26.
 
 ### Limitaciones
 

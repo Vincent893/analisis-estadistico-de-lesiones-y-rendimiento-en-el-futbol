@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme, PALETA_APP
+from utils.graficos import apply_theme, num, PALETA_APP
 
 UI.setup_page()
 UI.render_sidebar()
@@ -122,21 +122,21 @@ for i, linea in enumerate(LINEAS_ORDEN):
     if linea == "Arquero":
         # Métricas de portería
         detalle = (
-            f"Paradas: {df_arq['pct_paradas'].mean():.1f}%<br>"
-            f"Porterías a cero/90': {df_arq['clean_sheets_per_90'].mean():.2f}<br>"
-            f"Goles concedidos/90': {df_arq['conceded_per_90'].mean():.2f}"
+            f"Paradas: {num(df_arq['pct_paradas'].mean(), 1)}%<br>"
+            f"Porterías a cero/90': {num(df_arq['clean_sheets_per_90'].mean(), 2)}<br>"
+            f"Goles concedidos/90': {num(df_arq['conceded_per_90'].mean(), 2)}"
         )
     else:
         detalle = (
-            f"Goles prom: {row['Goles_prom']:.2f}<br>"
-            f"Asist prom: {row['Asist_prom']:.2f} · Tackles prom: {row['Tackles_prom']:.1f}<br>"
-            f"Minutos prom: {row['Mins_prom']:.0f}"
+            f"Goles prom: {num(row['Goles_prom'], 2)}<br>"
+            f"Asist prom: {num(row['Asist_prom'], 2)} · Tackles prom: {num(row['Tackles_prom'], 1)}<br>"
+            f"Minutos prom: {num(row['Mins_prom'])}"
         )
     with cols_kpi[i]:
         st.markdown(f"""
         <div class="kpi-card" style="border-top-color:{color};">
             <div class="kpi-title">{linea}</div>
-            <div class="kpi-value" style="font-size:1.35rem;">{row['Jugadores']:,.0f} jug.</div>
+            <div class="kpi-value" style="font-size:1.35rem;">{num(row['Jugadores'])} jug.</div>
             <div class="kpi-footer" style="font-size:0.85rem; line-height:1.4;">
                 {detalle}
             </div>
@@ -147,7 +147,7 @@ st.divider()
 st.subheader("Gráfico 1: Aporte Porcentual por Línea y Temporada")
 # Gráficos 1 y 2: sin arqueros, su aporte en goles, asistencias y tackles es prácticamente nulo
 df_campo = df[df["linea"] != "Arquero"]
-st.caption("Porcentaje de goles, asistencias y tackles aportado por cada línea de campo respecto al total de la muestra. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0.01 % de goles + asistencias y 0.1 % de tackles)."
+st.caption("Porcentaje de goles, asistencias y tackles aportado por cada línea de campo respecto al total de la muestra. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles)."
 )
 
 metrica_g1 = st.radio(
@@ -184,12 +184,12 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        Los mediocampistas concentran la mayor parte del aporte total: cerca del 65% de los goles + asistencias, el 65% de los goles y el 65% de las asistencias en todas las temporadas. Esto se explica por el volumen de la línea: en la base de datos la categoría de mediocampista incluye extremos, interiores y mediapuntas, y reúne al 45.3% de los registros. Los defensas aportan el 22.3% de los goles + asistencias, apoyados sobre todo en las asistencias (30.6%), mientras que los delanteros, que solo agrupan a los centrodelanteros (6.2% de la muestra), aportan el 12.5% de los goles + asistencias y el 19.3% de los goles. En la métrica de tackles, el aporte se reparte entre defensas (50.4%) y mediocampistas (46.0%), con una participación residual de los delanteros (3.6%).
+        Los mediocampistas concentran la mayor parte del aporte total: cerca del 65% de los goles + asistencias, el 65% de los goles y el 65% de las asistencias en todas las temporadas. Esto se explica por el volumen de la línea: en la base de datos la categoría de mediocampista incluye extremos, interiores y mediapuntas, y reúne al 45,3% de los registros. Los defensas aportan el 22,3% de los goles + asistencias, apoyados sobre todo en las asistencias (30,6%), mientras que los delanteros, que solo agrupan a los centrodelanteros (6,2% de la muestra), aportan el 12,5% de los goles + asistencias y el 19,3% de los goles. En la métrica de tackles, el aporte se reparte entre defensas (50,4%) y mediocampistas (46,0%), con una participación residual de los delanteros (3,6%).
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
         <li><b>Concentración:</b> El aporte colectivo está dominado por la línea más numerosa: los mediocampistas producen alrededor de dos tercios del total ofensivo, y defensas y mediocampistas se reparten casi por igual la carga defensiva.</li>
-        <li><b>Estabilidad:</b> Las proporciones varían menos de 0.2 puntos porcentuales entre temporadas, por lo que no hay transferencia de carga entre líneas en el ciclo 2022-2026.</li>
+        <li><b>Estabilidad:</b> Las proporciones varían menos de 0,2 puntos porcentuales entre temporadas, por lo que no hay transferencia de carga entre líneas en el ciclo 2022-2026.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -197,7 +197,7 @@ st.markdown("""
 st.divider()
 
 st.subheader("Gráfico 2: Promedio por Jugador por Línea y Temporada")
-st.caption("Promedio por jugador de goles, asistencias y tackles en cada línea posicional. Contrasta con el Gráfico 1: aquel muestra cuánto aporta cada línea al total; este, cuánto aporta un jugador típico de cada línea. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0.01 % de goles + asistencias y 0.1 % de tackles).")
+st.caption("Promedio por jugador de goles, asistencias y tackles en cada línea posicional. Contrasta con el Gráfico 1: aquel muestra cuánto aporta cada línea al total; este, cuánto aporta un jugador típico de cada línea. Se excluyen los arqueros: su aporte en estas métricas es prácticamente nulo (0,01 % de goles + asistencias y 0,1 % de tackles).")
 
 metrica_prom = st.radio(
     "Métrica promedio:", ["Goles + Asistencias", "Goles", "Asistencias", "Tackles"],
@@ -236,12 +236,12 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        Al eliminar el efecto del tamaño de cada línea, el orden se invierte respecto al Gráfico 1. Un delantero típico registra entre 8.1 y 8.3 goles + asistencias por temporada, frente a 5.8–6.0 de un mediocampista y 2.3 de un defensa. En goles la diferencia es mayor: 6.9–7.0 por delantero contra 3.2–3.3 por mediocampista y menos de 0.9 por defensa. Las asistencias, en cambio, son la especialidad del mediocampo (2.6–2.7 por jugador), mientras que defensas y delanteros quedan casi igualados (1.4 y 1.2). En tackles, el defensa típico lidera (35.0–35.9), seguido del mediocampista (28.5–29.2) y del delantero (16.2–16.5).
+        Al eliminar el efecto del tamaño de cada línea, el orden se invierte respecto al Gráfico 1. Un delantero típico registra entre 8,1 y 8,3 goles + asistencias por temporada, frente a 5,8–6,0 de un mediocampista y 2,3 de un defensa. En goles la diferencia es mayor: 6,9–7,0 por delantero contra 3,2–3,3 por mediocampista y menos de 0,9 por defensa. Las asistencias, en cambio, son la especialidad del mediocampo (2,6–2,7 por jugador), mientras que defensas y delanteros quedan casi igualados (1,4 y 1,2). En tackles, el defensa típico lidera (35,0–35,9), seguido del mediocampista (28,5–29,2) y del delantero (16,2–16,5).
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Rendimiento individual:</b> El delantero es el jugador con mayor producción goleadora individual, aunque su línea aporte solo el 12.5% del total; el peso colectivo del mediocampo proviene de su número de jugadores, no de un rendimiento individual superior.</li>
-        <li><b>Evolución:</b> Los promedios se mantienen casi planos en las cuatro temporadas, con un leve aumento de los tackles por defensa (+2.5% entre 2022/23 y 2025/26).</li>
+        <li><b>Rendimiento individual:</b> El delantero es el jugador con mayor producción goleadora individual, aunque su línea aporte solo el 12,5% del total; el peso colectivo del mediocampo proviene de su número de jugadores, no de un rendimiento individual superior.</li>
+        <li><b>Evolución:</b> Los promedios se mantienen casi planos en las cuatro temporadas, con un leve aumento de los tackles por defensa (+2,5% entre 2022/23 y 2025/26).</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -305,26 +305,27 @@ st.plotly_chart(fig2, width="stretch")
 
 with st.expander("Explicación de Lectura"):
     st.markdown("""
-    Este boxplot resume la distribución de la variable seleccionada en cada línea posicional. La línea central de cada caja indica la mediana (percentil 50). La caja representa el rango intercuartílico (Rango IQ), donde se concentra el 50% central de los jugadores (entre el percentil 25 y el 75). La línea punteada marca la media aritmética. Los bigotes (líneas verticales que salen de la caja) llegan hasta 1.5 veces el rango intercuartílico; los valores más allá de ese límite (atípicos) no se dibujan, y el máximo de cada línea se informa en la tabla inferior. La longitud de la caja y de los bigotes describe la dispersión de los datos: cajas más largas indican mayor heterogeneidad, cajas más compactas indican mayor homogeneidad.
+    Este boxplot resume la distribución de la variable seleccionada en cada línea posicional. La línea central de cada caja indica la mediana (percentil 50). La caja representa el rango intercuartílico (Rango IQ), donde se concentra el 50% central de los jugadores (entre el percentil 25 y el 75). La línea punteada marca la media aritmética. Los bigotes (líneas verticales que salen de la caja) llegan hasta 1,5 veces el rango intercuartílico; los valores más allá de ese límite (atípicos) no se dibujan, y el máximo de cada línea se informa en la tabla inferior. La longitud de la caja y de los bigotes describe la dispersión de los datos: cajas más largas indican mayor heterogeneidad, cajas más compactas indican mayor homogeneidad.
     """)
 
 desc_table = (
     df_g2.groupby("linea")[metrica_box]
          .describe(percentiles=[0.25, 0.5, 0.75])
          .rename(columns={"count": "N", "mean": "Media", "std": "DE", "min": "Mín.", "25%": "Q1 (P25)", "50%": "Mediana", "75%": "Q3 (P75)", "max": "Máx."})
-         .round(3)
 )
+dec_tabla = 3 if metrica_box.endswith("_90") else 2
+desc_table = desc_table.apply(lambda col: col.map(lambda v: num(v, 0 if col.name == "N" else dec_tabla)))
 st.dataframe(desc_table, width="stretch")
 
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        En goles + asistencias por 90' (variable por defecto), las medianas separan con claridad las líneas: 0.48 en delanteros, 0.30 en mediocampistas, 0.09 en defensas y 0 en arqueros. Las cajas de delanteros y mediocampistas tienen un ancho similar (rango intercuartílico de 0.29 y 0.28), pero en relación con su media la dispersión crece a medida que la línea se aleja del arco rival: el coeficiente de variación es 0.46 en delanteros, 0.66 en mediocampistas y 1.02 en defensas. En las cuatro líneas la media supera a la mediana, señal de asimetría positiva: pocos jugadores con producción muy alta (máximos cercanos a 1.9 en delanteros y mediocampistas) elevan el promedio.
+        En goles + asistencias por 90' (variable por defecto), las medianas separan con claridad las líneas: 0,48 en delanteros, 0,30 en mediocampistas, 0,09 en defensas y 0 en arqueros. Las cajas de delanteros y mediocampistas tienen un ancho similar (rango intercuartílico de 0,29 y 0,28), pero en relación con su media la dispersión crece a medida que la línea se aleja del arco rival: el coeficiente de variación es 0,46 en delanteros, 0,66 en mediocampistas y 1,02 en defensas. En las cuatro líneas la media supera a la mediana, señal de asimetría positiva: pocos jugadores con producción muy alta (máximos cercanos a 1,9 en delanteros y mediocampistas) elevan el promedio.
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Asimetría:</b> Todas las líneas presentan asimetría positiva, más marcada en defensas, donde la mediana (0.09) queda muy por debajo de los valores máximos (1.65).</li>
+        <li><b>Asimetría:</b> Todas las líneas presentan asimetría positiva, más marcada en defensas, donde la mediana (0,09) queda muy por debajo de los valores máximos (1,65).</li>
         <li><b>Consistencia relativa:</b> Los delanteros son la línea más homogénea en términos relativos (menor coeficiente de variación); los defensas, la más heterogénea. En el Ability Score, en cambio, las cuatro cajas son casi idénticas (medianas entre 375 y 407).</li>
     </ul>
 </div>
@@ -353,7 +354,7 @@ agg_g3 = agg_g3.sort_values("linea")
 fig3 = go.Figure()
 for _, row in agg_g3.iterrows():
     linea = row["linea"]
-    texto = f"{row['media']:.3f}" if row["media"] < 10 else f"{row['media']:,.1f}"
+    texto = num(row["media"], 3) if row["media"] < 10 else num(row["media"], 1)
     fig3.add_trace(go.Bar(
         y=[linea], x=[row["media"]],
         orientation="h",
@@ -362,7 +363,7 @@ for _, row in agg_g3.iterrows():
         text=texto,
         textposition="outside",
         cliponaxis=False,
-        hovertemplate=f"<b>{linea}</b><br>Media: {texto}<br>N: {row['n']:,}<extra></extra>",
+        hovertemplate=f"<b>{linea}</b><br>Media: {texto}<br>N: {num(row['n'])}<extra></extra>",
     ))
 
 fig3.update_layout(
@@ -379,7 +380,7 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        En la Puntuación de Habilidad (variable por defecto), los mediocampistas registran la media más alta (416.3), seguidos por defensas (409.8), delanteros (388.9) y arqueros (385.1). La diferencia entre la línea más alta y la más baja es de solo 31 puntos en una escala que va de 116 a 768, es decir, menos del 5% del rango: la habilidad promedio es prácticamente la misma en todas las demarcaciones. Las diferencias reales entre líneas aparecen en las métricas de producción: en goles + asistencias por 90', la media del delantero (0.50) cuadruplica la del defensa (0.11).
+        En la Puntuación de Habilidad (variable por defecto), los mediocampistas registran la media más alta (416,3), seguidos por defensas (409,8), delanteros (388,9) y arqueros (385,1). La diferencia entre la línea más alta y la más baja es de solo 31 puntos en una escala que va de 116 a 768, es decir, menos del 5% del rango: la habilidad promedio es prácticamente la misma en todas las demarcaciones. Las diferencias reales entre líneas aparecen en las métricas de producción: en goles + asistencias por 90', la media del delantero (0,50) cuadruplica la del defensa (0,11).
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
@@ -421,12 +422,12 @@ st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
     <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-        Los mediocampistas son la línea más numerosa (45.3% de los registros jugador-temporada), seguidos por los defensas (40.4%), los arqueros (8.1%) y los delanteros (6.2%). La baja proporción de delanteros se debe a la clasificación de la base de datos: solo el centrodelantero se considera delantero, mientras que extremos y mediapuntas se cuentan como mediocampistas. Esta composición explica los resultados del Gráfico 1: el mediocampo domina el aporte total por volumen, mientras que los delanteros, con el 6.2% de los registros, generan el 12.5% de los goles + asistencias y el 19.3% de los goles.
+        Los mediocampistas son la línea más numerosa (45,3% de los registros jugador-temporada), seguidos por los defensas (40,4%), los arqueros (8,1%) y los delanteros (6,2%). La baja proporción de delanteros se debe a la clasificación de la base de datos: solo el centrodelantero se considera delantero, mientras que extremos y mediapuntas se cuentan como mediocampistas. Esta composición explica los resultados del Gráfico 1: el mediocampo domina el aporte total por volumen, mientras que los delanteros, con el 6,2% de los registros, generan el 12,5% de los goles + asistencias y el 19,3% de los goles.
     </p>
     <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
     <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-        <li><b>Composición de la muestra:</b> Mediocampistas y defensas suman el 85.7% de los registros; arqueros y delanteros, el 14.3% restante.</li>
-        <li><b>Impacto relativo:</b> Los delanteros aportan aproximadamente el triple de goles que su peso en la muestra (19.3% frente a 6.2%), el mayor impacto relativo por jugador de las cuatro líneas.</li>
+        <li><b>Composición de la muestra:</b> Mediocampistas y defensas suman el 85,7% de los registros; arqueros y delanteros, el 14,3% restante.</li>
+        <li><b>Impacto relativo:</b> Los delanteros aportan aproximadamente el triple de goles que su peso en la muestra (19,3% frente a 6,2%), el mayor impacto relativo por jugador de las cuatro líneas.</li>
     </ul>
 </div>
 """, unsafe_allow_html=True)
@@ -495,12 +496,12 @@ with tab1:
     <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
         <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
         <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-            Cada eje está normalizado entre la línea con el promedio más bajo (0) y la línea con el promedio más alto (1), por lo que el radar compara la forma de los perfiles y no sus magnitudes. El delantero marca el máximo en goles (6.97 por temporada) y el mínimo en minutos (1,496). El mediocampista lidera en asistencias (2.66) y pases clave (20.9) y es segundo en acciones defensivas (28.8 tackles), lo que le da el perfil más amplio de las cuatro líneas. El defensa lidera en acciones defensivas (35.5 tackles) y en minutos (1,809), con valores intermedios en asistencias y pases clave (1.40 y 13.9). El arquero solo destaca en minutos (1,805); en el resto de los ejes queda en cero porque es la línea con el promedio más bajo.
+            Cada eje está normalizado entre la línea con el promedio más bajo (0) y la línea con el promedio más alto (1), por lo que el radar compara la forma de los perfiles y no sus magnitudes. El delantero marca el máximo en goles (6,97 por temporada) y el mínimo en minutos (1.496). El mediocampista lidera en asistencias (2,66) y pases clave (20,9) y es segundo en acciones defensivas (28,8 tackles), lo que le da el perfil más amplio de las cuatro líneas. El defensa lidera en acciones defensivas (35,5 tackles) y en minutos (1.809), con valores intermedios en asistencias y pases clave (1,40 y 13,9). El arquero solo destaca en minutos (1.805); en el resto de los ejes queda en cero porque es la línea con el promedio más bajo.
         </p>
         <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
         <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
             <li><b>Especialización:</b> Delanteros y defensas tienen perfiles concentrados en un extremo (goles y acciones defensivas, respectivamente), mientras que el mediocampista reparte su aporte entre creación y recuperación.</li>
-            <li><b>Continuidad:</b> Arqueros y defensas son las líneas con más minutos por temporada (unos 1,800), frente a unos 1,500 de los delanteros, la línea con mayor rotación.</li>
+            <li><b>Continuidad:</b> Arqueros y defensas son las líneas con más minutos por temporada (unos 1.800), frente a unos 1.500 de los delanteros, la línea con mayor rotación.</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -520,13 +521,13 @@ with tab2:
     fig_ov.add_trace(go.Bar(
         y=agg_ov_pct["linea"], x=agg_ov_pct["aporte_ofensivo"],
         name="Ofensivo", orientation="h",
-        marker_color=PALETA_APP[0], text=agg_ov_pct["aporte_ofensivo"].round(1).astype(str) + "%",
+        marker_color=PALETA_APP[0], text=agg_ov_pct["aporte_ofensivo"].map(lambda v: num(v, 1) + "%"),
         textposition="inside",
     ))
     fig_ov.add_trace(go.Bar(
         y=agg_ov_pct["linea"], x=agg_ov_pct["aporte_defensivo"],
         name="Defensivo", orientation="h",
-        marker_color=PALETA_APP[1], text=agg_ov_pct["aporte_defensivo"].round(1).astype(str) + "%",
+        marker_color=PALETA_APP[1], text=agg_ov_pct["aporte_defensivo"].map(lambda v: num(v, 1) + "%"),
         textposition="inside",
     ))
     fig_ov.update_layout(
@@ -541,11 +542,11 @@ with tab2:
     <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
         <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
         <p style="color: #E2E8F0; line-height: 1.6; margin-bottom: 16px;">
-            En los defensas, el 68.7% de las acciones contabilizadas son defensivas (tackles) y el 31.3% ofensivas (goles, asistencias y pases clave). El mediocampista queda casi en equilibrio (48.2% ofensivo y 51.8% defensivo) y el delantero es la única línea de campo donde predomina lo ofensivo (53.3%). La barra de los arqueros (61.1% ofensivo) no es interpretable: registran en promedio menos de un pase clave y menos de un tackle por temporada, de modo que la proporción se calcula sobre un volumen mínimo.
+            En los defensas, el 68,7% de las acciones contabilizadas son defensivas (tackles) y el 31,3% ofensivas (goles, asistencias y pases clave). El mediocampista queda casi en equilibrio (48,2% ofensivo y 51,8% defensivo) y el delantero es la única línea de campo donde predomina lo ofensivo (53,3%). La barra de los arqueros (61,1% ofensivo) no es interpretable: registran en promedio menos de un pase clave y menos de un tackle por temporada, de modo que la proporción se calcula sobre un volumen mínimo.
         </p>
         <h4 style="color: #00E5FF; margin-top: 15px; font-size: 1.05rem;">Diagnóstico Descriptivo</h4>
         <ul style="color: #E2E8F0; line-height: 1.6; margin-bottom: 0;">
-            <li><b>Gradiente posicional:</b> El peso de lo ofensivo crece a medida que la línea se acerca al arco rival: 31.3% en defensas, 48.2% en mediocampistas y 53.3% en delanteros.</li>
+            <li><b>Gradiente posicional:</b> El peso de lo ofensivo crece a medida que la línea se acerca al arco rival: 31,3% en defensas, 48,2% en mediocampistas y 53,3% en delanteros.</li>
             <li><b>Alcance de la comparación:</b> El balance suma acciones de distinta naturaleza y solo considera los tackles como acción defensiva, por lo que sirve para comparar líneas entre sí y no como medida absoluta del trabajo de cada una.</li>
         </ul>
     </div>
@@ -554,14 +555,14 @@ with tab2:
 with tab5:
     st.caption(
         f"Métricas propias de la portería · Arqueros con {MIN_MINUTOS_90}+ minutos "
-        f"({len(df_arq):,} registros jugador-temporada) · Promedio por arquero"
+        f"({num(len(df_arq))} registros jugador-temporada) · Promedio por arquero"
     )
     k1, k2, k3, k4 = st.columns(4)
     for col_k, titulo, valor, pie in [
-        (k1, "% de Paradas", f"{df_arq['pct_paradas'].mean():.1f}%", "Remates a puerta detenidos"),
-        (k2, "Paradas por 90'", f"{df_arq['saves_per_90'].mean():.2f}", "Volumen de trabajo"),
-        (k3, "Porterías a cero por 90'", f"{df_arq['clean_sheets_per_90'].mean():.2f}", "Partidos sin goles recibidos"),
-        (k4, "Goles evitados por 90'", f"{df_arq['expected_goals_prevented_per_90'].mean():+.3f}", "Goles esperados − recibidos"),
+        (k1, "% de Paradas", f"{num(df_arq['pct_paradas'].mean(), 1)}%", "Remates a puerta detenidos"),
+        (k2, "Paradas por 90'", num(df_arq['saves_per_90'].mean(), 2), "Volumen de trabajo"),
+        (k3, "Porterías a cero por 90'", num(df_arq['clean_sheets_per_90'].mean(), 2), "Partidos sin goles recibidos"),
+        (k4, "Goles evitados por 90'", ("+" if df_arq['expected_goals_prevented_per_90'].mean() >= 0 else "") + num(df_arq['expected_goals_prevented_per_90'].mean(), 3), "Goles esperados − recibidos"),
     ]:
         with col_k:
             st.markdown(f"""
@@ -601,16 +602,16 @@ st.subheader("Conclusiones del Análisis")
 st.markdown("""
 <div class="section-container" style="border-left: 4px solid #00E5FF; padding: 25px 30px; margin-top: 15px; margin-bottom: 25px;">
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        El análisis posicional del ciclo 2022-2026 muestra que el aporte colectivo y el rendimiento individual cuentan historias distintas. Por volumen, el mediocampo domina: con el 45.3% de los registros produce cerca del 65% de los goles + asistencias, y comparte con la defensa la carga defensiva (46.0% y 50.4% de los tackles). Por jugador, en cambio, el delantero es el más productivo en ataque (8.2 goles + asistencias por temporada y 0.50 por 90'), el mediocampista lidera en asistencias y pases clave, y el defensa en tackles (35.5 por temporada). El balance ofensivo-defensivo confirma esta especialización: el aporte del defensa es 69% defensivo, el del delantero 53% ofensivo y el del mediocampista queda casi equilibrado (48% / 52%).
+        El análisis posicional del ciclo 2022-2026 muestra que el aporte colectivo y el rendimiento individual cuentan historias distintas. Por volumen, el mediocampo domina: con el 45,3% de los registros produce cerca del 65% de los goles + asistencias, y comparte con la defensa la carga defensiva (46,0% y 50,4% de los tackles). Por jugador, en cambio, el delantero es el más productivo en ataque (8,2 goles + asistencias por temporada y 0,50 por 90'), el mediocampista lidera en asistencias y pases clave, y el defensa en tackles (35,5 por temporada). El balance ofensivo-defensivo confirma esta especialización: el aporte del defensa es 69% defensivo, el del delantero 53% ofensivo y el del mediocampista queda casi equilibrado (48% / 52%).
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        La distribución del rendimiento individual presenta asimetría positiva en todas las líneas: la mayoría de los jugadores produce poco y unos pocos elevan la media. En términos relativos, los delanteros son la línea más homogénea (coeficiente de variación de 0.46 en goles + asistencias por 90') y los defensas la más heterogénea (1.02). La Puntuación de Habilidad, por su parte, apenas varía entre líneas (medias entre 385 y 416), por lo que las diferencias posicionales se explican por el rol en el campo y no por un nivel de habilidad distinto.
+        La distribución del rendimiento individual presenta asimetría positiva en todas las líneas: la mayoría de los jugadores produce poco y unos pocos elevan la media. En términos relativos, los delanteros son la línea más homogénea (coeficiente de variación de 0,46 en goles + asistencias por 90') y los defensas la más heterogénea (1,02). La Puntuación de Habilidad, por su parte, apenas varía entre líneas (medias entre 385 y 416), por lo que las diferencias posicionales se explican por el rol en el campo y no por un nivel de habilidad distinto.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        Los arqueros, analizados con sus métricas propias, detienen en promedio el 70.5% de los remates a puerta, reciben 1.27 goles por 90' y mantienen la portería a cero en 0.32 partidos por 90'. El 59% de ellos evita más goles de los esperados, aunque el promedio (+0.044 por 90') es apenas positivo. En minutaje, arqueros y defensas son las líneas de mayor continuidad (unos 1,800 minutos por temporada), mientras que los delanteros registran el promedio más bajo (unos 1,500), lo que indica mayor rotación en la posición más ofensiva.
+        Los arqueros, analizados con sus métricas propias, detienen en promedio el 70,5% de los remates a puerta, reciben 1,27 goles por 90' y mantienen la portería a cero en 0,32 partidos por 90'. El 59% de ellos evita más goles de los esperados, aunque el promedio (+0,044 por 90') es apenas positivo. En minutaje, arqueros y defensas son las líneas de mayor continuidad (unos 1.800 minutos por temporada), mientras que los delanteros registran el promedio más bajo (unos 1.500), lo que indica mayor rotación en la posición más ofensiva.
     </p>
     <p style="color: #E2E8F0; line-height: 1.8; margin-bottom: 0; font-size: 1.02rem;">
-        En cuanto a la evolución temporal, tanto las proporciones como los promedios por línea se mantienen prácticamente constantes en las cuatro temporadas (variaciones menores a 0.2 puntos porcentuales en el aporte). Esta estabilidad debe leerse con cautela: tres de las cuatro temporadas (2022/23 a 2024/25) están marcadas como fabricadas en la base de datos (solo 2025/26 es real), lo que limita las conclusiones sobre tendencias.
+        En cuanto a la evolución temporal, tanto las proporciones como los promedios por línea se mantienen prácticamente constantes en las cuatro temporadas (variaciones menores a 0,2 puntos porcentuales en el aporte). Esta estabilidad debe leerse con cautela: tres de las cuatro temporadas (2022/23 a 2024/25) están marcadas como fabricadas en la base de datos (solo 2025/26 es real), lo que limita las conclusiones sobre tendencias.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -622,7 +623,7 @@ st.subheader("Nota Metodológica")
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid rgba(255, 255, 255, 0.25); padding: 20px 25px; margin-top: 15px;">
     <p style="color: #94A3B8; line-height: 1.7; margin-bottom: 0; font-size: 0.98rem;">
-        El análisis posicional se desarrolló sobre 108,639 registros jugador-temporada, clasificando a cada jugador en una de cuatro líneas (Arqueros, Defensas, Mediocampistas y Delanteros) según la categoría principal de la base de datos, y en una demarcación específica según su posición principal. El aporte porcentual (Gráfico 1) y el promedio por jugador (Gráfico 2) se calcularon por temporada, excluyendo a los arqueros, cuyo aporte en goles, asistencias y tackles es prácticamente nulo. Las métricas por 90 minutos solo consideran jugadores con 450 minutos o más, para evitar valores inflados por muestras pequeñas; el mismo filtro se aplicó a las métricas de portería. Se emplearon medidas de tendencia central (media y mediana) y de dispersión (rango intercuartílico y coeficiente de variación). Las temporadas 2022/23 a 2024/25 están marcadas como fabricadas en la base de datos (campo is_fabricated); solo 2025/26 corresponde a datos reales. No se aplicaron pruebas de hipótesis ni modelos predictivos.
+        El análisis posicional se desarrolló sobre 108.639 registros jugador-temporada, clasificando a cada jugador en una de cuatro líneas (Arqueros, Defensas, Mediocampistas y Delanteros) según la categoría principal de la base de datos, y en una demarcación específica según su posición principal. El aporte porcentual (Gráfico 1) y el promedio por jugador (Gráfico 2) se calcularon por temporada, excluyendo a los arqueros, cuyo aporte en goles, asistencias y tackles es prácticamente nulo. Las métricas por 90 minutos solo consideran jugadores con 450 minutos o más, para evitar valores inflados por muestras pequeñas; el mismo filtro se aplicó a las métricas de portería. Se emplearon medidas de tendencia central (media y mediana) y de dispersión (rango intercuartílico y coeficiente de variación). Las temporadas 2022/23 a 2024/25 están marcadas como fabricadas en la base de datos (campo is_fabricated); solo 2025/26 corresponde a datos reales. No se aplicaron pruebas de hipótesis ni modelos predictivos.
     </p>
 </div>
 """, unsafe_allow_html=True)

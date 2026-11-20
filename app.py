@@ -76,8 +76,8 @@ class Main:
 
             ## Alcance del Estudio
             Se trata de un estudio longitudinal de nivel descriptivo: no se aplican pruebas de hipótesis ni modelos
-            predictivos. El análisis se realiza sobre 108,639 registros jugador-temporada, correspondientes a
-            2,773 clubes y 299 ligas en las temporadas 2022/23 a 2025/26. En la base de datos, las temporadas
+            predictivos. El análisis se realiza sobre 108.639 registros jugador-temporada, correspondientes a
+            2.773 clubes y 299 ligas en las temporadas 2022/23 a 2025/26. En la base de datos, las temporadas
             2022/23 a 2024/25 están marcadas como fabricadas y solo 2025/26 corresponde a registros originales,
             por lo que las conclusiones sobre tendencias entre temporadas deben leerse con cautela.
 

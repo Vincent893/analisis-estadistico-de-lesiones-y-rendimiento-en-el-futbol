@@ -18,6 +18,11 @@ COLOR_LINEA_EJE = "rgba(0, 229, 255, 0.3)"
 NOMBRE_TEMA = "futbol_cian"
 
 
+def num(valor, dec=0):
+    """Número con formato de la app: punto de miles y coma decimal (1.234,5)."""
+    return f"{valor:,.{dec}f}".replace(",", "_").replace(".", ",").replace("_", ".")
+
+
 def registrar_tema():
     """Registra el template de la app y lo asigna como default de Plotly.
 
@@ -31,6 +36,8 @@ def registrar_tema():
             colorscale=dict(sequential=["#3B82F6", "#00A8CC", "#00E5FF"]),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
+            # Formato numérico de ejes, etiquetas y hover: coma decimal y punto de miles
+            separators=",.",
             # Tipografía general
             font=dict(color=COLOR_TEXTO, family="sans-serif"),
             # Leyenda flotante sobre el fondo oscuro de la app

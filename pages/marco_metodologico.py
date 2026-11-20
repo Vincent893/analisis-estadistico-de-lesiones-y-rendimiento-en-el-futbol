@@ -95,7 +95,7 @@ def render_marco_metodologico():
         st.markdown("""
             <div class="kpi-card">
                 <div class="kpi-title">Población</div>
-                <div class="kpi-value">27,343 Jugadores</div>
+                <div class="kpi-value">27.343 Jugadores</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -128,7 +128,7 @@ def render_marco_metodologico():
             <ul>
                 <li><b>Conteo de lesiones y cálculo de duración:</b> Creamos consultas en SQL agrupando las lesiones por temporada. Contabilizamos cuántos jugadores se lesionaron y cuántos días de baja tuvo cada lesión (fecha de fin menos fecha de inicio).</li>
                 <li><b>Segmentación por cuartiles de altura, peso e IMC:</b> Para describir si el tamaño o la masa corporal se relacionan con las lesiones, dividimos a los jugadores en 4 grupos usando funciones de ventana en SQL, y comparamos el porcentaje de lesionados y los días de baja promedio de cada grupo.</li>
-                <li><b>Agrupación por minutos jugados:</b> Para describir si una mayor carga de minutos se asocia con más lesiones, dividimos a los jugadores en rangos de 500 minutos, desde 500 o menos hasta más de 3,000, y medimos el porcentaje de lesionados en cada rango.</li>
+                <li><b>Agrupación por minutos jugados:</b> Para describir si una mayor carga de minutos se asocia con más lesiones, dividimos a los jugadores en rangos de 500 minutos, desde 500 o menos hasta más de 3.000, y medimos el porcentaje de lesionados en cada rango.</li>
                 <li><b>Análisis de asimetría y gravedad:</b> Calculamos tanto la media aritmética como la mediana de los días de baja. La diferencia entre ambas (38 frente a 15 días) muestra que la mayoría de las lesiones se resuelve pronto, mientras que lesiones graves como la rotura de ligamento cruzado, con más de 200 días de baja por caso, elevan el promedio.</li>
                 <li><b>Perfil comparativo:</b> Comparamos los promedios de altura, peso, minutos y edad entre los jugadores con y sin lesión en la temporada.</li>
             </ul>
@@ -163,7 +163,7 @@ def render_marco_metodologico():
         <div class="text-block-m">
             <b>Paso a paso detallado de lo que hicimos:</b>
             <ul>
-                <li><b>Cálculo del aporte porcentual por línea:</b> Sumamos los goles, las asistencias y los tackles por temporada y línea, y los dividimos entre el total de la temporada para conocer el peso de cada línea. Por ejemplo, los mediocampistas aportan cerca del 65% de los goles + asistencias y los delanteros, el 19.3% de los goles. Se excluyen los arqueros, cuyo aporte en estas métricas es prácticamente nulo.</li>
+                <li><b>Cálculo del aporte porcentual por línea:</b> Sumamos los goles, las asistencias y los tackles por temporada y línea, y los dividimos entre el total de la temporada para conocer el peso de cada línea. Por ejemplo, los mediocampistas aportan cerca del 65% de los goles + asistencias y los delanteros, el 19,3% de los goles. Se excluyen los arqueros, cuyo aporte en estas métricas es prácticamente nulo.</li>
                 <li><b>Promedio por jugador:</b> Calculamos la media de las mismas métricas por jugador de cada línea, para separar el peso colectivo de una línea (que depende de cuántos jugadores tiene) de su rendimiento individual típico. Las métricas por 90 minutos solo consideran jugadores con 450 minutos o más.</li>
                 <li><b>Diagramas de caja (Boxplots):</b> Usamos diagramas de caja para estudiar la mediana, el rango intercuartílico y la asimetría de cada variable por línea. En el <i>Ability Score</i> las cuatro líneas resultan casi idénticas; las diferencias aparecen en las métricas de producción.</li>
                 <li><b>Perfiles multidimensionales en gráficos de radar:</b> Normalizamos cinco variables (goles, asistencias, pases clave, tackles y minutos) en una escala común de 0 a 1 para contrastar visualmente el perfil de cada línea.</li>
@@ -180,7 +180,7 @@ def render_marco_metodologico():
             Los datos provienen de un conjunto público de Kaggle sobre fútbol profesional. A partir de él, el proyecto se apoya en dos bases de datos con funciones distintas, una desnormalizada para la investigación y otra normalizada para el Cuestionario SQL, y en un conjunto de herramientas de análisis y visualización:
             <ul>
                 <li><b>Base de datos de la investigación en MotherDuck (DuckDB):</b> Es la base analítica (OLAP) sobre la que se calcularon todos los resultados de los tres objetivos y el Simulador de Plantilla. Contiene un modelo desnormalizado, formado por 6 tablas de dimensiones y hechos y 3 vistas analíticas que resumen los datos por jugador, por club y por línea posicional, junto con las tablas de origen de las que se derivan. Se usa DuckDB de forma local durante el desarrollo y MotherDuck (DuckDB en la nube) en la aplicación publicada.</li>
-                <li><b>Base de datos original en Supabase (PostgreSQL):</b> Conserva la base relacional totalmente normalizada en Tercera Forma Normal (3FN): 17 tablas conectadas mediante claves, con 855,439 registros en total. Se utilizó únicamente para el Cuestionario SQL, cuyas consultas se ejecutan sobre ella.</li>
+                <li><b>Base de datos original en Supabase (PostgreSQL):</b> Conserva la base relacional totalmente normalizada en Tercera Forma Normal (3FN): 17 tablas conectadas mediante claves, con 855.439 registros en total. Se utilizó únicamente para el Cuestionario SQL, cuyas consultas se ejecutan sobre ella.</li>
                 <li><b>Consultas SQL:</b> Los cálculos se resuelven con expresiones de tabla comunes (CTE), agregaciones y funciones de ventana.</li>
                 <li><b>Python, Pandas y NumPy:</b> La lógica de la aplicación corre sobre Python; Pandas y NumPy se emplean para el filtrado y el cálculo de indicadores como el Gini, el HHI y el coeficiente de variación.</li>
                 <li><b>Plotly (Express y Graph Objects):</b> Con esta librería se construyeron todas las visualizaciones interactivas del dashboard.</li>
@@ -219,9 +219,9 @@ def render_marco_metodologico():
     <div class="text-block-m">
         A diferencia de los estudios que trabajan con muestras, en este proyecto analizamos el <b>100% de los registros disponibles</b> en la base de datos, por lo que no se aplicó ninguna técnica de muestreo:
         <ul>
-            <li><b>27,343 jugadores</b> registrados en total.</li>
-            <li><b>108,639 observaciones</b> jugador-temporada.</li>
-            <li><b>26,949 lesiones</b> documentadas con sus respectivos días de baja.</li>
+            <li><b>27.343 jugadores</b> registrados en total.</li>
+            <li><b>108.639 observaciones</b> jugador-temporada.</li>
+            <li><b>26.949 lesiones</b> documentadas con sus respectivos días de baja.</li>
         </ul>
         Antes de generar los cálculos, depuramos la base de datos eliminando registros vacíos (como las 250 filas totalmente nulas detectadas en la fase inicial).
     </div>
@@ -306,7 +306,7 @@ def render_marco_metodologico():
         with col_formula4:
             st.markdown("##### Índice Herfindahl-Hirschman (HHI)")
             st.latex(r"\text{HHI} = \sum_{i=1}^{n} s_i^2")
-            st.markdown("Donde $s_i$ es la participación porcentual del club $i$; el índice va de cerca de 0 a 10,000.")
+            st.markdown("Donde $s_i$ es la participación porcentual del club $i$; el índice va de cerca de 0 a 10.000.")
         with col_texto4:
             st.markdown("##### Se aplicó en:")
             st.markdown("""
@@ -369,7 +369,7 @@ def render_marco_metodologico():
         | **Alto rendimiento** | Jugador élite | *Ability Score* igual o superior al percentil 90 (por liga y temporada, o por temporada al comparar ligas) | Nominal (sí / no) | `player_seasons.ability_score` |
         | **Rendimiento ofensivo** | Producción | Goles + asistencias en la temporada | Razón | `player_stats_attacking.goals`, `assists` |
         | **Concentración** | Entre jugadores | Curva de Lorenz y coeficiente de Gini de goles + asistencias | Razón (0 a 1) | Cálculo sobre jugadores |
-        | **Concentración** | Entre clubes | Índice HHI de goles + asistencias por club dentro de cada liga | Razón (0 a 10,000) | Cálculo sobre clubes |
+        | **Concentración** | Entre clubes | Índice HHI de goles + asistencias por club dentro de cada liga | Razón (0 a 10.000) | Cálculo sobre clubes |
         | **Dependencia** | Dentro del club | Porcentaje de goles + asistencias del club aportado por el 20% más productivo de su plantilla | Razón | Cálculo por club y temporada |
         | **Consistencia** | Dispersión relativa | Coeficiente de variación de goles + asistencias por línea posicional | Razón | Cálculo por línea |
         | **Exposición** | Minutos | Minutos jugados y su correlación de Spearman con goles + asistencias | Razón | `player_seasons.mins` |

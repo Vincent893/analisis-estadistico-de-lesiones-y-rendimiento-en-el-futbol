@@ -6,7 +6,7 @@ import streamlit as st
 from database.DB import DB
 from models.UI import UI
 from utils.estilos import cargar_estilos
-from utils.graficos import apply_theme
+from utils.graficos import apply_theme, num
 
 
 UI.setup_page()
@@ -22,11 +22,6 @@ if conn is None:
 def run_query(query, params=None):
     # cursor propio: la conexión se comparte entre sesiones de Streamlit
     return conn.cursor().execute(query, params).df()
-
-
-def num(valor, dec=0):
-    """Número con coma de miles y punto decimal."""
-    return f"{valor:,.{dec}f}"
 
 
 def mostrar(fig, alto=360):
@@ -132,7 +127,7 @@ st.divider()
 st.header("1. Panorama general")
 
 st.markdown("""
-El análisis descriptivo inicial abarca un total de 108,639 observaciones de jugador-temporada. Esta exploración preliminar permite cuantificar la dimensión global de las afectaciones físicas, estableciendo los parámetros de frecuencia de los futbolistas que presentan al menos un evento lesivo durante el periodo competitivo, así como la distribución acumulada de los días de inactividad.
+El análisis descriptivo inicial abarca un total de 108.639 observaciones de jugador-temporada. Esta exploración preliminar permite cuantificar la dimensión global de las afectaciones físicas, estableciendo los parámetros de frecuencia de los futbolistas que presentan al menos un evento lesivo durante el periodo competitivo, así como la distribución acumulada de los días de inactividad.
 """)
 
 sql_q1 = P_CTE + """
@@ -202,7 +197,7 @@ fig_q2 = px.bar(q2, x="season_label", y="lesiones", text="top_rect",
 fig_q2.update_traces(textposition="outside", cliponaxis=False, width=0.40)
 mostrar(fig_q2, 400)
 
-interpretacion("Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24.4 % y el 25.0 % anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada. Ningún jugador registra más de una lesión en una misma temporada, por lo que ese porcentaje de afectados corresponde siempre a un único episodio por jugador y campaña.")
+interpretacion("Los resultados reflejan una notable homogeneidad en la tasa de incidencia, manteniéndose en un rango estrecho entre el 24,4 % y el 25,0 % anual. Dicha estabilidad a lo largo de los periodos indica la ausencia de fluctuaciones atípicas en el comportamiento lesivo global de la población estudiada. Ningún jugador registra más de una lesión en una misma temporada, por lo que ese porcentaje de afectados corresponde siempre a un único episodio por jugador y campaña.")
 
 
 st.subheader("2.2 Distribución mensual de las lesiones")
@@ -376,7 +371,7 @@ with col_alt:
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     alt = run_query(sql_q7)
-    alt["grupo"] = [f"C{c}: {a:g}–{b:g} cm" for c, a, b in zip(alt["cuartil"], alt["min_cm"], alt["max_cm"])]
+    alt["grupo"] = [f"C{c}: {a:g}–{b:g} cm".replace(".", ",") for c, a, b in zip(alt["cuartil"], alt["min_cm"], alt["max_cm"])]
 
     fig_alt = px.bar(alt, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(alt),
                      title="Porcentaje de lesionados por cuartil de altura",
@@ -394,7 +389,7 @@ with col_pes:
     FROM ps GROUP BY 1 ORDER BY 1;
     """
     pes = run_query(sql_q8)
-    pes["grupo"] = [f"C{c}: {a:g}–{b:g} kg" for c, a, b in zip(pes["cuartil"], pes["min_kg"], pes["max_kg"])]
+    pes["grupo"] = [f"C{c}: {a:g}–{b:g} kg".replace(".", ",") for c, a, b in zip(pes["cuartil"], pes["min_kg"], pes["max_kg"])]
 
     fig_pes = px.bar(pes, x="grupo", y="pct_lesionados", text=etiqueta_pct_dias(pes),
                      title="Porcentaje de lesionados por cuartil de peso",
@@ -672,7 +667,7 @@ st.markdown("""
         A modo de síntesis global, el análisis desarrollado a lo largo de las cuatro temporadas permite responder al objetivo planteado:
     </p>
     <ul style="color: #E2E8F0; line-height: 1.8; margin-bottom: 16px; font-size: 1.02rem;">
-        <li><b>Frecuencia constante:</b> Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (24.8 %), siendo lo habitual registrar un único episodio por campaña en cada jugador.</li>
+        <li><b>Frecuencia constante:</b> Alrededor de uno de cada cuatro futbolistas sufre al menos una lesión por temporada (24,8 %), siendo lo habitual registrar un único episodio por campaña en cada jugador.</li>
         <li><b>El físico no define el riesgo:</b> Características corporales como la altura y el peso no tienen relación con las lesiones; los jugadores altos, bajos, delgados o pesados se lesionan prácticamente en la misma proporción.</li>
         <li><b>Lo que importa es el tipo de lesión, no el cansancio:</b> Acumular muchos o pocos minutos en el terreno de juego no hace que un futbolista sea más propenso a lastimarse. El tiempo total de baja depende de la gravedad de cada lesión (como una rotura de ligamentos), no del desgaste por minutos.</li>
         <li><b>Resultados estables, con una salvedad:</b> Los porcentajes se repiten casi sin cambios en las cuatro temporadas. Esta estabilidad debe leerse con cautela: en la base de datos, las temporadas 2022/23 a 2024/25 están marcadas como fabricadas y solo 2025/26 corresponde a registros originales, por lo que no puede interpretarse como una tendencia real.</li>

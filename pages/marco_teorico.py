@@ -460,7 +460,7 @@ def render_marco_teorico():
 
         antecedentes = [
             ("Leventer et al. (2016) · Objetivo 1",
-             "Analizaron los patrones de lesión de 1,448 jugadores de la primera división alemana durante seis temporadas consecutivas, "
+             "Analizaron los patrones de lesión de 1.448 jugadores de la primera división alemana durante seis temporadas consecutivas, "
              "con énfasis en la posición de juego y a partir de un registro basado en medios de comunicación.",
              "Muestra que es posible describir las lesiones de una liga completa a partir de registros públicos de días de baja, "
              "el mismo tipo de dato que se emplea en este estudio."),

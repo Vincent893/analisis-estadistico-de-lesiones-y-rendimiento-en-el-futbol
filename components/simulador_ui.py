@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.graficos import num
 
 def renderizar_encabezado():
     st.markdown('<h2 style="color: #f0f6fc; font-size: 24px;"><i class="fa-solid fa-chess-board" style="color: #58a6ff; margin-right: 10px;"></i>Constructor y Simulador de Alineaciones</h2>', unsafe_allow_html=True)
@@ -15,16 +16,16 @@ def renderizar_tarjetas_kpi(metricas):
     kpi_rating, kpi_xg, kpi_edad, kpi_lesiones = st.columns(4)
 
     with kpi_rating:
-        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-star" style="color:#e3b341;"></i> Rating Promedio</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{metricas["avg_rating"]:.2f}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-star" style="color:#e3b341;"></i> Rating Promedio</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{num(metricas["avg_rating"], 2)}</div></div>', unsafe_allow_html=True)
 
     with kpi_xg:
-        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-futbol" style="color:#58a6ff;"></i> xG Total (90\')</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{metricas["total_xg"]:.2f}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-futbol" style="color:#58a6ff;"></i> xG Total (90\')</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{num(metricas["total_xg"], 2)}</div></div>', unsafe_allow_html=True)
 
     with kpi_edad:
-        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-user-group" style="color:#bc8cff;"></i> Edad Promedio</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{metricas["avg_age"]:.1f} <span style="font-size:12px; color:#8b949e;">yrs</span></div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-user-group" style="color:#bc8cff;"></i> Edad Promedio</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{num(metricas["avg_age"], 1)} <span style="font-size:12px; color:#8b949e;">yrs</span></div></div>', unsafe_allow_html=True)
 
     with kpi_lesiones:
-        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-kit-medical" style="color:#f85149;"></i> Días de Baja</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{int(metricas["total_days_lost"])}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px; text-align:center;"><div style="color:#8b949e; font-size:12px; font-weight:600; text-transform:uppercase; margin-bottom:4px;"><i class="fa-solid fa-kit-medical" style="color:#f85149;"></i> Días de Baja</div><div style="font-size:22px; font-weight:bold; color:#f0f6fc;">{num(metricas["total_days_lost"])}</div></div>', unsafe_allow_html=True)
 
 def renderizar_panel_seleccion_jugadores(formacion_tactica, lista_arqueros, lista_defensas, lista_mediocampistas, lista_delanteros):
     """
