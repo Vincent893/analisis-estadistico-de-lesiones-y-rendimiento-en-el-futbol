@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "4bd4f093c1080e1b8148",
-  "displayName": "Página 3",
-  "displayOption": "ActualSize",
+  "displayName": "Objetivo 1",
+  "displayOption": "FitToPage",
   "height": 1080,
   "width": 1920,
   "pageBinding": {
@@ -46,6 +46,23 @@
             "expr": {
               "Literal": {
                 "Value": "0D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspace": [
+      {
+        "properties": {
+          "color": {
+            "solid": {
+              "color": {
+                "expr": {
+                  "Literal": {
+                    "Value": "'#09124f'"
+                  }
+                }
               }
             }
           }

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "d6191e590bbc0ab70279",
   "position": {
-    "x": 556.36363636363637,
-    "y": 305.45454545454544,
+    "x": 539.13043478260863,
+    "y": 308.695652173913,
     "z": 9000,
-    "height": 172,
-    "width": 463,
+    "height": 171.7391304347826,
+    "width": 480.43478260869563,
     "tabOrder": 9000
   },
   "visual": {
@@ -32,7 +32,8 @@
                 }
               },
               "queryRef": "CountNonNull(main dim_player.weight_kg)",
-              "nativeQueryRef": "Promedio de Peso_kg"
+              "nativeQueryRef": "Promedio de Peso ",
+              "displayName": "Promedio de Peso "
             },
             {
               "field": {
@@ -51,7 +52,8 @@
                 }
               },
               "queryRef": "CountNonNull(main dim_player.height_cm)",
-              "nativeQueryRef": "Promedio de Altura_cm"
+              "nativeQueryRef": "Promedio de Altura ",
+              "displayName": "Promedio de Altura "
             }
           ]
         }
@@ -231,7 +233,7 @@
             "calloutSize": {
               "expr": {
                 "Literal": {
-                  "Value": "66D"
+                  "Value": "64D"
                 }
               }
             },
@@ -325,7 +327,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "38D"
+                  "Value": "31D"
                 }
               }
             },
@@ -480,6 +482,13 @@
                   "Value": "false"
                 }
               }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
             }
           }
         }
@@ -523,47 +532,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "551010c7d1dec130086c",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "main dim_player"
-                  }
-                },
-                "Property": "Peso_kg"
-              }
-            },
-            "Function": 1
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "9f01e9400c761272639a",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "main dim_player"
-                  }
-                },
-                "Property": "Altura_cm"
-              }
-            },
-            "Function": 1
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }
