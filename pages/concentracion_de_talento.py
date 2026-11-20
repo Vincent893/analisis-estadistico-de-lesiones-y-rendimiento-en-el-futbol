@@ -356,6 +356,13 @@ fig4.update_traces(textposition="outside", cliponaxis=False)
 fig4 = apply_theme(fig4)
 st.plotly_chart(fig4, width="stretch")
 
+st.markdown("<p style='color:#94A3B8; font-weight:600; margin-bottom:8px;'>Tabla Descriptiva de Dispersión Relativa (CV por Posición)</p>", unsafe_allow_html=True)
+tabla_cv_resumen = df_cv[["position", "count", "mean", "std", "cv"]].copy()
+tabla_cv_resumen.columns = ["Línea", "N", "Media G+A", "Desv. estándar", "Coeficiente de Variación (CV)"]
+tabla_cv_resumen[["Media G+A", "Desv. estándar"]] = tabla_cv_resumen[["Media G+A", "Desv. estándar"]].round(3)
+tabla_cv_resumen["Coeficiente de Variación (CV)"] = tabla_cv_resumen["Coeficiente de Variación (CV)"].apply(lambda x: f"{x:.3f} ({x*100:.1f}%)")
+st.dataframe(tabla_cv_resumen, width="stretch", hide_index=True)
+
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
@@ -375,13 +382,6 @@ st.markdown("""
     </ul>
 </div>
 """, unsafe_allow_html=True)
-
-st.markdown("<p style='color:#94A3B8; font-weight:600; margin-bottom:8px;'>Tabla Descriptiva de Dispersión Relativa (CV por Posición)</p>", unsafe_allow_html=True)
-tabla_cv_resumen = df_cv[["position", "count", "mean", "std", "cv"]].copy()
-tabla_cv_resumen.columns = ["Línea", "N", "Media G+A", "Desv. estándar", "Coeficiente de Variación (CV)"]
-tabla_cv_resumen[["Media G+A", "Desv. estándar"]] = tabla_cv_resumen[["Media G+A", "Desv. estándar"]].round(3)
-tabla_cv_resumen["Coeficiente de Variación (CV)"] = tabla_cv_resumen["Coeficiente de Variación (CV)"].apply(lambda x: f"{x:.3f} ({x*100:.1f}%)")
-st.dataframe(tabla_cv_resumen, width="stretch", hide_index=True)
 
 st.divider()
 

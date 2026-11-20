@@ -308,6 +308,14 @@ with st.expander("Explicación de Lectura"):
     Este boxplot resume la distribución de la variable seleccionada en cada línea posicional. La línea central de cada caja indica la mediana (percentil 50). La caja representa el rango intercuartílico (Rango IQ), donde se concentra el 50% central de los jugadores (entre el percentil 25 y el 75). La línea punteada marca la media aritmética. Los bigotes (líneas verticales que salen de la caja) llegan hasta 1.5 veces el rango intercuartílico; los valores más allá de ese límite (atípicos) no se dibujan, y el máximo de cada línea se informa en la tabla inferior. La longitud de la caja y de los bigotes describe la dispersión de los datos: cajas más largas indican mayor heterogeneidad, cajas más compactas indican mayor homogeneidad.
     """)
 
+desc_table = (
+    df_g2.groupby("linea")[metrica_box]
+         .describe(percentiles=[0.25, 0.5, 0.75])
+         .rename(columns={"count": "N", "mean": "Media", "std": "DE", "min": "Mín.", "25%": "Q1 (P25)", "50%": "Mediana", "75%": "Q3 (P75)", "max": "Máx."})
+         .round(3)
+)
+st.dataframe(desc_table, width="stretch")
+
 st.markdown("""
 <div class="section-container" style="border-left: 3px solid #00E5FF; padding: 20px 24px; margin-top: 15px; margin-bottom: 25px;">
     <h4 style="color: #00E5FF; margin-top: 0; font-size: 1.05rem;">Interpretación Analítica</h4>
@@ -321,14 +329,6 @@ st.markdown("""
     </ul>
 </div>
 """, unsafe_allow_html=True)
-
-desc_table = (
-    df_g2.groupby("linea")[metrica_box]
-         .describe(percentiles=[0.25, 0.5, 0.75])
-         .rename(columns={"count": "N", "mean": "Media", "std": "DE", "min": "Mín.", "25%": "Q1 (P25)", "50%": "Mediana", "75%": "Q3 (P75)", "max": "Máx."})
-         .round(3)
-)
-st.dataframe(desc_table, width="stretch")
 
 st.divider()
 
