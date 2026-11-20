@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "2e1615dd99b8339a4ed6",
   "position": {
     "x": 1554.5454545454545,
@@ -23,11 +23,11 @@
                       "Entity": "main analytics_club_seasons"
                     }
                   },
-                  "Property": "Tasa Lesiones Jugadores Top"
+                  "Property": "Días Perdidos por lesión de los Jugadores top"
                 }
               },
-              "queryRef": "main analytics_club_seasons.Tasa Lesiones Jugadores Top",
-              "nativeQueryRef": "Tasa Lesiones Jugadores Top"
+              "queryRef": "main analytics_club_seasons.Días Perdidos por lesión de los Jugadores top",
+              "nativeQueryRef": "Días Perdidos por lesión de los Jugadores top"
             }
           ]
         }
@@ -42,7 +42,7 @@
                     "Entity": "main analytics_club_seasons"
                   }
                 },
-                "Property": "Tasa Lesiones Jugadores Top"
+                "Property": "Días Perdidos por lesión de los Jugadores top"
               }
             },
             "direction": "Descending"

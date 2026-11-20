@@ -1,9 +1,9 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "b4966c47660038b60eae",
   "position": {
-    "x": 36,
-    "y": 694,
+    "x": 796.06605278840425,
+    "y": 694.49085910917165,
     "z": 7000,
     "height": 352,
     "width": 734,
@@ -343,7 +343,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Top 6 Clubes con Mayor Concentración de Talento Élite'"
+                  "Value": "'Top 9 Clubes con Mayor Concentración de Talento Élite'"
                 }
               }
             },
@@ -541,7 +541,7 @@
                         }
                       }
                     ],
-                    "Top": 6
+                    "Top": 9
                   }
                 }
               },
@@ -578,7 +578,22 @@
               }
             }
           ]
-        }
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "2079e637c324da8a03b0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "main analytics_club_seasons"
+              }
+            },
+            "Property": "club_name"
+          }
+        },
+        "type": "Categorical"
       }
     ],
     "filterSortOrder": "Custom"

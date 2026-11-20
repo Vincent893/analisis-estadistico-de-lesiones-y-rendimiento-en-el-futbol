@@ -37,23 +37,17 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "main analytics_club_seasons"
-                        }
-                      },
-                      "Property": "total_goals_scored"
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
                     }
                   },
-                  "Function": 0
+                  "Property": "Total Jugadores Top"
                 }
               },
-              "queryRef": "Sum(main analytics_club_seasons.total_goals_scored)",
-              "nativeQueryRef": "Suma de total_goals_scored",
-              "displayName": "Goles Anotados"
+              "queryRef": "main analytics_club_seasons.Total Jugadores Top",
+              "nativeQueryRef": "Total Jugadores Top"
             }
           ]
         },
@@ -61,23 +55,17 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "main analytics_club_seasons"
-                        }
-                      },
-                      "Property": "avg_ppg"
+                    "SourceRef": {
+                      "Entity": "main analytics_club_seasons"
                     }
                   },
-                  "Function": 1
+                  "Property": "Promedio Goles por Temporada"
                 }
               },
-              "queryRef": "Sum(main analytics_club_seasons.avg_ppg)",
-              "nativeQueryRef": "Promedio de avg_ppg",
-              "displayName": "Puntos por Partido (PPG)"
+              "queryRef": "main analytics_club_seasons.Promedio Goles por Temporada",
+              "nativeQueryRef": "Promedio Goles por Temporada"
             }
           ]
         }
@@ -197,25 +185,6 @@
         }
       ],
       "dataPoint": [
-        {
-          "properties": {
-            "fill": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 0,
-                      "Percent": 0
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Sum(main analytics_club_seasons.avg_ppg)"
-          }
-        },
         {
           "properties": {
             "fill": {
